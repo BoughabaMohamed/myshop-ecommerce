@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Users | MyShop</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+
+        <div class="logo">
+            <h2>MyShop Admin</h2>
+        </div>
+
+        <ul>
+
+            <li>
+                <a href="../html/index.html">Home</a>
+            </li>
+
+            <li>
+                <a href="admin.html">Products</a>
+            </li>
+
+            <li>
+                <a href="admin-categories.html">Categories</a>
+            </li>
+
+            <li>
+                <a href="admin-users.html">Users</a>
+            </li>
+
+            <li>
+                <a href="#" id="logoutBtn">Logout</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <main>
+
+        <h1>Admin Users</h1>
+
+
+        <!-- USERS STATISTICS -->
+
+        <section class="dashboard">
+
+            <div class="dashboard-card">
+
+                <h3>Total Users</h3>
+
+                <p id="usersCount">
+                    0
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEARCH USERS -->
+
+        <section class="admin-form">
+
+            <h2>Search Users</h2>
+
+            <input
+                type="text"
+                id="userSearch"
+                placeholder="Search user..."
+            >
+
+        </section>
+
+
+        <!-- USERS -->
+
+        <section>
+
+            <h2>All Users</h2>
+
+            <tbody id="usersContainer">
+            </tbody>
+
+                <!-- Users will appear here -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+
+        <button id="popupClose" class="popup-close">
+            &times;
+        </button>
+
+        <div id="popupIcon" class="popup-icon">
+            ✓
+        </div>
+
+        <h3 id="popupTitle">Success</h3>
+
+        <p id="popupMessage">
+            Operation completed successfully.
+        </p>
+
+        <button id="popupOk" class="popup-ok">
+            OK
+        </button>
+
+    </div>
+</div>
+
+
+    <!-- JAVASCRIPT -->
+
+    <script src="./js/admin-popup.js"></script>
+    <script src="./js/admin-auth.js"></script>
+    <script src="./js/admin-users.js"></script>
+
+</body>
+
+</html>

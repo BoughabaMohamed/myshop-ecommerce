@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Products | MyShop</title>
+
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            <h2>MyShop Admin</h2>
+        </div>
+
+        <ul class="nav-links">
+
+            <li>
+                <a href="../html/index.html">Home</a>
+            </li>
+
+            <li>
+                <a href="../html/products.html">Products</a>
+            </li>
+
+            <li>
+                <a href="admin-categories.html">Categories</a>
+            </li>
+
+            <li>
+                <a href="admin-users.html">Users</a>
+            </li>
+
+            <li>
+                <a href="../html/login.html" id="logoutBtn">Logout</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main>
+
+        <h1>Admin Products</h1>
+
+
+        <!-- =========================
+             DASHBOARD
+        ========================== -->
+
+        <section class="dashboard">
+
+            <div class="dashboard-card">
+
+                <h3>Total Products</h3>
+
+                <p id="productsCount">0</p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>Total Categories</h3>
+
+                <p id="categoriesCount">0</p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>Total Users</h3>
+
+                <p id="usersCount">0</p>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h3>Total Orders</h3>
+
+                <p id="ordersCount">0</p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ADD / UPDATE PRODUCT
+        ========================== -->
+
+        <section class="admin-form">
+
+            <h2 id="formTitle">Add Product</h2>
+
+
+            <form id="productForm">
+
+
+                <input
+                    type="text"
+                    id="productName"
+                    placeholder="Product Name"
+                    required
+                >
+
+
+                <textarea
+                    id="productDescription"
+                    placeholder="Product Description"
+                    required
+                ></textarea>
+
+
+                <input
+                    type="number"
+                    id="productPrice"
+                    placeholder="Price"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+
+                <input
+                    type="number"
+                    id="productStock"
+                    placeholder="Stock"
+                    min="0"
+                    required
+                >
+
+
+                <select
+                    id="productCategory"
+                    required
+                >
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                </select>
+
+
+                <input
+                    type="file"
+                    id="productImage"
+                    accept="image/jpeg,image/png,image/webp"
+                >
+
+
+                <input
+                    type="hidden"
+                    id="imageName"
+                >
+
+
+                <div class="form-buttons">
+
+                    <button
+                        type="submit"
+                        id="saveBtn"
+                    >
+                        Add Product
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancelBtn"
+                        class="cancel-btn"
+                        style="display: none;"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <p id="message"></p>
+
+        </section>
+
+
+        <!-- =========================
+             SEARCH
+        ========================== -->
+
+        <section class="search-section">
+
+            <h2>Search Products</h2>
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search product..."
+            >
+
+        </section>
+
+
+        <!-- =========================
+             PRODUCTS TABLE
+        ========================== -->
+
+        <section class="products-section">
+
+
+            <div class="products-header">
+
+                <h2>Products</h2>
+
+
+                <button
+                    type="button"
+                    id="addProductBtn"
+                    class="add-product-btn"
+                >
+                    + Add Product
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table class="products-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Image</th>
+
+                            <th>Product Name</th>
+
+                            <th>Description</th>
+
+                            <th>Category</th>
+
+                            <th>Stock</th>
+
+                            <th>Price</th>
+
+                            <th>Status</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="adminProducts">
+
+                        <!-- Products inserted by JavaScript -->
+
+                    </tbody>
+
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+
+        <button id="popupClose" class="popup-close">
+            &times;
+        </button>
+
+        <div id="popupIcon" class="popup-icon">
+            ✓
+        </div>
+
+        <h3 id="popupTitle">Success</h3>
+
+        <p id="popupMessage">
+            Operation completed successfully.
+        </p>
+
+        <button id="popupOk" class="popup-ok">
+            OK
+        </button>
+
+    </div>
+</div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="./js/admin-auth.js"></script>
+    <script src="./js/admin.js"></script>
+
+</body>
+
+</html>

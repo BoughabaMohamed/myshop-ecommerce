@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+
+<header>
+  <nav>
+<div class="logo">  
+  <img src=""../images/logo.png" alt="Logo">
+  <h2>MyShop</h2>
+</div>
+  
+
+    <ul>
+       <li><a href="index.html">Home</a></li>
+       <li><a href="products.html">Products</a></li>
+       <li><a href="cart.html">Cart</a></li>
+       <li><a href="login.html">Login</a></li>
+    </ul>
+  </nav>
+
+
+</header>
+
+<section class="cart">
+
+  <h1 class="page-title"> Shopping Cart</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody id="cartItems">
+
+
+    </tbody>
+  </table>
+  <div class="cart-total">
+    <h2 id="totalPrice">Total: 0 DH</h2>
+
+    <button class="checkout-btn" onclick="checkout()">
+        Checkout
+    </button>
+</div>
+
+</section>
+
+<script src="../js/cart.js"></script>
+
+<footer class="footer">
+    <div class="footer-content">
+        <h3>MyShop</h3>
+
+        <p>Your trusted online shopping website.</p>
+
+        <p>Email: support@myshop.com</p>
+
+        <p>Phone: +212 600 000 000</p>
+
+        <p>&copy; 2026 MyShop. All Rights Reserved.</p>
+    </div>
+</footer>
+  
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Categories | MyShop Admin</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+
+</head>
+
+<body>
+
+    <nav>
+
+        <div class="logo">
+            <h2>MyShop Admin</h2>
+        </div>
+
+        <ul>
+            <li>
+                <a href="../html/index.html">
+                    Home
+            </a>
+            </li>
+
+            <li>
+                <a href="admin.html">
+                    Products
+                </a>
+            </li>
+
+            <li>
+                <a href="admin-categories.html">
+                    Categories
+                </a>
+            </li>
+
+            <li>
+                <a href="admin-users.html">
+                    Users
+                </a>
+            </li>
+
+            <li>
+                <a href="#" id="logoutBtn">
+                    Logout
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+
+    <main>
+
+        <h1>Manage Categories</h1>
+
+
+        <!-- ADD CATEGORY -->
+
+        <section>
+
+            <h2>Add Category</h2>
+
+            <form id="categoryForm">
+
+                <input
+                    type="text"
+                    id="categoryName"
+                    placeholder="Category name"
+                    required
+                >
+
+                <button type="submit">
+                    Add Category
+                </button>
+
+            </form>
+
+            <p id="message"></p>
+
+        </section>
+
+
+        <!-- CATEGORIES -->
+
+        <section>
+
+            <h2>All Categories</h2>
+
+<div
+    id="categoriesContainer"
+>
+                <!-- Categories appear here -->
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- POPUP -->
+<div id="popup" class="popup">
+    <div class="popup-content">
+
+        <button id="popupClose" class="popup-close">
+            &times;
+        </button>
+
+        <div id="popupIcon" class="popup-icon">
+            ✓
+        </div>
+
+        <h3 id="popupTitle">Success</h3>
+
+        <p id="popupMessage">
+            Operation completed successfully.
+        </p>
+
+        <button id="popupOk" class="popup-ok">
+            OK
+        </button>
+
+    </div>
+</div>
+
+    <script src="./js/admin-popup.js"></script>
+    <script src="./js/admin-auth.js"></script>
+    <script src="./js/admin-categories.js"></script>
+
+</body>
+
+</html>
