@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require("../config/db");
 
 // Create Order
-router.post("/", verifyToken, (req, res) => {
+router.post("/", (req, res) => {
 
     const { user_id, total_price, address, cart } = req.body;
 

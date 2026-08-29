@@ -38,7 +38,8 @@ loginBtn.addEventListener("click", () => {
         localStorage.setItem("token", data.token);
 
         if (data.user.role === "admin") {
-            window.location.href = "admin.html";
+            console.log('admin')
+            window.location.href = "/admin/admin.html";
         } else {
             window.location.href = "products.html";
         }

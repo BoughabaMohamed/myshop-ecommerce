@@ -1,14 +1,3 @@
-const user = JSON.parse(localStorage.getItem("user"));
-
-if (!user) {
-
-    window.location.href = "login.html";
-}
-document.getElementById("welcomeUser").textContent =
-    "Welcome, " + user.name + "!";
-
-
-
 let products = [];
 
 fetch("http://localhost:3000/products")
@@ -121,21 +110,4 @@ function filterProducts() {
   displayProducts(filtered);
 }
 
-const logoutBtn = document.getElementById("logoutBtn");
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener("click", function (e) {
-
-        e.preventDefault();
-
-        localStorage.removeItem("user");
-
-        alert("Logged out successfully");
-
-        window.location.href = "login.html";
-
-    });
-
-}
 
