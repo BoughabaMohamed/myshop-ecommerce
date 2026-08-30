@@ -3,60 +3,77 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 
-// Create Order
+// ================= CREATE ORDER =================
+
 router.post("/", (req, res) => {
 
-    const { user_id, total_price, address, cart } = req.body;
+    const { total_price, address, cart } = req.body;
 
-    if (!user_id || !total_price || !address || !cart || cart.length === 0) {
+    if (!total_price || !address || !cart || cart.length === 0) {
+
         return res.status(400).json({
             message: "Missing required data"
         });
+
     }
 
     const orderSql = `
         INSERT INTO orders (user_id, total_price, address)
-        VALUES (?, ?, ?)
+        VALUES (NULL, ?, ?)
     `;
 
-    db.query(orderSql, [user_id, total_price, address], (err, result) => {
+    db.query(
+        orderSql,
+        [total_price, address],
+        (err, result) => {
 
-        if (err) {
-            return res.status(500).json(err);
-        }
+            if (err) {
+                console.log(err);
 
-        const orderId = result.insertId;
-
-        const values = cart.map(item => [
-            orderId,
-            item.id,
-            item.quantity,
-            item.price
-        ]);
-
-        const itemSql = `
-            INSERT INTO order_items
-            (order_id, product_id, quantity, price)
-            VALUES ?
-        `;
-
-        db.query(itemSql, [values], (err2) => {
-
-            if (err2) {
-                return res.status(500).json(err2);
+                return res.status(500).json({
+                    message: "Error creating order"
+                });
             }
 
-            res.json({
-                message: "Order placed successfully"
+            const orderId = result.insertId;
+
+            const values = cart.map(item => [
+                orderId,
+                item.id,
+                item.quantity,
+                item.price
+            ]);
+
+            const itemSql = `
+                INSERT INTO order_items
+                (order_id, product_id, quantity, price)
+                VALUES ?
+            `;
+
+            db.query(itemSql, [values], (err2) => {
+
+                if (err2) {
+                    console.log(err2);
+
+                    return res.status(500).json({
+                        message: "Error creating order items"
+                    });
+                }
+
+                res.json({
+                    message: "Order placed successfully"
+                });
+
             });
 
-        });
-
-    });
+        }
+    );
 
 });
 
-// Get All Orders
+
+// ================= GET ALL ORDERS - ADMIN =================
+
 router.get("/", verifyToken, isAdmin, (req, res) => {
 
     const sql = `
@@ -64,7 +81,7 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
             orders.*,
             users.name AS user_name
         FROM orders
-        JOIN users
+        LEFT JOIN users
         ON orders.user_id = users.id
         ORDER BY orders.id DESC
     `;
@@ -81,11 +98,12 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
 
 });
 
-// Update Order Status
+
+// ================= UPDATE ORDER STATUS - ADMIN =================
+
 router.put("/:id", verifyToken, isAdmin, (req, res) => {
 
     const id = req.params.id;
-
     const { status } = req.body;
 
     const sql = `
@@ -107,5 +125,6 @@ router.put("/:id", verifyToken, isAdmin, (req, res) => {
     });
 
 });
+
 
 module.exports = router;

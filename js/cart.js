@@ -25,43 +25,61 @@ function displayCart() {
 
     cart.forEach((product, index) => {
 
-        const subtotal = product.price * product.quantity;
+        const subtotal =
+            product.price * product.quantity;
 
         total += subtotal;
 
         cartItems.innerHTML += `
-        <tr>
+            <tr>
 
-            <td>
-                <img src="../images/${product.image}" alt="${product.name}">
-            </td>
+                <td>
+                    <img
+                        src="../images/${product.image}"
+                        alt="${product.name}"
+                    >
+                </td>
 
-            <td>${product.name}</td>
+                <td>${product.name}</td>
 
-            <td>${product.price} DH</td>
+                <td>${product.price} DH</td>
 
-            <td>
-                <button onclick="decrease(${index})">-</button>
-                ${product.quantity}
-                <button onclick="increase(${index})">+</button>
-            </td>
+                <td>
+                    <button onclick="decrease(${index})">
+                        -
+                    </button>
 
-            <td>${subtotal} DH</td>
+                    ${product.quantity}
 
-            <td>
-                <button class="remove-btn" onclick="removeItem(${index})">
-                    Remove
-                </button>
-            </td>
+                    <button onclick="increase(${index})">
+                        +
+                    </button>
+                </td>
 
-        </tr>
+                <td>${subtotal} DH</td>
+
+                <td>
+                    <button
+                        class="remove-btn"
+                        onclick="removeItem(${index})"
+                    >
+                        Remove
+                    </button>
+                </td>
+
+            </tr>
         `;
     });
 
-    totalPrice.textContent = "Total: " + total + " DH";
+    totalPrice.textContent =
+        "Total: " + total + " DH";
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+    );
 }
+
 
 function increase(index) {
 
@@ -69,6 +87,7 @@ function increase(index) {
 
     displayCart();
 }
+
 
 function decrease(index) {
 
@@ -81,12 +100,14 @@ function decrease(index) {
     displayCart();
 }
 
+
 function removeItem(index) {
 
     cart.splice(index, 1);
 
     displayCart();
 }
+
 
 function checkout() {
 
@@ -97,22 +118,12 @@ function checkout() {
         return;
     }
 
-    const user = JSON.parse(localStorage.getItem("user"));
+    const total = cart.reduce(
+        (sum, item) =>
+            sum + item.price * item.quantity,
+        0
+    );
 
-    if (!user) {
-
-        alert("Please login first!");
-
-        window.location.href = "login.html";
-
-        return;
-    }
-
-    const total = cart.reduce((sum, item) => {
-
-        return sum + item.price * item.quantity;
-
-    }, 0);
 
     fetch("http://localhost:3000/orders", {
 
@@ -124,20 +135,38 @@ function checkout() {
 
         body: JSON.stringify({
 
-            user_id: user.id,
             total_price: total,
+
             address: "Casablanca",
+
             cart: cart
 
         })
 
     })
 
-    .then(res => res.json())
+    .then(async response => {
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.message ||
+                "Error while placing order."
+            );
+        }
+
+        return data;
+
+    })
 
     .then(data => {
 
-        alert(data.message);
+        alert(
+            data.message ||
+            "Order placed successfully!"
+        );
 
         cart = [];
 
@@ -145,15 +174,22 @@ function checkout() {
 
         displayCart();
 
-        window.location.href = "products.html";
+        window.location.href =
+            "products.html";
 
     })
 
-    .catch(err => {
+    .catch(error => {
 
-        console.log(err);
+        console.error(
+            "Checkout error:",
+            error
+        );
 
-        alert("Error while placing order.");
+        alert(
+            error.message ||
+            "Error while placing order."
+        );
 
     });
 

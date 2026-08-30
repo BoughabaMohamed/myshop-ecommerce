@@ -85,9 +85,13 @@ function updateCartCount() {
   cartCount.textContent = "Cart: " + totalItems;
 }
 
-searchInput.addEventListener("input", filterProducts);
+if (searchInput) {
+    searchInput.addEventListener("input", filterProducts);
+}
 
-categorySelect.addEventListener("change", filterProducts);
+if (categorySelect) {
+    categorySelect.addEventListener("change", filterProducts);
+}
 
 function filterProducts() {
 

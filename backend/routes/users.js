@@ -5,34 +5,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 
-router.post("/register", async (req, res) => {
 
-    const { fullname, email, password } = req.body;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const sql = `
-        INSERT INTO users (name, email, password)
-        VALUES (?, ?, ?)
-    `;
-
-    db.query(
-        sql,
-        [fullname, email, hashedPassword],
-        (err) => {
-
-            if (err) {
-                return res.status(500).json(err);
-            }
-
-            res.json({
-                message: "User registered successfully"
-            });
-
-        }
-    );
-
-});
+// ================= ADMIN LOGIN =================
 
 router.post("/login", (req, res) => {
 
@@ -43,21 +17,33 @@ router.post("/login", (req, res) => {
     db.query(sql, [email], async (err, result) => {
 
         if (err) {
-            return res.status(500).json(err);
+            return res.status(500).json({
+                message: "Database error"
+            });
         }
 
         if (result.length === 0) {
-            return res.json({
+            return res.status(401).json({
                 message: "Invalid email or password"
             });
         }
 
         const user = result[0];
 
-        const match = await bcrypt.compare(password, user.password);
+        // Only ADMIN can login
+        if (user.role !== "admin") {
+            return res.status(403).json({
+                message: "Access denied"
+            });
+        }
+
+        const match = await bcrypt.compare(
+            password,
+            user.password
+        );
 
         if (!match) {
-            return res.json({
+            return res.status(401).json({
                 message: "Invalid email or password"
             });
         }
@@ -74,28 +60,40 @@ router.post("/login", (req, res) => {
         );
 
         res.json({
-            message: "Login successful",
+
+            message: "Admin login successful",
+
             token,
+
             user: {
                 id: user.id,
                 name: user.name,
                 email: user.email,
                 role: user.role
             }
+
         });
 
     });
 
 });
 
+
+// ================= GET ALL USERS =================
+
 router.get("/", verifyToken, isAdmin, (req, res) => {
 
-    const sql = "SELECT id, name, email, role FROM users";
+    const sql = `
+        SELECT id, name, email, role
+        FROM users
+    `;
 
     db.query(sql, (err, result) => {
 
         if (err) {
-            return res.status(500).json(err);
+            return res.status(500).json({
+                message: "Database error"
+            });
         }
 
         res.json(result);
@@ -104,16 +102,24 @@ router.get("/", verifyToken, isAdmin, (req, res) => {
 
 });
 
+
+// ================= DELETE USER =================
+
 router.delete("/:id", verifyToken, isAdmin, (req, res) => {
 
     const id = req.params.id;
 
-    const sql = "DELETE FROM users WHERE id = ?";
+    const sql = `
+        DELETE FROM users
+        WHERE id = ?
+    `;
 
     db.query(sql, [id], (err, result) => {
 
         if (err) {
-            return res.status(500).json(err);
+            return res.status(500).json({
+                message: "Database error"
+            });
         }
 
         res.json({
@@ -123,5 +129,6 @@ router.delete("/:id", verifyToken, isAdmin, (req, res) => {
     });
 
 });
+
 
 module.exports = router;

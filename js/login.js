@@ -2,13 +2,20 @@ const loginBtn = document.getElementById("loginBtn");
 
 loginBtn.addEventListener("click", () => {
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email =
+        document.getElementById("email").value;
+
+    const password =
+        document.getElementById("password").value;
+
 
     if (!email || !password) {
+
         alert("Please fill all fields");
+
         return;
     }
+
 
     fetch("http://localhost:3000/users/login", {
 
@@ -29,23 +36,60 @@ loginBtn.addEventListener("click", () => {
 
     .then(data => {
 
-        if (data.message !== "Login successful") {
-            alert(data.message);
+        // Login failed
+
+        if (!data.token || !data.user) {
+
+            alert(
+                data.message ||
+                "Invalid email or password"
+            );
+
             return;
         }
 
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
 
-        if (data.user.role === "admin") {
-            console.log('admin')
-            window.location.href = "/admin/admin.html";
-        } else {
-            window.location.href = "products.html";
+        // Make sure the account is admin
+
+        if (data.user.role !== "admin") {
+
+            alert("Access denied!");
+
+            return;
         }
+
+
+        // Save admin information
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(data.user)
+        );
+
+        localStorage.setItem(
+            "token",
+            data.token
+        );
+
+
+        // Go to Admin Panel
+
+        window.location.href =
+            "../admin/admin.html";
 
     })
 
-    .catch(err => console.log(err));
+    .catch(err => {
+
+        console.error(
+            "Login error:",
+            err
+        );
+
+        alert(
+            "Something went wrong. Please try again."
+        );
+
+    });
 
 });
