@@ -35,7 +35,7 @@ function displayCart() {
 
                 <td>
                     <img
-                        src="../images/${product.image}"
+                        src="http://localhost:3000/uploads/${product.image}"
                         alt="${product.name}"
                     >
                 </td>
