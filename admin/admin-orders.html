@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Orders | MyShop Admin</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Logo -->
+
+                <a href="admin.html" class="flex items-center gap-2">
+
+                    <img
+                        src="../images/logo.png"
+                        alt="MyShop Logo"
+                        class="w-9 h-9 object-contain"
+                    >
+
+                    <span class="text-xl sm:text-2xl font-bold text-blue-600">
+                        MyShop <span class="text-gray-800">Admin</span>
+                    </span>
+
+                </a>
+
+
+                <!-- Desktop Menu -->
+
+                <ul class="hidden md:flex items-center gap-7">
+
+                    <li>
+                        <a
+                            href="admin.html"
+                            class="text-gray-600 hover:text-blue-600
+                            font-medium transition"
+                        >
+                            📦 Products
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="orders.html"
+                            class="text-blue-600 font-semibold"
+                        >
+                            🧾 Orders
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="../pages/index.html"
+                            class="text-gray-600 hover:text-blue-600
+                            font-medium transition"
+                        >
+                            🌐 Website
+                        </a>
+                    </li>
+
+                </ul>
+
+
+                <!-- Mobile Menu -->
+
+                <details class="md:hidden relative">
+
+                    <summary
+                        class="list-none cursor-pointer
+                        text-2xl text-gray-700"
+                    >
+                        ☰
+                    </summary>
+
+                    <div
+                        class="absolute right-0 top-12 w-52
+                        bg-white rounded-xl shadow-xl
+                        border border-gray-100 p-4"
+                    >
+
+                        <a
+                            href="admin.html"
+                            class="block px-4 py-3 rounded-lg
+                            hover:bg-blue-50
+                            hover:text-blue-600"
+                        >
+                            📦 Products
+                        </a>
+
+                        <a
+                            href="admin-orders.html"
+                            class="block px-4 py-3 rounded-lg
+                            bg-blue-50 text-blue-600
+                            font-semibold"
+                        >
+                            🧾 Orders
+                        </a>
+
+                        <a
+                            href="../pages/index.html"
+                            class="block px-4 py-3 rounded-lg
+                            hover:bg-blue-50
+                            hover:text-blue-600"
+                        >
+                            🌐 Website
+                        </a>
+
+                    </div>
+
+                </details>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+
+    <!-- ================= PAGE HEADER ================= -->
+
+    <section
+        class="bg-gradient-to-r from-blue-600 to-cyan-500
+        text-white"
+    >
+
+        <div
+            class="max-w-7xl mx-auto
+            px-4 sm:px-6 lg:px-8
+            py-10 sm:py-14"
+        >
+
+            <div class="flex items-center gap-4">
+
+                <div
+                    class="w-14 h-14
+                    bg-white/20
+                    rounded-2xl
+                    flex items-center justify-center
+                    text-2xl"
+                >
+                    🧾
+                </div>
+
+                <div>
+
+                    <h1
+                        class="text-3xl sm:text-4xl
+                        font-bold"
+                    >
+                        Manage Orders
+                    </h1>
+
+                    <p class="text-blue-100 mt-1">
+                        View and manage customer orders
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= ORDERS ================= -->
+
+    <main
+        class="max-w-7xl mx-auto
+        px-4 sm:px-6 lg:px-8
+        py-8 sm:py-10"
+    >
+
+        <div
+            class="bg-white
+            rounded-2xl
+            border border-gray-100
+            shadow-sm
+            overflow-hidden"
+        >
+
+            <!-- Table -->
+
+            <div class="overflow-x-auto">
+
+                <table class="w-full min-w-[900px]">
+
+                    <thead
+                        class="bg-gray-50
+                        border-b border-gray-200"
+                    >
+
+                        <tr>
+
+                            <th
+                                class="px-5 py-4
+                                text-left text-sm
+                                font-semibold text-gray-600"
+                            >
+                                ID
+                            </th>
+
+                            <th
+                                class="px-5 py-4
+                                text-left text-sm
+                                font-semibold text-gray-600"
+                            >
+                                User
+                            </th>
+
+                            <th
+                                class="px-5 py-4
+                                text-left text-sm
+                                font-semibold text-gray-600"
+                            >
+                                Total
+                            </th>
+
+                            <th
+                                class="px-5 py-4
+                                text-left text-sm
+                                font-semibold text-gray-600"
+                            >
+                                Address
+                            </th>
+
+                            <th
+                                class="px-5 py-4
+                                text-left text-sm
+                                font-semibold text-gray-600"
+                            >
+                                Status
+                            </th>
+
+                            <th
+                                class="px-5 py-4
+                                text-left text-sm
+                                font-semibold text-gray-600"
+                            >
+                                Date
+                            </th>
+
+                            <th
+                                class="px-5 py-4
+                                text-left text-sm
+                                font-semibold text-gray-600"
+                            >
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- orders.js inserts orders here -->
+
+                    <tbody id="ordersTable"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="bg-gray-900 text-gray-300 mt-10">
+
+        <div
+            class="max-w-7xl mx-auto
+            px-4 sm:px-6 lg:px-8
+            py-8"
+        >
+
+            <div
+                class="flex flex-col
+                sm:flex-row
+                justify-between
+                items-center
+                gap-4"
+            >
+
+                <div>
+
+                    <h3 class="text-white font-bold text-lg">
+                        MyShop Admin
+                    </h3>
+
+                    <p class="text-sm text-gray-500 mt-1">
+                        Administration Panel
+                    </p>
+
+                </div>
+
+
+                <div class="text-sm text-gray-500">
+                    &copy; 2026 MyShop. All Rights Reserved.
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="./js/admin-popup.js"></script>
+    <script src="./js/admin-auth.js"></script>
+    <script src="./js/admin-orders.js"></script>
+
+</body>
+</html>

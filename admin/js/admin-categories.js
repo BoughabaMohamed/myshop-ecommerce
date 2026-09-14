@@ -1,80 +1,28 @@
 console.log("Admin categories JS loaded");
 
+
+// =====================================================
+// API
+// =====================================================
+
 const API = "http://localhost:3000";
 
-const categoryForm = document.getElementById("categoryForm");
-const categoryName = document.getElementById("categoryName");
-const categoriesContainer = document.getElementById("categoriesContainer");
-const message = document.getElementById("message");
-
 
 // =====================================================
-// POPUP
+// DOM
 // =====================================================
 
-function showPopup(title, text, type = "success") {
+const categoryForm =
+    document.getElementById("categoryForm");
 
-    const popup = document.getElementById("popup");
-    const popupTitle = document.getElementById("popupTitle");
-    const popupMessage = document.getElementById("popupMessage");
-    const popupIcon = document.getElementById("popupIcon");
+const categoryName =
+    document.getElementById("categoryName");
 
-    if (!popup) return;
+const categoriesContainer =
+    document.getElementById("categoriesContainer");
 
-    popupTitle.textContent = title;
-    popupMessage.textContent = text;
-
-    if (type === "error") {
-        popupIcon.textContent = "✕";
-        popupIcon.className = "popup-icon error";
-    } else {
-        popupIcon.textContent = "✓";
-        popupIcon.className = "popup-icon";
-    }
-
-    popup.classList.add("show");
-}
-
-
-function closePopup() {
-
-    const popup = document.getElementById("popup");
-
-    if (popup) {
-        popup.classList.remove("show");
-    }
-}
-
-
-// Popup buttons
-
-const popupOk = document.getElementById("popupOk");
-const popupClose = document.getElementById("popupClose");
-
-if (popupOk) {
-    popupOk.addEventListener("click", closePopup);
-}
-
-if (popupClose) {
-    popupClose.addEventListener("click", closePopup);
-}
-
-
-// Close when clicking outside popup
-
-const popup = document.getElementById("popup");
-
-if (popup) {
-
-    popup.addEventListener("click", function (event) {
-
-        if (event.target === popup) {
-            closePopup();
-        }
-
-    });
-
-}
+const message =
+    document.getElementById("message");
 
 
 // =====================================================
@@ -89,7 +37,6 @@ function getToken() {
         localStorage.getItem("accessToken") ||
         ""
     );
-
 }
 
 
@@ -97,28 +44,55 @@ function getToken() {
 // LOGOUT
 // =====================================================
 
-const logoutBtn = document.getElementById("logoutBtn");
+function logout() {
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("user");
+
+    window.location.href =
+        "../html/login.html";
+}
+
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+const logoutBtnMobile =
+    document.getElementById("logoutBtnMobile");
+
 
 if (logoutBtn) {
 
-    logoutBtn.addEventListener("click", function (event) {
+    logoutBtn.addEventListener(
+        "click",
+        function (event) {
 
-        event.preventDefault();
+            event.preventDefault();
 
-        localStorage.removeItem("token");
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("user");
+            logout();
+        }
+    );
+}
 
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("authToken");
-        sessionStorage.removeItem("accessToken");
-        sessionStorage.removeItem("user");
 
-        window.location.href = "../html/login.html";
+if (logoutBtnMobile) {
 
-    });
+    logoutBtnMobile.addEventListener(
+        "click",
+        function (event) {
 
+            event.preventDefault();
+
+            logout();
+        }
+    );
 }
 
 
@@ -126,28 +100,36 @@ if (logoutBtn) {
 // LOAD CATEGORIES
 // =====================================================
 
-loadCategories();
-
-
 async function loadCategories() {
 
     try {
 
-        const response = await fetch(
-            API + "/categories"
-        );
+        categoriesContainer.innerHTML = `
+            <div class="flex items-center justify-center py-10 text-slate-500">
+                <div class="text-center">
+                    <div class="text-3xl mb-2">⏳</div>
+                    <p>Loading categories...</p>
+                </div>
+            </div>
+        `;
+
+
+        const response =
+            await fetch(
+                API + "/categories"
+            );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "Failed to load categories"
+                "Failed to load categories."
             );
-
         }
 
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
 
         let categories = [];
@@ -157,10 +139,13 @@ async function loadCategories() {
 
             categories = data;
 
-        } else if (Array.isArray(data.categories)) {
+        }
+
+        else if (
+            Array.isArray(data.categories)
+        ) {
 
             categories = data.categories;
-
         }
 
 
@@ -170,10 +155,14 @@ async function loadCategories() {
         );
 
 
-        displayCategories(categories);
+        displayCategories(
+            categories
+        );
 
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(
             "Categories error:",
@@ -182,17 +171,11 @@ async function loadCategories() {
 
 
         categoriesContainer.innerHTML = `
-
-            <div class="empty-row">
-
+            <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl p-5 text-center">
                 Unable to load categories.
-
             </div>
-
         `;
-
     }
-
 }
 
 
@@ -205,120 +188,210 @@ function displayCategories(categories) {
     categoriesContainer.innerHTML = "";
 
 
-    if (!categories || categories.length === 0) {
+    if (
+        !categories ||
+        categories.length === 0
+    ) {
 
         categoriesContainer.innerHTML = `
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-8 text-center">
 
-            <div class="empty-row">
+                <div class="text-4xl mb-3">
+                    📂
+                </div>
 
-                No categories found.
+                <h3 class="text-lg font-semibold text-slate-700">
+                    No categories found
+                </h3>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Add your first category above.
+                </p>
 
             </div>
-
         `;
 
         return;
-
     }
 
 
-    // Create table
+    // =================================================
+    // TABLE WRAPPER
+    // =================================================
 
-    const table = document.createElement("table");
+    const tableWrapper =
+        document.createElement("div");
 
-    table.className = "admin-table";
+    tableWrapper.className =
+        "overflow-x-auto rounded-xl border border-slate-200";
+
+
+    // =================================================
+    // TABLE
+    // =================================================
+
+    const table =
+        document.createElement("table");
+
+    table.className =
+        "min-w-full divide-y divide-slate-200";
 
 
     table.innerHTML = `
 
-        <thead>
+        <thead class="bg-slate-50">
 
             <tr>
 
-                <th>ID</th>
+                <th
+                    class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                >
+                    ID
+                </th>
 
-                <th>Category Name</th>
 
-                <th>Actions</th>
+                <th
+                    class="px-5 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                >
+                    Category Name
+                </th>
+
+
+                <th
+                    class="px-5 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                >
+                    Actions
+                </th>
 
             </tr>
 
         </thead>
 
-        <tbody></tbody>
+
+        <tbody
+            class="bg-white divide-y divide-slate-200"
+        ></tbody>
 
     `;
 
 
-    const tbody = table.querySelector("tbody");
+    const tbody =
+        table.querySelector("tbody");
 
 
-    categories.forEach(category => {
+    // =================================================
+    // CATEGORIES
+    // =================================================
 
-        const id =
-            category.id ||
-            category._id ||
-            "";
+    categories.forEach(
+        category => {
 
-
-        const name =
-            category.name ||
-            category.title ||
-            "No name";
-
-
-        const row =
-            document.createElement("tr");
+            const id =
+                category.id ||
+                category._id ||
+                "";
 
 
-        row.innerHTML = `
-
-            <td>
-                ${id}
-            </td>
-
-
-            <td class="category-name-cell">
-                ${escapeHTML(name)}
-            </td>
+            const name =
+                category.name ||
+                category.title ||
+                "No name";
 
 
-            <td>
+            const row =
+                document.createElement("tr");
 
-                <button
-                    type="button"
-                    class="delete-btn"
-                    data-id="${id}"
+
+            row.className =
+                "hover:bg-slate-50 transition";
+
+
+            row.innerHTML = `
+
+                <!-- ID -->
+
+                <td
+                    class="px-5 py-4 whitespace-nowrap text-sm text-slate-500"
                 >
-                    🗑️ Delete
-                </button>
-
-            </td>
-
-        `;
+                    ${escapeHTML(id)}
+                </td>
 
 
-        const deleteButton =
-            row.querySelector(".delete-btn");
+                <!-- NAME -->
+
+                <td
+                    class="px-5 py-4 whitespace-nowrap"
+                >
+
+                    <div
+                        class="flex items-center gap-3"
+                    >
+
+                        <div
+                            class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"
+                        >
+                            📁
+                        </div>
 
 
-        deleteButton.addEventListener(
-            "click",
-            function () {
+                        <span
+                            class="font-medium text-slate-800"
+                        >
+                            ${escapeHTML(name)}
+                        </span>
 
-                deleteCategory(id);
+                    </div>
 
-            }
-        );
-
-
-        tbody.appendChild(row);
-
-    });
+                </td>
 
 
-    categoriesContainer.appendChild(table);
+                <!-- ACTIONS -->
 
+                <td
+                    class="px-5 py-4 whitespace-nowrap text-right"
+                >
+
+                    <button
+                        type="button"
+                        class="delete-btn inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+                        data-id="${escapeHTML(id)}"
+                    >
+                        🗑️
+                        <span>Delete</span>
+                    </button>
+
+                </td>
+
+            `;
+
+
+            const deleteButton =
+                row.querySelector(
+                    ".delete-btn"
+                );
+
+
+            deleteButton.addEventListener(
+                "click",
+                function () {
+
+                    deleteCategory(id);
+
+                }
+            );
+
+
+            tbody.appendChild(row);
+
+        }
+    );
+
+
+    tableWrapper.appendChild(table);
+
+    categoriesContainer.appendChild(
+        tableWrapper
+    );
 }
 
 
@@ -334,22 +407,35 @@ function escapeHTML(value) {
     ) {
 
         return "";
-
     }
 
 
     return String(value)
 
-        .replace(/&/g, "&amp;")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-        .replace(/</g, "&lt;")
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-        .replace(/>/g, "&gt;")
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-        .replace(/"/g, "&quot;")
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-        .replace(/'/g, "&#039;");
-
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 
@@ -373,47 +459,47 @@ if (categoryForm) {
             if (!name) {
 
                 showPopup(
-                    "Error",
                     "Please enter a category name.",
-                    "error"
+                    "error",
+                    "Error"
                 );
 
                 return;
-
             }
 
 
-            const token = getToken();
+            const token =
+                getToken();
 
 
             try {
 
-                const response = await fetch(
-                    API + "/categories",
-                    {
+                const response =
+                    await fetch(
+                        API + "/categories",
+                        {
 
-                        method: "POST",
+                            method: "POST",
 
-                        headers: {
+                            headers: {
 
-                            "Content-Type":
-                                "application/json",
+                                "Content-Type":
+                                    "application/json",
 
-                            ...(token
-                                ? {
-                                    "Authorization":
-                                        "Bearer " + token
-                                }
-                                : {})
+                                ...(token
+                                    ? {
+                                        "Authorization":
+                                            "Bearer " + token
+                                    }
+                                    : {})
+                            },
 
-                        },
-
-                        body: JSON.stringify({
-                            name: name
-                        })
-
-                    }
-                );
+                            body:
+                                JSON.stringify({
+                                    name: name
+                                })
+                        }
+                    );
 
 
                 const data =
@@ -426,7 +512,6 @@ if (categoryForm) {
                         data.message ||
                         "Category could not be added."
                     );
-
                 }
 
 
@@ -440,17 +525,18 @@ if (categoryForm) {
 
 
                 showPopup(
-                    "Success",
                     data.message ||
                     "Category added successfully.",
-                    "success"
+                    "success",
+                    "Success"
                 );
 
 
                 await loadCategories();
 
+            }
 
-            } catch (error) {
+            catch (error) {
 
                 console.error(
                     "Add category error:",
@@ -459,17 +545,15 @@ if (categoryForm) {
 
 
                 showPopup(
-                    "Error",
                     error.message ||
                     "Category could not be added.",
-                    "error"
+                    "error",
+                    "Error"
                 );
-
             }
 
         }
     );
-
 }
 
 
@@ -479,7 +563,6 @@ if (categoryForm) {
 
 async function deleteCategory(id) {
 
-    // بدل confirm()
     const confirmed =
         await showConfirmPopup(
             "Delete Category",
@@ -492,33 +575,30 @@ async function deleteCategory(id) {
     }
 
 
-    const token = getToken();
+    const token =
+        getToken();
 
 
     try {
 
-        const response = await fetch(
+        const response =
+            await fetch(
+                API + "/categories/" + id,
+                {
 
-            API + "/categories/" + id,
+                    method: "DELETE",
 
-            {
+                    headers: {
 
-                method: "DELETE",
-
-                headers: {
-
-                    ...(token
-                        ? {
-                            "Authorization":
-                                "Bearer " + token
-                        }
-                        : {})
-
+                        ...(token
+                            ? {
+                                "Authorization":
+                                    "Bearer " + token
+                            }
+                            : {})
+                    }
                 }
-
-            }
-
-        );
+            );
 
 
         const data =
@@ -531,7 +611,6 @@ async function deleteCategory(id) {
                 data.message ||
                 "Category could not be deleted."
             );
-
         }
 
 
@@ -542,17 +621,18 @@ async function deleteCategory(id) {
 
 
         showPopup(
-            "Success",
             data.message ||
             "Category deleted successfully.",
-            "success"
+            "success",
+            "Success"
         );
 
 
         await loadCategories();
 
+    }
 
-    } catch (error) {
+    catch (error) {
 
         console.error(
             "Delete category error:",
@@ -561,14 +641,12 @@ async function deleteCategory(id) {
 
 
         showPopup(
-            "Error",
             error.message ||
             "Category could not be deleted.",
-            "error"
+            "error",
+            "Error"
         );
-
     }
-
 }
 
 
@@ -576,104 +654,150 @@ async function deleteCategory(id) {
 // CONFIRM POPUP
 // =====================================================
 
-function showConfirmPopup(title, text) {
+function showConfirmPopup(
+    title,
+    text
+) {
 
-    return new Promise(resolve => {
+    return new Promise(
+        resolve => {
 
-        const popup =
-            document.getElementById("popup");
+            const popup =
+                document.getElementById(
+                    "popup"
+                );
 
-        const popupTitle =
-            document.getElementById("popupTitle");
+            const popupTitle =
+                document.getElementById(
+                    "popupTitle"
+                );
 
-        const popupMessage =
-            document.getElementById("popupMessage");
+            const popupMessage =
+                document.getElementById(
+                    "popupMessage"
+                );
 
-        const popupIcon =
-            document.getElementById("popupIcon");
+            const popupIcon =
+                document.getElementById(
+                    "popupIcon"
+                );
 
-        const popupOk =
-            document.getElementById("popupOk");
+            const popupOk =
+                document.getElementById(
+                    "popupOk"
+                );
 
-        const popupClose =
-            document.getElementById("popupClose");
-
-
-        if (!popup) {
-
-            resolve(false);
-
-            return;
-
-        }
-
-
-        popupTitle.textContent =
-            title;
-
-        popupMessage.textContent =
-            text;
-
-        popupIcon.textContent =
-            "?";
+            const popupClose =
+                document.getElementById(
+                    "popupClose"
+                );
 
 
-        popup.className =
-            "popup show";
+            if (!popup) {
+
+                resolve(false);
+
+                return;
+            }
 
 
-        popupOk.textContent =
-            "Yes";
+            popupTitle.textContent =
+                title;
 
 
-        function yes() {
-
-            cleanup();
-
-            resolve(true);
-
-        }
+            popupMessage.textContent =
+                text;
 
 
-        function no() {
-
-            cleanup();
-
-            resolve(false);
-
-        }
+            popupIcon.textContent =
+                "?";
 
 
-        function cleanup() {
+            popupIcon.className =
+                "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
 
-            popup.classList.remove("show");
 
             popupOk.textContent =
-                "OK";
+                "Yes";
 
-            popupOk.removeEventListener(
+
+            popup.classList.remove(
+                "hidden"
+            );
+
+            popup.classList.add(
+                "flex"
+            );
+
+
+            function yes() {
+
+                cleanup();
+
+                resolve(true);
+            }
+
+
+            function no() {
+
+                cleanup();
+
+                resolve(false);
+            }
+
+
+            function cleanup() {
+
+                popup.classList.add(
+                    "hidden"
+                );
+
+                popup.classList.remove(
+                    "flex"
+                );
+
+
+                popupOk.textContent =
+                    "OK";
+
+
+                popupOk.removeEventListener(
+                    "click",
+                    yes
+                );
+
+
+                if (popupClose) {
+
+                    popupClose.removeEventListener(
+                        "click",
+                        no
+                    );
+                }
+            }
+
+
+            popupOk.addEventListener(
                 "click",
                 yes
             );
 
-            popupClose.removeEventListener(
-                "click",
-                no
-            );
+
+            if (popupClose) {
+
+                popupClose.addEventListener(
+                    "click",
+                    no
+                );
+            }
 
         }
-
-
-        popupOk.addEventListener(
-            "click",
-            yes
-        );
-
-        popupClose.addEventListener(
-            "click",
-            no
-        );
-
-    });
-
+    );
 }
+
+
+// =====================================================
+// START
+// =====================================================
+
+loadCategories();

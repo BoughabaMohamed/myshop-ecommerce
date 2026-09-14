@@ -7,61 +7,147 @@
 
     <title>Admin Users | MyShop</title>
 
-    <link rel="stylesheet" href="../css/admin.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-50 text-gray-800">
 
-    <!-- NAVBAR -->
-    <nav>
+    <!-- =========================
+         NAVBAR
+    ========================== -->
 
-        <div class="logo">
-            <h2>MyShop Admin</h2>
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="flex items-center justify-between h-16">
+
+                <!-- Logo -->
+
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-blue-600">
+                        MyShop Admin
+                    </h2>
+                </div>
+
+
+                <!-- Desktop Navigation -->
+
+                <ul class="hidden md:flex items-center gap-6 text-sm font-medium">
+
+                    <li>
+                        <a
+                            href="../html/index.html"
+                            class="text-gray-600 hover:text-blue-600 transition"
+                        >
+                            Home
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="admin.html"
+                            class="text-gray-600 hover:text-blue-600 transition"
+                        >
+                            Products
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="admin-categories.html"
+                            class="text-gray-600 hover:text-blue-600 transition"
+                        >
+                            Categories
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="admin-users.html"
+                            class="text-blue-600 font-semibold"
+                        >
+                            Users
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="admin-orders.html"
+                            class="text-sm sm:text-base font-medium hover:text-blue-200 transition"
+                        >
+                            Orders
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            href="../html/login.html"
+                            id="logoutBtn"
+                            class="text-red-500 hover:text-red-600 transition"
+                        >
+                            Logout
+                        </a>
+                    </li>
+
+                </ul>
+
+
+                <!-- Mobile Logout -->
+
+                <a
+                    href="../html/login.html"
+                    id="logoutBtnMobile"
+                    class="md:hidden text-red-500 font-medium text-sm"
+                >
+                    Logout
+                </a>
+
+            </div>
+
         </div>
-
-        <ul>
-
-            <li>
-                <a href="../html/index.html">Home</a>
-            </li>
-
-            <li>
-                <a href="admin.html">Products</a>
-            </li>
-
-            <li>
-                <a href="admin-categories.html">Categories</a>
-            </li>
-
-            <li>
-                <a href="admin-users.html">Users</a>
-            </li>
-
-            <li>
-                <a href="#" id="logoutBtn">Logout</a>
-            </li>
-
-        </ul>
 
     </nav>
 
 
-    <!-- MAIN -->
+    <!-- =========================
+         MAIN
+    ========================== -->
 
-    <main>
-
-        <h1>Admin Users</h1>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
 
-        <!-- USERS STATISTICS -->
+        <!-- PAGE TITLE -->
 
-        <section class="dashboard">
+        <div class="mb-8">
 
-            <div class="dashboard-card">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">
+                Admin Users
+            </h1>
 
-                <h3>Total Users</h3>
+            <p class="text-gray-500 mt-2">
+                Manage and view all registered users.
+            </p>
 
-                <p id="usersCount">
+        </div>
+
+
+        <!-- =========================
+             USERS STATISTICS
+        ========================== -->
+
+        <section class="mb-8">
+
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 max-w-sm">
+
+                <p class="text-sm text-gray-500">
+                    Total Users
+                </p>
+
+                <p
+                    id="usersCount"
+                    class="text-3xl font-bold text-blue-600 mt-2"
+                >
                     0
                 </p>
 
@@ -70,31 +156,59 @@
         </section>
 
 
-        <!-- SEARCH USERS -->
+        <!-- =========================
+             SEARCH USERS
+        ========================== -->
 
-        <section class="admin-form">
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sm:p-6 mb-8">
 
-            <h2>Search Users</h2>
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+                Search Users
+            </h2>
 
             <input
                 type="text"
                 id="userSearch"
                 placeholder="Search user..."
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg
+                       focus:outline-none focus:ring-2 focus:ring-blue-500
+                       focus:border-blue-500 transition"
             >
 
         </section>
 
 
-        <!-- USERS -->
+        <!-- =========================
+             USERS
+        ========================== -->
 
-        <section>
+        <section class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
 
-            <h2>All Users</h2>
+            <!-- Header -->
 
-            <tbody id="usersContainer">
-            </tbody>
+            <div class="p-5 sm:p-6 border-b border-gray-200">
 
-                <!-- Users will appear here -->
+                <h2 class="text-xl font-bold text-gray-900">
+                    All Users
+                </h2>
+
+                <p class="text-sm text-gray-500 mt-1">
+                    List of all registered users.
+                </p>
+
+            </div>
+
+
+            <!-- Users Container -->
+
+            <div class="overflow-x-auto">
+
+                <div
+                    id="usersContainer"
+                    class="w-full"
+                >
+                    <!-- Users inserted by JavaScript -->
+                </div>
 
             </div>
 
@@ -102,33 +216,83 @@
 
     </main>
 
-    <!-- POPUP -->
-<div id="popup" class="popup">
-    <div class="popup-content">
 
-        <button id="popupClose" class="popup-close">
-            &times;
-        </button>
+    <!-- =========================
+         POPUP
+    ========================== -->
 
-        <div id="popupIcon" class="popup-icon">
-            ✓
+    <div
+        id="popup"
+        class="hidden fixed inset-0 z-50 items-center justify-center
+               bg-black/50 px-4"
+    >
+
+        <div
+            class="bg-white w-full max-w-md rounded-2xl shadow-2xl
+                   p-6 relative text-center"
+        >
+
+            <!-- Close -->
+
+            <button
+                id="popupClose"
+                class="absolute top-3 right-4 text-2xl text-gray-400
+                       hover:text-gray-700 transition"
+            >
+                &times;
+            </button>
+
+
+            <!-- Icon -->
+
+            <div
+                id="popupIcon"
+                class="w-14 h-14 mx-auto rounded-full bg-green-100
+                       text-green-600 flex items-center justify-center
+                       text-2xl font-bold mb-4"
+            >
+                ✓
+            </div>
+
+
+            <!-- Title -->
+
+            <h3
+                id="popupTitle"
+                class="text-xl font-bold text-gray-900"
+            >
+                Success
+            </h3>
+
+
+            <!-- Message -->
+
+            <p
+                id="popupMessage"
+                class="text-gray-500 mt-2"
+            >
+                Operation completed successfully.
+            </p>
+
+
+            <!-- OK -->
+
+            <button
+                id="popupOk"
+                class="mt-6 w-full px-5 py-3 bg-blue-600 text-white
+                       font-semibold rounded-lg hover:bg-blue-700 transition"
+            >
+                OK
+            </button>
+
         </div>
 
-        <h3 id="popupTitle">Success</h3>
-
-        <p id="popupMessage">
-            Operation completed successfully.
-        </p>
-
-        <button id="popupOk" class="popup-ok">
-            OK
-        </button>
-
     </div>
-</div>
 
 
-    <!-- JAVASCRIPT -->
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
 
     <script src="./js/admin-popup.js"></script>
     <script src="./js/admin-auth.js"></script>

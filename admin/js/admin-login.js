@@ -3,7 +3,7 @@ const loginBtn = document.getElementById("loginBtn");
 loginBtn.addEventListener("click", () => {
 
     const email =
-        document.getElementById("email").value;
+        document.getElementById("email").value.trim();
 
     const password =
         document.getElementById("password").value;
@@ -37,7 +37,6 @@ loginBtn.addEventListener("click", () => {
     .then(data => {
 
         // Login failed
-
         if (!data.token || !data.user) {
 
             alert(
@@ -50,17 +49,15 @@ loginBtn.addEventListener("click", () => {
 
 
         // Make sure the account is admin
-
         if (data.user.role !== "admin") {
 
-            alert("Access denied!");
+            alert("Access denied! Only administrators can access this panel.");
 
             return;
         }
 
 
         // Save admin information
-
         localStorage.setItem(
             "user",
             JSON.stringify(data.user)
@@ -73,9 +70,7 @@ loginBtn.addEventListener("click", () => {
 
 
         // Go to Admin Panel
-
-        window.location.href =
-            "../admin/admin.html";
+        window.location.href = "./admin.html";
 
     })
 

@@ -1,94 +1,701 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyShop </title>
 
-    <link rel="stylesheet" href="../css/style.css">
+    <title>MyShop - Online Store</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<!-- ================= HEADER ================= -->
+<body class="bg-gray-50 text-gray-800">
 
-<header>
+<!-- ================= NAVBAR ================= -->
 
-    <nav>
+<header class="bg-white border-b border-gray-100 sticky top-0 z-50">
 
-        <div class="logo">
-            <img src="../images/logo.png" alt="MyShop Logo">
-            <h2>MyShop</h2>
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="h-20 flex items-center justify-between">
+
+            <!-- LOGO -->
+            <a href="index.html" class="flex items-center gap-3">
+
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden">
+                    <img
+                        src="../images/logo.png"
+                        alt="MyShop Logo"
+                        class="w-full h-full object-contain"
+                    >
+                </div>
+
+                <span class="text-2xl font-bold text-slate-900">
+                    My<span class="text-blue-600">Shop</span>
+                </span>
+
+            </a>
+
+
+            <!-- DESKTOP NAV -->
+            <div class="hidden md:flex items-center gap-8">
+
+                <a
+                    href="index.html"
+                    class="text-blue-600 font-semibold"
+                >
+                    Home
+                </a>
+
+                <a
+                    href="products.html"
+                    class="text-gray-600 hover:text-blue-600 transition"
+                >
+                    Products
+                </a>
+
+                <a
+                    href="cart.html"
+                    class="text-gray-600 hover:text-blue-600 transition"
+                >
+                    Cart
+                </a>
+
+                <a
+                    href="contact.html"
+                    class="text-gray-600 hover:text-blue-600 transition"
+                >
+                    Contact
+                </a>
+
+            </div>
+
+
+            <!-- RIGHT -->
+            <div class="flex items-center gap-3">
+
+                <a
+                    href="cart.html"
+                    class="hidden sm:flex items-center gap-2
+                    bg-gray-100 hover:bg-blue-50
+                    text-gray-700 hover:text-blue-600
+                    px-4 py-2.5 rounded-xl transition"
+                >
+                    🛒
+                    <span id="cartCount">
+                        Cart: 0
+                    </span>
+                </a>
+
+
+                <!-- MOBILE MENU -->
+                <details class="relative md:hidden">
+
+                    <summary
+                        class="list-none cursor-pointer
+                        w-11 h-11 flex items-center justify-center
+                        bg-gray-100 rounded-xl text-xl"
+                    >
+                        ☰
+                    </summary>
+
+
+                    <div
+                        class="absolute right-0 top-14
+                        w-56 bg-white rounded-2xl
+                        shadow-xl border border-gray-100 p-3"
+                    >
+
+                        <a
+                            href="index.html"
+                            class="block px-4 py-3 rounded-xl
+                            bg-blue-50 text-blue-600 font-semibold"
+                        >
+                            🏠 Home
+                        </a>
+
+                        <a
+                            href="products.html"
+                            class="block px-4 py-3 rounded-xl
+                            hover:bg-gray-50"
+                        >
+                            🛍 Products
+                        </a>
+
+                        <a
+                            href="cart.html"
+                            class="block px-4 py-3 rounded-xl
+                            hover:bg-gray-50"
+                        >
+                            🛒 Cart
+                        </a>
+
+                        <a
+                            href="contact.html"
+                            class="block px-4 py-3 rounded-xl
+                            hover:bg-gray-50"
+                        >
+                            📞 Contact
+                        </a>
+
+                    </div>
+
+                </details>
+
+            </div>
+
         </div>
-
-        <ul>
-            <li><a href="index.html">🏠 Home</a></li>
-            <li><a href="products.html">🛍 Products</a></li>
-            <li><a href="cart.html">🛒 Cart</a></li>
-            <li><a href="contact.html">📞 Contact</a></li>
-        </ul>
 
     </nav>
 
 </header>
 
+
 <!-- ================= HERO ================= -->
 
-<section class="hero">
+<section class="bg-white">
 
-    <h1 class="page-title">Welcome to MyShop</h1>
+    <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8
+        py-14 sm:py-20 lg:py-24"
+    >
 
-    <p>
-        Discover the latest Lenovo laptops, iPhone 15,
-        Samsung Galaxy S24 and Headphones at the best prices.
-    </p>
+        <div
+            class="grid grid-cols-1 lg:grid-cols-2
+            gap-12 items-center"
+        >
 
-    <button onclick="window.location.href='products.html'">
-        Shop Now
-    </button>
+            <!-- HERO TEXT -->
 
-</section>
+            <div class="text-center lg:text-left">
 
-<!-- ================= PRODUCTS ================= -->
+                <span
+                    class="inline-block
+                    bg-blue-50 text-blue-600
+                    px-4 py-2 rounded-full
+                    text-sm font-semibold mb-5"
+                >
+                    ✨ New Collection
+                </span>
 
-<h2 class="section-title">
-    Featured Products
-</h2>
 
-<section id="productsContainer" class="products">
+                <h1
+                    class="text-4xl sm:text-5xl lg:text-6xl
+                    font-bold text-slate-900
+                    leading-tight mb-6"
+                >
+                    Discover the
+                    <span class="text-blue-600">
+                        Best Products
+                    </span>
+                    for You
+                </h1>
 
-</section>
 
-<!-- ================= FOOTER ================= -->
+                <p
+                    class="text-gray-500
+                    text-base sm:text-lg
+                    max-w-xl mx-auto lg:mx-0
+                    leading-relaxed mb-8"
+                >
+                    Discover the latest Lenovo laptops,
+                    iPhone, Samsung Galaxy, headphones
+                    and more at the best prices.
+                </p>
 
-<footer class="footer">
 
-    <div class="footer-content">
+                <div
+                    class="flex flex-col sm:flex-row
+                    justify-center lg:justify-start
+                    gap-4"
+                >
 
-        <h3>MyShop</h3>
+                    <a
+                        href="products.html"
+                        class="inline-flex items-center justify-center
+                        bg-blue-600 hover:bg-blue-700
+                        text-white font-semibold
+                        px-7 py-3.5 rounded-xl
+                        shadow-lg shadow-blue-200
+                        transition duration-300"
+                    >
+                        Shop Now →
+                    </a>
 
-        <p>Your trusted online shopping website.</p>
 
-        <p>Email: support@myshop.com</p>
+                    <a
+                        href="products.html"
+                        class="inline-flex items-center justify-center
+                        border border-gray-200
+                        hover:border-blue-600
+                        hover:text-blue-600
+                        bg-white
+                        font-semibold
+                        px-7 py-3.5 rounded-xl
+                        transition"
+                    >
+                        View Products
+                    </a>
 
-        <p>Phone: +212 600 000 000</p>
+                </div>
 
-        <p>Address: Casablanca, Morocco</p>
+            </div>
 
-        <div class="footer-links">
 
-            <a href="index.html">Home</a>
+            <!-- HERO IMAGE -->
 
-            <a href="products.html">Products</a>
+            <div class="relative">
 
-            <a href="contact.html">Contact</a>
+                <div
+                    class="bg-blue-50
+                    rounded-3xl
+                    p-6 sm:p-10
+                    min-h-[300px]
+                    sm:min-h-[400px]
+                    flex items-center justify-center"
+                >
+
+                    <img
+                        src="../images/banner.jpg"
+                        alt="MyShop products"
+                        class="w-full h-full
+                        max-h-[400px]
+                        object-cover
+                        rounded-2xl"
+                    >
+
+                </div>
+
+            </div>
 
         </div>
 
-        <p>&copy; 2026 MyShop. All Rights Reserved.</p>
+    </div>
+
+</section>
+
+
+<!-- ================= FEATURES ================= -->
+
+<section class="bg-gray-50 border-y border-gray-100">
+
+    <div
+        class="max-w-7xl mx-auto
+        px-4 sm:px-6 lg:px-8
+        py-8"
+    >
+
+        <div
+            class="grid grid-cols-2
+            lg:grid-cols-4
+            gap-6"
+        >
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-11 h-11 rounded-xl
+                    bg-blue-100
+                    flex items-center justify-center"
+                >
+                    🚚
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-sm sm:text-base">
+                        Fast Delivery
+                    </h3>
+
+                    <p class="text-xs sm:text-sm text-gray-500">
+                        Quick shipping
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-11 h-11 rounded-xl
+                    bg-blue-100
+                    flex items-center justify-center"
+                >
+                    🔒
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-sm sm:text-base">
+                        Secure Payment
+                    </h3>
+
+                    <p class="text-xs sm:text-sm text-gray-500">
+                        Safe checkout
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-11 h-11 rounded-xl
+                    bg-blue-100
+                    flex items-center justify-center"
+                >
+                    ⭐
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-sm sm:text-base">
+                        Quality Products
+                    </h3>
+
+                    <p class="text-xs sm:text-sm text-gray-500">
+                        Best quality
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="flex items-center gap-3">
+
+                <div
+                    class="w-11 h-11 rounded-xl
+                    bg-blue-100
+                    flex items-center justify-center"
+                >
+                    💬
+                </div>
+
+                <div>
+                    <h3 class="font-semibold text-sm sm:text-base">
+                        Support
+                    </h3>
+
+                    <p class="text-xs sm:text-sm text-gray-500">
+                        We're here for you
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FEATURED PRODUCTS ================= -->
+
+<section
+    class="max-w-7xl mx-auto
+    px-4 sm:px-6 lg:px-8
+    py-14 sm:py-16"
+>
+
+    <!-- TITLE -->
+
+    <div
+        class="flex flex-col sm:flex-row
+        sm:items-end
+        sm:justify-between
+        gap-4 mb-8"
+    >
+
+        <div>
+
+            <p
+                class="text-blue-600
+                font-semibold text-sm mb-2"
+            >
+                OUR PRODUCTS
+            </p>
+
+            <h2
+                class="text-3xl sm:text-4xl
+                font-bold text-slate-900"
+            >
+                Featured Products
+            </h2>
+
+            <p class="text-gray-500 mt-2">
+                Check out some of our popular products.
+            </p>
+
+        </div>
+
+
+        <a
+            href="products.html"
+            class="text-blue-600
+            font-semibold
+            hover:text-blue-700
+            transition"
+        >
+            View All →
+        </a>
+
+    </div>
+
+
+    <!-- PRODUCTS -->
+
+    <section
+        id="productsContainer"
+        class="grid grid-cols-1
+        sm:grid-cols-2
+        lg:grid-cols-4
+        gap-6"
+    >
+
+    </section>
+
+</section>
+
+
+<!-- ================= CTA ================= -->
+
+<section class="px-4 sm:px-6 lg:px-8 pb-16">
+
+    <div
+        class="max-w-7xl mx-auto
+        bg-gradient-to-r
+        from-blue-600 to-cyan-500
+        rounded-3xl
+        px-6 sm:px-10 lg:px-16
+        py-12
+        text-white
+        text-center"
+    >
+
+        <h2
+            class="text-3xl sm:text-4xl
+            font-bold mb-4"
+        >
+            Ready to Start Shopping?
+        </h2>
+
+        <p
+            class="text-blue-50
+            max-w-2xl mx-auto
+            mb-7"
+        >
+            Find the products you need
+            and enjoy a simple shopping experience.
+        </p>
+
+        <a
+            href="products.html"
+            class="inline-block
+            bg-white text-blue-600
+            hover:bg-gray-100
+            font-bold
+            px-7 py-3.5
+            rounded-xl
+            transition"
+        >
+            Explore Products
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="bg-slate-950 text-white">
+
+    <div
+        class="max-w-7xl mx-auto
+        px-4 sm:px-6 lg:px-8
+        py-12"
+    >
+
+        <div
+            class="grid grid-cols-1
+            sm:grid-cols-2
+            lg:grid-cols-4
+            gap-10"
+        >
+
+            <!-- BRAND -->
+
+            <div>
+
+                <h2
+                    class="text-2xl font-bold mb-4"
+                >
+                    My<span class="text-blue-500">
+                        Shop
+                    </span>
+                </h2>
+
+                <p
+                    class="text-gray-400
+                    leading-relaxed"
+                >
+                    Your trusted online shopping
+                    website for quality products
+                    at great prices.
+                </p>
+
+            </div>
+
+
+            <!-- QUICK LINKS -->
+
+            <div>
+
+                <h3 class="font-semibold text-lg mb-4">
+                    Quick Links
+                </h3>
+
+                <div class="space-y-3">
+
+                    <a
+                        href="index.html"
+                        class="block text-gray-400
+                        hover:text-white transition"
+                    >
+                        Home
+                    </a>
+
+                    <a
+                        href="products.html"
+                        class="block text-gray-400
+                        hover:text-white transition"
+                    >
+                        Products
+                    </a>
+
+                    <a
+                        href="cart.html"
+                        class="block text-gray-400
+                        hover:text-white transition"
+                    >
+                        Cart
+                    </a>
+
+                    <a
+                        href="contact.html"
+                        class="block text-gray-400
+                        hover:text-white transition"
+                    >
+                        Contact
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONTACT -->
+
+            <div>
+
+                <h3 class="font-semibold text-lg mb-4">
+                    Contact Us
+                </h3>
+
+                <div class="space-y-3 text-gray-400">
+
+                    <p>
+                        📧 support@myshop.com
+                    </p>
+
+                    <p>
+                        📞 +212 600 000 000
+                    </p>
+
+                    <p>
+                        📍 Casablanca, Morocco
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- SOCIAL -->
+
+            <div>
+
+                <h3 class="font-semibold text-lg mb-4">
+                    Follow Us
+                </h3>
+
+                <div class="flex gap-3">
+
+                    <a
+                        href="#"
+                        class="w-10 h-10
+                        rounded-xl
+                        bg-slate-800
+                        flex items-center justify-center
+                        hover:bg-blue-600
+                        transition"
+                    >
+                        f
+                    </a>
+
+                    <a
+                        href="#"
+                        class="w-10 h-10
+                        rounded-xl
+                        bg-slate-800
+                        flex items-center justify-center
+                        hover:bg-blue-600
+                        transition"
+                    >
+                        📷
+                    </a>
+
+                    <a
+                        href="#"
+                        class="w-10 h-10
+                        rounded-xl
+                        bg-slate-800
+                        flex items-center justify-center
+                        hover:bg-blue-600
+                        transition"
+                    >
+                        X
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- COPYRIGHT -->
+
+        <div
+            class="border-t border-slate-800
+            mt-10 pt-6
+            text-center"
+        >
+
+            <p class="text-gray-500 text-sm">
+                © 2026 MyShop. All Rights Reserved.
+            </p>
+
+        </div>
 
     </div>
 
 </footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
 
 <script src="../js/products.js"></script>
 

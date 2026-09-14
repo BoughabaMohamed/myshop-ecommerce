@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -12,129 +11,297 @@
 
     <title>Categories | MyShop Admin</title>
 
-    <link
-        rel="stylesheet"
-        href="../css/admin.css"
-    >
-
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
 
-    <nav>
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
 
-        <div class="logo">
-            <h2>MyShop Admin</h2>
-        </div>
+    
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
 
-        <ul>
-            <li>
-                <a href="../html/index.html">
-                    Home
-            </a>
-            </li>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <li>
-                <a href="admin.html">
-                    Products
-                </a>
-            </li>
+            <div class="flex items-center justify-between h-16">
 
-            <li>
-                <a href="admin-categories.html">
-                    Categories
-                </a>
-            </li>
+                <!-- Logo -->
 
-            <li>
-                <a href="admin-users.html">
-                    Users
-                </a>
-            </li>
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-blue-600">
+                        MyShop Admin
+                    </h2>
+                </div>
+               
 
-            <li>
-                <a href="#" id="logoutBtn">
+
+                <!-- Desktop Navigation -->
+
+                <ul class="flex items-center gap-4 sm:gap-6">
+
+                    <!-- Home -->
+                    <li>
+                        <a
+                            href="../html/index.html"
+                            class="hover:text-blue-200 transition"
+                        >
+                            Home
+                        </a>
+                    </li>
+
+
+                    <!-- Products -->
+                    <li>
+                        <a
+                            href="admin.html"
+                            class="hover:text-blue-200 transition"
+                        >
+                            Products
+                        </a>
+                    </li>
+
+
+                    <!-- Categories -->
+                    <li>
+                        <a
+                            href="admin-categories.html"
+                            class="font-semibold border-b-2 border-white pb-1"
+                        >
+                            Categories
+                        </a>
+                    </li>
+
+
+                    <!-- Users -->
+                    <li>
+                        <a
+                            href="admin-users.html"
+                            class="hover:text-blue-200 transition"
+                        >
+                            Users
+                        </a>
+                    </li>
+
+                    <!-- Orders -->
+                    <li>
+                        <a
+                            href="admin-orders.html"
+                            class="text-sm sm:text-base font-medium hover:text-blue-200 transition"
+                        >
+                            Orders
+                        </a>
+                    </li>
+
+
+                    <!-- Logout -->
+                    <li>
+                        <a
+                            href="#"
+                            id="logoutBtn"
+                            class="bg-white text-blue-600 px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition"
+                        >
+                            Logout
+                        </a>
+                    </li>
+
+                </ul>
+
+
+                <!-- Mobile Logout -->
+                <a
+                    href="#"
+                    id="logoutBtnMobile"
+                    class="md:hidden bg-white text-blue-600 px-3 py-2 rounded-lg font-semibold text-sm"
+                >
                     Logout
                 </a>
-            </li>
 
-        </ul>
+            </div>
+
+        </div>
 
     </nav>
 
 
-    <main>
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
 
-        <h1>Manage Categories</h1>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
 
-        <!-- ADD CATEGORY -->
+        <!-- Page Header -->
 
-        <section>
+        <div class="mb-8">
 
-            <h2>Add Category</h2>
+            <h1 class="text-3xl sm:text-4xl font-bold text-slate-900">
+                Manage Categories
+            </h1>
 
-            <form id="categoryForm">
+            <p class="text-slate-500 mt-2">
+                Add and manage your shop categories.
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             ADD CATEGORY
+        ================================================== -->
+
+        <section
+            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 mb-8"
+        >
+
+            <div class="mb-5">
+
+                <h2 class="text-xl font-bold text-slate-900">
+                    Add Category
+                </h2>
+
+                <p class="text-sm text-slate-500 mt-1">
+                    Create a new category for your products.
+                </p>
+
+            </div>
+
+
+            <form
+                id="categoryForm"
+                class="flex flex-col sm:flex-row gap-3"
+            >
 
                 <input
                     type="text"
                     id="categoryName"
                     placeholder="Category name"
                     required
+                    class="flex-1 px-4 py-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 >
 
-                <button type="submit">
+
+                <button
+                    type="submit"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl transition shadow-sm"
+                >
                     Add Category
                 </button>
 
             </form>
 
-            <p id="message"></p>
+
+            <p
+                id="message"
+                class="mt-4 text-sm font-medium"
+            ></p>
 
         </section>
 
 
-        <!-- CATEGORIES -->
+        <!-- =================================================
+             ALL CATEGORIES
+        ================================================== -->
 
-        <section>
+        <section
+            class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6"
+        >
 
-            <h2>All Categories</h2>
+            <div class="mb-6">
 
-<div
-    id="categoriesContainer"
->
-                <!-- Categories appear here -->
+                <h2 class="text-xl font-bold text-slate-900">
+                    All Categories
+                </h2>
 
+                <p class="text-sm text-slate-500 mt-1">
+                    View and manage all available categories.
+                </p>
+
+            </div>
+
+
+            <!-- Categories will be inserted here -->
+
+            <div
+                id="categoriesContainer"
+                class="overflow-x-auto"
+            >
             </div>
 
         </section>
 
     </main>
 
-    <!-- POPUP -->
-<div id="popup" class="popup">
-    <div class="popup-content">
 
-        <button id="popupClose" class="popup-close">
-            &times;
-        </button>
+    <!-- =====================================================
+         POPUP
+    ====================================================== -->
 
-        <div id="popupIcon" class="popup-icon">
-            ✓
+    <div
+        id="popup"
+        class="hidden fixed inset-0 z-50 items-center justify-center bg-black/50 px-4"
+    >
+
+        <div
+            class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 text-center"
+        >
+
+            <!-- Close -->
+            <button
+                id="popupClose"
+                type="button"
+                class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-2xl leading-none transition"
+            >
+                &times;
+            </button>
+
+
+            <!-- Icon -->
+            <div
+                id="popupIcon"
+                class="mx-auto mb-4 w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold"
+            >
+                ✓
+            </div>
+
+
+            <!-- Title -->
+            <h3
+                id="popupTitle"
+                class="text-xl font-bold text-slate-900 mb-2"
+            >
+                Success
+            </h3>
+
+
+            <!-- Message -->
+            <p
+                id="popupMessage"
+                class="text-slate-500 mb-6"
+            >
+                Operation completed successfully.
+            </p>
+
+
+            <!-- OK -->
+            <button
+                id="popupOk"
+                type="button"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition"
+            >
+                OK
+            </button>
+
         </div>
 
-        <h3 id="popupTitle">Success</h3>
-
-        <p id="popupMessage">
-            Operation completed successfully.
-        </p>
-
-        <button id="popupOk" class="popup-ok">
-            OK
-        </button>
-
     </div>
-</div>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
 
     <script src="./js/admin-popup.js"></script>
     <script src="./js/admin-auth.js"></script>
