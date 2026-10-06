@@ -1,7 +1,8 @@
+require('dotenv').config()
 
 let products = [];
 
-fetch("http://localhost:3000/products")
+fetch(`${process.env.URL_API}/products`)
   .then(response => response.json())
   .then(data => {
 

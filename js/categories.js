@@ -1,3 +1,6 @@
+require('dotenv').config()
+
+
 const categoriesTable = document.getElementById("categoriesTable");
 const addCategoryBtn = document.getElementById("addCategory");
 const categoryName = document.getElementById("categoryName");
@@ -5,7 +8,7 @@ const categoryName = document.getElementById("categoryName");
 // Display Categories
 function loadCategories() {
 
-    fetch("http://localhost:3000/categories")
+    fetch(`${process.env.URL_API}/categories`)
 
     .then(res => res.json())
 
