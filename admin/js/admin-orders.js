@@ -2,7 +2,7 @@ console.log("Admin orders JS loaded");
 
 const API = "http://localhost:3000";
 
-const token =
+const ordersToken =
     localStorage.getItem("token") ||
     localStorage.getItem("authToken") ||
     localStorage.getItem("accessToken") ||
@@ -49,7 +49,7 @@ async function loadOrders() {
             {
                 headers: token
                     ? {
-                        "Authorization": "Bearer " + token
+                        "Authorization": "Bearer " + ordersToken
                     }
                     : {}
             }
@@ -57,10 +57,17 @@ async function loadOrders() {
 
 
         if (!response.ok) {
-            throw new Error(
-                "Failed to load orders."
-            );
-        }
+    const errorText = await response.text();
+
+    console.error("Orders API error:", {
+        status: response.status,
+        response: errorText
+    });
+
+    throw new Error(
+        `Failed to load orders: HTTP ${response.status}`
+    );
+}
 
 
         const data =
@@ -330,7 +337,7 @@ async function updateStatus(id, status) {
                     ...(token
                         ? {
                             "Authorization":
-                                "Bearer " + token
+                                "Bearer " + ordersToken
                         }
                         : {})
                 },
@@ -362,22 +369,13 @@ async function updateStatus(id, status) {
 
 
         // إذا كان admin-popup.js موجود
-        if (typeof showPopup === "function") {
-
-            showPopup(
-                data.message ||
-                "Order status updated successfully.",
-                "success",
-                "Success"
-            );
-
-        } else {
-
-            alert(
-                data.message ||
-                "Order status updated successfully."
-            );
-        }
+    if (typeof window.showPopup === "function") {
+    window.showPopup(
+        "Success",
+        "Order status updated successfully!",
+        "success"
+    );
+}
 
 
         await loadOrders();
@@ -403,9 +401,9 @@ async function updateStatus(id, status) {
         } else {
 
             alert(
-                error.message ||
-                "Failed to update order status."
-            );
+                    error.message ||
+                    "Failed to update order status."
+                );
         }
     }
 }

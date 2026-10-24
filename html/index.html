@@ -443,20 +443,53 @@
 
     </div>
 
+    
+<!-- PRODUCTS CAROUSEL -->
 
-    <!-- PRODUCTS -->
+<div class="relative">
 
+    <!-- Previous Button -->
+    <button
+        type="button"
+        onclick="document.getElementById('productsContainer').scrollBy({ left: -320, behavior: 'smooth' })"
+        aria-label="Previous products"
+        class="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2
+        z-10 w-10 h-10 rounded-full
+        bg-white shadow-lg border border-gray-100
+        text-gray-700 hover:bg-blue-600 hover:text-white
+        transition duration-300"
+    >
+        &#10094;
+    </button>
+
+    <!-- Carousel Track -->
     <section
         id="productsContainer"
-        class="grid grid-cols-1
-        sm:grid-cols-2
-        lg:grid-cols-4
-        gap-6"
+        data-carousel="true"
+        class="flex gap-5 sm:gap-6
+        overflow-x-auto scroll-smooth snap-x snap-mandatory
+        pb-5 px-1
+        [scrollbar-width:none]
+        [&::-webkit-scrollbar]:hidden"
     >
-
     </section>
 
-</section>
+    <!-- Next Button -->
+    <button
+        type="button"
+        onclick="document.getElementById('productsContainer').scrollBy({ left: 320, behavior: 'smooth' })"
+        aria-label="Next products"
+        class="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2
+        z-10 w-10 h-10 rounded-full
+        bg-white shadow-lg border border-gray-100
+        text-gray-700 hover:bg-blue-600 hover:text-white
+        transition duration-300"
+    >
+        &#10095;
+    </button>
+
+</div>
+
 
 
 <!-- ================= CTA ================= -->
@@ -694,9 +727,99 @@
 
 </footer>
 
+<!-- ================= CART DRAWER ================= -->
+
+<!-- Background Overlay -->
+<div
+    id="cartOverlay"
+    class="fixed inset-0 bg-black/40 z-[60]
+    opacity-0 invisible transition-opacity duration-300"
+></div>
+
+<!-- Drawer -->
+<aside
+    id="cartDrawer"
+    class="fixed top-0 right-0 h-full
+    w-full max-w-md bg-white z-[70]
+    shadow-2xl translate-x-full
+    transition-transform duration-300
+    flex flex-col"
+    aria-label="Shopping cart"
+    aria-hidden="true"
+>
+    <!-- Drawer Header -->
+    <div
+        class="flex items-center justify-between
+        p-5 border-b border-gray-100"
+    >
+        <div>
+            <h2 class="text-xl font-bold text-gray-900">
+                Your Cart
+            </h2>
+            <p id="drawerCartCount" class="text-sm text-gray-500 mt-1">
+                0 items
+            </p>
+        </div>
+
+        <button
+            type="button"
+            id="closeCartDrawer"
+            aria-label="Close cart"
+            class="w-10 h-10 rounded-xl
+            bg-gray-100 hover:bg-gray-200
+            text-gray-700 text-xl transition"
+        >
+            &times;
+        </button>
+    </div>
+
+    <!-- Drawer Products -->
+    <div
+        id="drawerCartItems"
+        class="flex-1 overflow-y-auto p-5"
+    >
+        <!-- JavaScript will insert cart products here -->
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="border-t border-gray-100 p-5">
+        <div class="flex items-center justify-between mb-4">
+            <span class="text-gray-600">Subtotal</span>
+
+            <span
+                id="drawerCartTotal"
+                class="text-xl font-bold text-gray-900"
+            >
+                0 DH
+            </span>
+        </div>
+
+        <a
+            href="cart.html"
+            class="block w-full text-center
+            bg-blue-600 hover:bg-blue-700
+            text-white font-semibold
+            py-3.5 rounded-xl transition"
+        >
+            View Cart & Checkout
+        </a>
+
+        <button
+            type="button"
+            id="continueShopping"
+            class="w-full mt-3 py-2
+            text-gray-600 hover:text-blue-600
+            font-medium transition"
+        >
+            Continue Shopping
+        </button>
+    </div>
+</aside>
+
 
 <!-- ================= JAVASCRIPT ================= -->
 
+<script src="../js/notifications.js"></script>
 <script src="../js/products.js"></script>
 
 </body>

@@ -8,6 +8,8 @@
     <title>Admin Products | MyShop</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+
+    
 </head>
 
 <body class="bg-gray-50 text-gray-800">
@@ -62,27 +64,31 @@
 
                     <li>
                          <a  href="admin-orders.html"
-                            class="text-sm sm:text-base font-medium hover:text-blue-200 transition"  >       
+                            class="text-gray-600 hover:text-blue-200 transition"  >       
                             Orders
                          </a>
                     </li>
 
                     <li>
-                        <a href="../html/login.html"
-                           id="logoutBtn"
-                           class="text-red-500 hover:text-red-600 transition">
-                            Logout
-                        </a>
+                        <a href="./admin-login.html"
+                     id="logoutBtn"
+                            onclick="logout(); return false;"
+                         class="text-red-500 hover:text-red-600 transition">
+                             Logout
+                    </a>
                     </li>
 
                 </ul>
 
                 <!-- Mobile Logout -->
-                <a href="../html/login.html"
-                   id="logoutBtnMobile"
-                   class="md:hidden text-red-500 font-medium text-sm">
-                    Logout
+                <a href="./admin-login.html"
+                id="logoutBtnMobile"
+                onclick="logout(); return false;"
+                class="md:hidden text-red-500 font-medium text-sm">
+                          Logout
                 </a>
+
+           
 
             </div>
 
@@ -576,6 +582,7 @@
          JAVASCRIPT
     ========================== -->
 
+    <script src="./js/admin-popup.js"></script>
     <script src="./js/admin-auth.js"></script>
     <script src="./js/admin.js"></script>
 

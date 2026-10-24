@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require('express');
 const cors = require("cors");
 const db = require("./config/db");
@@ -20,7 +22,7 @@ app.get("/", (req, res) => {
     res.send("welcome to the E-commerce API");
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const upload = require("./upload");
 
@@ -40,6 +42,10 @@ app.post("/upload", upload.single("image"), (req, res) => {
 
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;

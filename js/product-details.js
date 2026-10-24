@@ -1,15 +1,10 @@
-require('dotenv').config()
-
-
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
 const productDetails = document.getElementById("productDetails");
 
-fetch(`${process.env.URL_API}/products`)
-
-
-.then(res => res.json())
+fetch("http://localhost:3000/products")
+  .then(res => res.json())
   .then(products => {
 
     const product = products.find(p => p.id == id);
@@ -162,7 +157,7 @@ function addToCart(id) {
 
       localStorage.setItem("cart", JSON.stringify(cart));
 
-      alert(product.name + " added to cart!");
+      showToast(product.name + " added to cart!", "success");
 
     })
 

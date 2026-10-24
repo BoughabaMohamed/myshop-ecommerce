@@ -6,8 +6,7 @@ if (contactForm) {
 
         e.preventDefault();
 
-        alert("Message sent successfully!");
-
+        showToast("Message sent successfully!", "success");
         contactForm.reset();
 
     });

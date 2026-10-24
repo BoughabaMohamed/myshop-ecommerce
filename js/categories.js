@@ -1,6 +1,3 @@
-require('dotenv').config()
-
-
 const categoriesTable = document.getElementById("categoriesTable");
 const addCategoryBtn = document.getElementById("addCategory");
 const categoryName = document.getElementById("categoryName");
@@ -8,7 +5,8 @@ const categoryName = document.getElementById("categoryName");
 // Display Categories
 function loadCategories() {
 
-    fetch(`${process.env.URL_API}/categories`)
+    
+    fetch("http://localhost:3000/categories")
 
     .then(res => res.json())
 
@@ -49,7 +47,8 @@ addCategoryBtn.addEventListener("click", () => {
 
     if (categoryName.value.trim() === "") {
 
-        alert("Please enter category name");
+        showToast("Please enter category name", "warning");
+
 
         return;
 
@@ -73,7 +72,7 @@ addCategoryBtn.addEventListener("click", () => {
 
     .then(data => {
 
-        alert(data.message);
+        showToast(data.message, "success");
 
         categoryName.value = "";
 

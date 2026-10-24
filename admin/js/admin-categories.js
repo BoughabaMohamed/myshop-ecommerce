@@ -57,7 +57,7 @@ function logout() {
     sessionStorage.removeItem("user");
 
     window.location.href =
-        "../html/login.html";
+        "./admin-login.html";
 }
 
 
@@ -460,12 +460,12 @@ if (categoryForm) {
 
                 showPopup(
                     "Please enter a category name.",
-                    "error",
-                    "Error"
-                );
+                    "warning",
+                    "Warning"
+                 );
 
-                return;
-            }
+                    return;
+                  }
 
 
             const token =
@@ -654,145 +654,72 @@ async function deleteCategory(id) {
 // CONFIRM POPUP
 // =====================================================
 
-function showConfirmPopup(
-    title,
-    text
-) {
 
-    return new Promise(
-        resolve => {
+function showConfirmPopup(title, text) {
 
-            const popup =
-                document.getElementById(
-                    "popup"
-                );
+    return new Promise(resolve => {
 
-            const popupTitle =
-                document.getElementById(
-                    "popupTitle"
-                );
+        const popup = document.getElementById("popup");
+        const popupTitle = document.getElementById("popupTitle");
+        const popupMessage = document.getElementById("popupMessage");
+        const popupIcon = document.getElementById("popupIcon");
+        const popupOk = document.getElementById("popupOk");
+        const popupClose = document.getElementById("popupClose");
 
-            const popupMessage =
-                document.getElementById(
-                    "popupMessage"
-                );
-
-            const popupIcon =
-                document.getElementById(
-                    "popupIcon"
-                );
-
-            const popupOk =
-                document.getElementById(
-                    "popupOk"
-                );
-
-            const popupClose =
-                document.getElementById(
-                    "popupClose"
-                );
-
-
-            if (!popup) {
-
-                resolve(false);
-
-                return;
-            }
-
-
-            popupTitle.textContent =
-                title;
-
-
-            popupMessage.textContent =
-                text;
-
-
-            popupIcon.textContent =
-                "?";
-
-
-            popupIcon.className =
-                "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
-
-
-            popupOk.textContent =
-                "Yes";
-
-
-            popup.classList.remove(
-                "hidden"
-            );
-
-            popup.classList.add(
-                "flex"
-            );
-
-
-            function yes() {
-
-                cleanup();
-
-                resolve(true);
-            }
-
-
-            function no() {
-
-                cleanup();
-
-                resolve(false);
-            }
-
-
-            function cleanup() {
-
-                popup.classList.add(
-                    "hidden"
-                );
-
-                popup.classList.remove(
-                    "flex"
-                );
-
-
-                popupOk.textContent =
-                    "OK";
-
-
-                popupOk.removeEventListener(
-                    "click",
-                    yes
-                );
-
-
-                if (popupClose) {
-
-                    popupClose.removeEventListener(
-                        "click",
-                        no
-                    );
-                }
-            }
-
-
-            popupOk.addEventListener(
-                "click",
-                yes
-            );
-
-
-            if (popupClose) {
-
-                popupClose.addEventListener(
-                    "click",
-                    no
-                );
-            }
-
+        if (!popup) {
+            resolve(false);
+            return;
         }
-    );
+
+        popupTitle.textContent = title;
+        popupMessage.textContent = text;
+
+        popupIcon.textContent = "?";
+        popupIcon.className =
+            "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
+
+        popupOk.textContent = "Yes";
+
+        popup.classList.remove("hidden");
+        popup.classList.add("flex");
+
+        let finished = false;
+
+        function cleanup(confirmed) {
+
+            if (finished) return;
+            finished = true;
+
+            popup.classList.add("hidden");
+            popup.classList.remove("flex");
+            popupOk.textContent = "OK";
+
+            popupOk.removeEventListener("click", yes);
+            popupClose?.removeEventListener("click", no);
+            popup.removeEventListener("click", outsideClick);
+
+            resolve(confirmed);
+        }
+
+        function yes() {
+            cleanup(true);
+        }
+
+        function no() {
+            cleanup(false);
+        }
+
+        function outsideClick(event) {
+            if (event.target === popup) {
+                no();
+            }
+        }
+
+        popupOk.addEventListener("click", yes);
+        popupClose?.addEventListener("click", no);
+        popup.addEventListener("click", outsideClick);
+
+    });
 }
 
 

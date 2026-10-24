@@ -1,3 +1,4 @@
+
 const popup = document.getElementById("popup");
 const popupTitle = document.getElementById("popupTitle");
 const popupMessage = document.getElementById("popupMessage");
@@ -5,120 +6,157 @@ const popupIcon = document.getElementById("popupIcon");
 const popupClose = document.getElementById("popupClose");
 const popupOk = document.getElementById("popupOk");
 
+let confirmResolve = null;
 
-// =====================================================
-// SHOW POPUP
-// =====================================================
+// ==========================================
+// SHOW NORMAL POPUP
+// ==========================================
 
-function showPopup(message, type = "success", title = "") {
+function showPopup(title, message, type = "success") {
+    if (
+        !popup ||
+        !popupTitle ||
+        !popupMessage ||
+        !popupIcon ||
+        !popupOk
+    ) {
+        return;
+    }
 
-    if (!popup) return;
+    // If a confirmation is already open, cancel it first.
+    if (confirmResolve) {
+        finishConfirmation(false);
+    }
 
-
+    popupTitle.textContent = title;
     popupMessage.textContent = message;
 
-
-    // SUCCESS
-    if (type === "success") {
-
-        popupIcon.textContent = "✓";
-
-        popupIcon.className =
-            "mx-auto mb-4 w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold";
-
-        popupTitle.textContent =
-            title || "Success";
-    }
-
-
-    // ERROR
-    else if (type === "error") {
-
+    if (type === "error") {
         popupIcon.textContent = "✕";
-
         popupIcon.className =
             "mx-auto mb-4 w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl font-bold";
-
-        popupTitle.textContent =
-            title || "Error";
-    }
-
-
-    // WARNING
-    else if (type === "warning") {
-
-        popupIcon.textContent = "?";
-
+    } else if (type === "warning") {
+        popupIcon.textContent = "!";
         popupIcon.className =
             "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
-
-        popupTitle.textContent =
-            title || "Warning";
+    } else {
+        popupIcon.textContent = "✓";
+        popupIcon.className =
+            "mx-auto mb-4 w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold";
     }
 
-
     popupOk.textContent = "OK";
-
     popup.classList.remove("hidden");
     popup.classList.add("flex");
 }
 
-
-// =====================================================
-// CLOSE POPUP
-// =====================================================
+// ==========================================
+// CLOSE NORMAL POPUP
+// ==========================================
 
 function closePopup() {
+    if (!popup) return;
 
+    if (confirmResolve) {
+        finishConfirmation(false);
+        return;
+    }
+
+    hidePopup();
+}
+
+function hidePopup() {
     if (!popup) return;
 
     popup.classList.add("hidden");
     popup.classList.remove("flex");
 
-    popupOk.textContent = "OK";
+    if (popupOk) {
+        popupOk.textContent = "OK";
+    }
 }
 
+// ==========================================
+// CONFIRM POPUP
+// ==========================================
 
-// =====================================================
-// CLOSE BUTTON
-// =====================================================
+function showConfirmPopup(title, message) {
+    if (
+        !popup ||
+        !popupTitle ||
+        !popupMessage ||
+        !popupIcon ||
+        !popupOk
+    ) {
+        return Promise.resolve(false);
+    }
+
+    // Prevent overlapping confirmation dialogs.
+    if (confirmResolve) {
+        finishConfirmation(false);
+    }
+
+    popupTitle.textContent = title;
+    popupMessage.textContent = message;
+
+    popupIcon.textContent = "?";
+    popupIcon.className =
+        "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
+
+    popupOk.textContent = "Yes";
+
+    popup.classList.remove("hidden");
+    popup.classList.add("flex");
+
+    return new Promise(resolve => {
+        confirmResolve = resolve;
+    });
+}
+
+// ==========================================
+// FINISH CONFIRMATION
+// ==========================================
+
+function finishConfirmation(result) {
+    if (!confirmResolve) return;
+
+    const resolve = confirmResolve;
+    confirmResolve = null;
+
+    hidePopup();
+    resolve(result);
+}
+
+// ==========================================
+// EVENT LISTENERS
+// ==========================================
 
 if (popupClose) {
-
-    popupClose.addEventListener(
-        "click",
-        closePopup
-    );
+    popupClose.addEventListener("click", closePopup);
 }
-
-
-// =====================================================
-// OK BUTTON
-// =====================================================
 
 if (popupOk) {
-
-    popupOk.addEventListener(
-        "click",
-        closePopup
-    );
+    popupOk.addEventListener("click", () => {
+        if (confirmResolve) {
+            finishConfirmation(true);
+        } else {
+            closePopup();
+        }
+    });
 }
-
-
-// =====================================================
-// CLICK OUTSIDE
-// =====================================================
 
 if (popup) {
-
-    popup.addEventListener(
-        "click",
-        function (event) {
-
-            if (event.target === popup) {
-                closePopup();
-            }
-
+    popup.addEventListener("click", event => {
+        if (event.target === popup) {
+            closePopup();
         }
-    );
+    });
 }
+
+// ==========================================
+// GLOBAL FUNCTIONS
+// ==========================================
+
+window.showPopup = showPopup;
+window.closePopup = closePopup;
+window.showConfirmPopup = showConfirmPopup;

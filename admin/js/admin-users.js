@@ -51,152 +51,8 @@ function getToken() {
 }
 
 
-// =====================================================
-// POPUP
-// =====================================================
-
-function showPopup(title, text, type = "success") {
-
-    const popup =
-        document.getElementById("popup");
-
-    const popupTitle =
-        document.getElementById("popupTitle");
-
-    const popupMessage =
-        document.getElementById("popupMessage");
-
-    const popupIcon =
-        document.getElementById("popupIcon");
 
 
-    if (!popup) {
-        console.error("Popup not found.");
-        return;
-    }
-
-
-    if (popupTitle) {
-        popupTitle.textContent = title;
-    }
-
-
-    if (popupMessage) {
-        popupMessage.textContent = text;
-    }
-
-
-    if (popupIcon) {
-
-        if (type === "success") {
-
-            popupIcon.textContent = "✓";
-
-            popupIcon.className =
-                "w-14 h-14 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold mb-4";
-
-        } else if (type === "error") {
-
-            popupIcon.textContent = "!";
-
-            popupIcon.className =
-                "w-14 h-14 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl font-bold mb-4";
-
-        } else {
-
-            popupIcon.textContent = "?";
-
-            popupIcon.className =
-                "w-14 h-14 mx-auto rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold mb-4";
-
-        }
-
-    }
-
-
-    popup.classList.remove("hidden");
-    popup.classList.add("flex");
-
-}
-
-
-// =====================================================
-// CLOSE POPUP
-// =====================================================
-
-function closePopup() {
-
-    const popup =
-        document.getElementById("popup");
-
-
-    if (popup) {
-
-        popup.classList.add("hidden");
-        popup.classList.remove("flex");
-
-    }
-
-}
-
-
-// =====================================================
-// POPUP BUTTONS
-// =====================================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        const popupOk =
-            document.getElementById("popupOk");
-
-        const popupClose =
-            document.getElementById("popupClose");
-
-        const popup =
-            document.getElementById("popup");
-
-
-        if (popupOk) {
-
-            popupOk.addEventListener(
-                "click",
-                closePopup
-            );
-
-        }
-
-
-        if (popupClose) {
-
-            popupClose.addEventListener(
-                "click",
-                closePopup
-            );
-
-        }
-
-
-        if (popup) {
-
-            popup.addEventListener(
-                "click",
-                function (event) {
-
-                    if (event.target === popup) {
-
-                        closePopup();
-
-                    }
-
-                }
-            );
-
-        }
-
-    }
-);
 
 
 // =====================================================
@@ -726,11 +582,10 @@ async function deleteUser(id) {
     // CONFIRMATION
     // ---------------------------------------------
 
-    const confirmed =
-        confirm(
-            `Are you sure you want to delete "${userName}"?`
-        );
-
+    const confirmed = await window.showConfirmPopup(
+    "Delete User",
+    `Are you sure you want to delete "${userName}"?`
+    );
 
     if (!confirmed) return;
 
@@ -900,7 +755,7 @@ function logout(event) {
 
 
     window.location.href =
-        "../html/login.html";
+        "./admin-login.html";
 
 }
 

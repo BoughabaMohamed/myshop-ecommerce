@@ -5,72 +5,227 @@ const db = require("../config/db");
 
 // ================= CREATE ORDER =================
 
+
 router.post("/", (req, res) => {
+    const { address, cart } = req.body;
 
-    const { total_price, address, cart } = req.body;
-
-    if (!total_price || !address || !cart || cart.length === 0) {
-
+    if (
+        typeof address !== "string" ||
+        address.trim() === "" ||
+        !Array.isArray(cart) ||
+        cart.length === 0
+    ) {
         return res.status(400).json({
-            message: "Missing required data"
+            message: "Invalid order data"
         });
-
     }
 
-    const orderSql = `
-        INSERT INTO orders (user_id, total_price, address)
-        VALUES (NULL, ?, ?)
-    `;
+    for (const item of cart) {
+        if (
+            !item ||
+            !Number.isSafeInteger(Number(item.id)) ||
+            Number(item.id) <= 0 ||
+            !Number.isSafeInteger(item.quantity) ||
+            item.quantity <= 0
+        ) {
+            return res.status(400).json({
+                message: "Invalid cart item"
+            });
+        }
+    }
 
-    db.query(
-        orderSql,
-        [total_price, address],
-        (err, result) => {
+    // Combine duplicate product IDs.
+    const quantities = new Map();
 
-            if (err) {
-                console.log(err);
+    for (const item of cart) {
+        const id = Number(item.id);
+        const quantity = item.quantity;
+        const combined = (quantities.get(id) || 0) + quantity;
 
-                return res.status(500).json({
-                    message: "Error creating order"
+        if (!Number.isSafeInteger(combined)) {
+            return res.status(400).json({
+                message: "Invalid cart quantity"
+            });
+        }
+
+        quantities.set(id, combined);
+    }
+
+    const connection = db;
+
+    connection.getConnection((connectionErr, conn) => {
+        if (connectionErr) {
+            console.error(connectionErr);
+            return res.status(500).json({
+                message: "Unable to process order"
+            });
+        }
+
+        conn.beginTransaction((transactionErr) => {
+            if (transactionErr) {
+                console.error(transactionErr);
+                return conn.release(), res.status(500).json({
+                    message: "Unable to process order"
                 });
             }
 
-            const orderId = result.insertId;
+            const rollback = (status, message) => {
+                conn.rollback(() => {
+                    conn.release();
+                    res.status(status).json({ message });
+                });
+            };
 
-            const values = cart.map(item => [
-                orderId,
-                item.id,
-                item.quantity,
-                item.price
-            ]);
+            const productIds = [...quantities.keys()];
+            const placeholders = productIds.map(() => "?").join(",");
 
-            const itemSql = `
-                INSERT INTO order_items
-                (order_id, product_id, quantity, price)
-                VALUES ?
+            const productSql = `
+                SELECT id, price, stock
+                FROM products
+                WHERE id IN (${placeholders})
+                FOR UPDATE
             `;
 
-            db.query(itemSql, [values], (err2) => {
-
-                if (err2) {
-                    console.log(err2);
-
-                    return res.status(500).json({
-                        message: "Error creating order items"
-                    });
+            conn.query(productSql, productIds, (productErr, products) => {
+                if (productErr) {
+                    console.error(productErr);
+                    return rollback(500, "Unable to process order");
                 }
 
-                res.json({
-                    message: "Order placed successfully"
-                });
+                if (products.length !== productIds.length) {
+                    return rollback(400, "One or more products do not exist");
+                }
 
+                const productMap = new Map(
+                    products.map(product => [Number(product.id), product])
+                );
+
+                const values = [];
+                let totalPrice = 0;
+
+                for (const [id, quantity] of quantities) {
+                    const product = productMap.get(id);
+                    const price = Number(product.price);
+                    const stock = Number(product.stock);
+
+                    if (!Number.isFinite(price) || price < 0) {
+                        return rollback(500, "Invalid product price");
+                    }
+
+                    if (!Number.isSafeInteger(stock) || stock < quantity) {
+                        return rollback(400, "Insufficient stock");
+                    }
+
+                    totalPrice += price * quantity;
+
+                    if (!Number.isFinite(totalPrice)) {
+                        return rollback(400, "Order total is invalid");
+                    }
+
+                    values.push([id, quantity, price]);
+                }
+
+                const orderSql = `
+                    INSERT INTO orders (user_id, total_price, address)
+                    VALUES (NULL, ?, ?)
+                `;
+
+                conn.query(
+                    orderSql,
+                    [totalPrice, address.trim()],
+                    (orderErr, orderResult) => {
+                        if (orderErr) {
+                            console.error(orderErr);
+                            return rollback(500, "Unable to create order");
+                        }
+
+                        const orderId = orderResult.insertId;
+
+                        const itemValues = values.map(
+                            ([productId, quantity, price]) => [
+                                orderId,
+                                productId,
+                                quantity,
+                                price
+                            ]
+                        );
+
+                        const itemSql = `
+                            INSERT INTO order_items
+                            (order_id, product_id, quantity, price)
+                            VALUES ?
+                        `;
+
+                        conn.query(itemSql, [itemValues], (itemsErr) => {
+                            if (itemsErr) {
+                                console.error(itemsErr);
+                                return rollback(
+                                    500,
+                                    "Unable to create order items"
+                                );
+                            }
+
+                            const stockSql = `
+                                UPDATE products
+                                SET stock = stock - ?
+                                WHERE id = ? AND stock >= ?
+                            `;
+
+                            const updateNextStock = (index) => {
+                                if (index >= values.length) {
+                                    return conn.commit((commitErr) => {
+                                        if (commitErr) {
+                                            console.error(commitErr);
+                                            return rollback(
+                                                500,
+                                                "Unable to complete order"
+                                            );
+                                        }
+
+                                        conn.release();
+
+                                        res.status(201).json({
+                                            message: "Order placed successfully",
+                                            orderId,
+                                            total_price: totalPrice
+                                        });
+                                    });
+                                }
+
+                                const [productId, quantity] = values[index];
+
+                                conn.query(
+                                    stockSql,
+                                    [quantity, productId, quantity],
+                                    (stockErr, stockResult) => {
+                                        if (stockErr) {
+                                            console.error(stockErr);
+                                            return rollback(
+                                                500,
+                                                "Unable to update stock"
+                                            );
+                                        }
+
+                                        if (stockResult.affectedRows !== 1) {
+                                            return rollback(
+                                                409,
+                                                "Insufficient stock"
+                                            );
+                                        }
+
+                                        updateNextStock(index + 1);
+                                    }
+                                );
+                            };
+
+                            updateNextStock(0);
+                        });
+                    }
+                );
             });
-
-        }
-    );
-
+        });
+    });
 });
-
 
 // ================= GET ALL ORDERS - ADMIN =================
 
@@ -105,6 +260,29 @@ router.put("/:id", verifyToken, isAdmin, (req, res) => {
 
     const id = req.params.id;
     const { status } = req.body;
+
+    
+if (!/^[1-9]\d*$/.test(id)) {
+    return res.status(400).json({
+        message: "Invalid order ID"
+    });
+}
+
+const allowedStatuses = [
+    "Pending",
+    "Processing",
+    "Delivered",
+    "Cancelled"
+];
+
+if (
+    typeof status !== "string" ||
+    !allowedStatuses.includes(status)
+) {
+    return res.status(400).json({
+        message: "Invalid order status"
+    });
+}
 
     const sql = `
         UPDATE orders

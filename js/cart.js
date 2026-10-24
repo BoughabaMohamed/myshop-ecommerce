@@ -2,340 +2,222 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 const cartItems = document.getElementById("cartItems");
 const totalPrice = document.getElementById("totalPrice");
+const subtotalPrice = document.getElementById("subtotalPrice");
+const cartItemCount = document.getElementById("cartItemCount");
+const checkoutButton = document.getElementById("checkoutButton");
 
-displayCart();
-
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
 
 function displayCart() {
-
     cartItems.innerHTML = "";
 
-    let total = 0;
+    const total = cart.reduce((sum, item) =>
+        sum + (Number(item.price) || 0) * (Number(item.quantity) || 0), 0);
 
+    const count = cart.reduce((sum, item) =>
+        sum + (Number(item.quantity) || 0), 0);
 
-    // Empty cart
+    cartItemCount.textContent =
+        `${count} ${count === 1 ? "item" : "items"}`;
+
+    subtotalPrice.textContent = `${total} DH`;
+    totalPrice.textContent = `${total} DH`;
+    checkoutButton.disabled = cart.length === 0;
+
     if (cart.length === 0) {
-
         cartItems.innerHTML = `
-            <tr>
-                <td colspan="6" class="px-6 py-16 text-center">
-
-                    <div class="flex flex-col items-center">
-
-                        <div class="text-5xl mb-4">
-                            🛒
-                        </div>
-
-                        <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                            Your cart is empty
-                        </h2>
-
-                        <p class="text-gray-500 mb-6">
-                            Add some products to your cart.
-                        </p>
-
-                        <a
-                            href="products.html"
-                            class="inline-block bg-blue-600
-                            hover:bg-blue-700
-                            text-white font-semibold
-                            px-6 py-3 rounded-xl
-                            transition duration-300"
-                        >
-                            Start Shopping
-                        </a>
-
-                    </div>
-
-                </td>
-            </tr>
+          <div class="bg-white rounded-2xl border border-gray-100
+                      p-8 text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-blue-50
+                        flex items-center justify-center text-3xl mb-4">
+              🛒
+            </div>
+            <h2 class="font-bold text-xl mb-2">Your cart is empty</h2>
+            <p class="text-sm text-gray-500 mb-5">
+              Find something you love and add it to your cart.
+            </p>
+            <a href="products.html"
+               class="inline-block rounded-xl bg-blue-600
+                      hover:bg-blue-700 text-white font-semibold
+                      px-6 py-3">
+              Start Shopping
+            </a>
+          </div>
         `;
-
-        totalPrice.textContent = "Total: 0 DH";
-
+        localStorage.setItem("cart", JSON.stringify(cart));
         return;
     }
 
-
-    // Display cart products
     cart.forEach((product, index) => {
+        const price = Number(product.price) || 0;
+        const quantity = Number(product.quantity) || 1;
+        const subtotal = price * quantity;
+        const image = product.image
+            ? `http://localhost:3000/uploads/${encodeURIComponent(product.image)}`
+            : "";
 
-        const subtotal =
-            product.price * product.quantity;
+        cartItems.insertAdjacentHTML("beforeend", `
+          <article class="bg-white rounded-2xl border border-gray-100
+                          p-3 sm:p-4 shadow-sm flex gap-3 sm:gap-4">
 
-        total += subtotal;
+            <a href="product-details.html?id=${encodeURIComponent(product.id)}"
+               class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl
+                      bg-blue-50 flex items-center justify-center p-2">
+              ${image
+                ? `<img src="${image}" alt="${escapeHTML(product.name)}"
+                        class="w-full h-full object-contain"
+                        onerror="this.style.display='none'">`
+                : `<span class="text-3xl">📦</span>`}
+            </a>
 
+            <div class="flex-1 min-w-0 flex flex-col justify-between gap-3">
+              <div>
+                <div class="flex justify-between items-start gap-2">
+                  <a href="product-details.html?id=${encodeURIComponent(product.id)}"
+                     class="font-semibold text-sm sm:text-base
+                            hover:text-blue-600 break-words">
+                    ${escapeHTML(product.name)}
+                  </a>
 
-        cartItems.innerHTML += `
-            <tr class="border-b border-gray-100
-                       hover:bg-gray-50 transition">
+                  <button type="button" onclick="removeItem(${index})"
+                    aria-label="Remove product"
+                    class="shrink-0 w-8 h-8 rounded-full
+                           text-gray-400 hover:text-red-500
+                           hover:bg-red-50 text-xl">
+                    ×
+                  </button>
+                </div>
 
+                <p class="text-xs text-gray-500 mt-1">
+                  ${escapeHTML(product.category || "")}
+                </p>
+                <p class="text-sm font-bold text-blue-600 mt-2">
+                  ${price} DH
+                </p>
+              </div>
 
-                <!-- Image -->
-                <td class="px-6 py-5">
+              <div class="flex items-center justify-between gap-2 flex-wrap">
+                <div class="inline-flex items-center gap-3
+                            rounded-full border border-gray-200 px-2 py-1">
+                  <button type="button" onclick="decrease(${index})"
+                    aria-label="Decrease quantity"
+                    class="w-7 h-7 rounded-full text-lg
+                           hover:bg-blue-50 hover:text-blue-600">−</button>
 
-                    <a href="product-details.html?id=${product.id}">
+                  <span class="min-w-4 text-center text-sm font-semibold">
+                    ${quantity}
+                  </span>
 
-                        <div class="w-20 h-20 bg-gray-50
-                                    rounded-xl p-2
-                                    flex items-center justify-center">
+                  <button type="button" onclick="increase(${index})"
+                    aria-label="Increase quantity"
+                    class="w-7 h-7 rounded-full text-lg
+                           hover:bg-blue-50 hover:text-blue-600">+</button>
+                </div>
 
-                            <img
-                                src="http://localhost:3000/uploads/${product.image}"
-                                alt="${product.name}"
-                                class="w-full h-full
-                                       object-contain
-                                       hover:scale-105
-                                       transition duration-300"
-                            >
-
-                        </div>
-
-                    </a>
-
-                </td>
-
-
-                <!-- Product -->
-                <td class="px-6 py-5">
-
-                    <a
-                        href="product-details.html?id=${product.id}"
-                        class="font-semibold text-gray-800
-                               hover:text-blue-600
-                               transition"
-                    >
-                        ${product.name}
-                    </a>
-
-                    <p class="text-sm text-gray-500 mt-1">
-                        ${product.category || ""}
-                    </p>
-
-                </td>
-
-
-                <!-- Price -->
-                <td class="px-6 py-5">
-
-                    <span class="font-semibold text-blue-600">
-                        ${product.price} DH
-                    </span>
-
-                </td>
-
-
-                <!-- Quantity -->
-                <td class="px-6 py-5">
-
-                    <div class="inline-flex items-center
-                                border border-gray-200
-                                rounded-xl overflow-hidden">
-
-                        <button
-                            onclick="decrease(${index})"
-                            class="w-9 h-9
-                                   flex items-center justify-center
-                                   text-gray-600
-                                   hover:bg-gray-100
-                                   hover:text-blue-600
-                                   transition"
-                        >
-                            −
-                        </button>
-
-
-                        <span
-                            class="w-10 text-center
-                                   font-semibold text-gray-800"
-                        >
-                            ${product.quantity}
-                        </span>
-
-
-                        <button
-                            onclick="increase(${index})"
-                            class="w-9 h-9
-                                   flex items-center justify-center
-                                   text-gray-600
-                                   hover:bg-gray-100
-                                   hover:text-blue-600
-                                   transition"
-                        >
-                            +
-                        </button>
-
-                    </div>
-
-                </td>
-
-
-                <!-- Subtotal -->
-                <td class="px-6 py-5">
-
-                    <span class="font-bold text-gray-800">
-                        ${subtotal} DH
-                    </span>
-
-                </td>
-
-
-                <!-- Remove -->
-                <td class="px-6 py-5">
-
-                    <button
-                        onclick="removeItem(${index})"
-                        class="text-red-500
-                               hover:text-red-700
-                               hover:bg-red-50
-                               px-3 py-2
-                               rounded-lg
-                               font-medium
-                               transition"
-                    >
-                        Remove
-                    </button>
-
-                </td>
-
-            </tr>
-        `;
+                <span class="text-sm font-bold text-gray-800">
+                  ${subtotal} DH
+                </span>
+              </div>
+            </div>
+          </article>
+        `);
     });
 
-
-    // Total
-    totalPrice.textContent =
-        "Total: " + total + " DH";
-
-
-    // Save cart
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
+    localStorage.setItem("cart", JSON.stringify(cart));
 }
-
-
 
 function increase(index) {
-
-    cart[index].quantity++;
-
+    if (!cart[index]) return;
+    cart[index].quantity = Number(cart[index].quantity || 1) + 1;
     displayCart();
 }
-
-
 
 function decrease(index) {
+    if (!cart[index]) return;
 
-    if (cart[index].quantity > 1) {
-
-        cart[index].quantity--;
-
+    if (Number(cart[index].quantity) > 1) {
+        cart[index].quantity = Number(cart[index].quantity) - 1;
     }
-
     displayCart();
 }
-
-
 
 function removeItem(index) {
-
+    if (index < 0 || index >= cart.length) return;
     cart.splice(index, 1);
-
     displayCart();
 }
 
-
-
-function checkout() {
-
+async function checkout() {
     if (cart.length === 0) {
-
-        alert("Your cart is empty!");
-
+        showToast("Your cart is empty!", "warning");
         return;
     }
 
+    const address = prompt("Please enter your delivery address:");
+    if (address === null) return;
 
-    const total = cart.reduce(
-        (sum, item) =>
-            sum + item.price * item.quantity,
-        0
-    );
+    if (!address.trim()) {
+        showToast("Delivery address is required.", "warning");
+        return;
+    }
 
+    const orderCart = cart.map(item => ({
+        id: Number(item.id),
+        quantity: Number(item.quantity)
+    }));
 
-    fetch("http://localhost:3000/orders", {
+    if (orderCart.some(item =>
+        !Number.isInteger(item.id) || item.id <= 0 ||
+        !Number.isInteger(item.quantity) || item.quantity <= 0
+    )) {
+        showToast("Your cart contains invalid product information.", "error");
+        return;
+    }
 
-        method: "POST",
+    try {
+        checkoutButton.disabled = true;
+        checkoutButton.textContent = "Processing...";
 
-        headers: {
-            "Content-Type": "application/json"
-        },
-
-        body: JSON.stringify({
-
-            total_price: total,
-
-            address: "Casablanca",
-
-            cart: cart
-
-        })
-
-    })
-
-
-    .then(async response => {
+        const response = await fetch("http://localhost:3000/orders", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                address: address.trim(),
+                cart: orderCart
+            })
+        });
 
         const data = await response.json();
 
         if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "Error while placing order."
-            );
+            throw new Error(data.message || "Error while placing order.");
         }
 
-        return data;
-
-    })
-
-
-    .then(data => {
-
-        alert(
-            data.message ||
-            "Order placed successfully!"
+        showToast(
+            `Order placed successfully! Order ID: ${data.orderId}`,
+            "success"
         );
-
 
         cart = [];
-
         localStorage.removeItem("cart");
-
         displayCart();
+        window.location.href = "products.html";
 
-
-        window.location.href =
-            "products.html";
-
-    })
-
-
-    .catch(error => {
-
-        console.error(
-            "Checkout error:",
-            error
-        );
-
-        alert(
-            error.message ||
-            "Error while placing order."
-        );
-
-    });
-
+    } catch (error) {
+        console.error("Checkout error:", error);
+        showToast(error.message || "Error while placing order.", "error");
+    } finally {
+        checkoutButton.disabled = cart.length === 0;
+        checkoutButton.textContent = "Next";
+    }
 }
+
+displayCart();

@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupSearch();
     setupAddProductButton();
     setupProductForm();
-    setupPopup();
     setupLogout();
 });
 
@@ -50,63 +49,12 @@ function getAuthHeaders() {
 }
 
 
-// ==========================================
-// POPUP
-// ==========================================
-
-function showPopup(title, message, type = "success") {
-    const popup = document.getElementById("popup");
-    const popupIcon = document.getElementById("popupIcon");
-    const popupTitle = document.getElementById("popupTitle");
-    const popupMessage = document.getElementById("popupMessage");
-
-    if (!popup) return;
-
-    popupTitle.textContent = title;
-    popupMessage.textContent = message;
-
-    if (type === "error") {
-        popupIcon.textContent = "!";
-        popupIcon.className =
-            "w-14 h-14 mx-auto rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl font-bold mb-4";
-    } else {
-        popupIcon.textContent = "✓";
-        popupIcon.className =
-            "w-14 h-14 mx-auto rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold mb-4";
-    }
-
-    popup.classList.remove("hidden");
-    popup.classList.add("flex");
-}
-
-
-function closePopup() {
-    const popup = document.getElementById("popup");
-
-    if (!popup) return;
-
-    popup.classList.add("hidden");
-    popup.classList.remove("flex");
-}
-
-
-function setupPopup() {
-    const popupClose = document.getElementById("popupClose");
-    const popupOk = document.getElementById("popupOk");
-
-    if (popupClose) {
-        popupClose.addEventListener("click", closePopup);
-    }
-
-    if (popupOk) {
-        popupOk.addEventListener("click", closePopup);
-    }
-}
 
 
 // ==========================================
 // LOAD PRODUCTS
 // ==========================================
+
 
 async function loadProducts() {
     const container = document.getElementById("adminProducts");
@@ -114,7 +62,12 @@ async function loadProducts() {
     if (!container) return;
 
     try {
-        const response = await fetch(`${API_URL}/products`);
+        const response = await fetch(
+            `${API_URL}/products/admin/all`,
+            {
+                headers: getAuthHeaders()
+            }
+        );
 
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
@@ -131,7 +84,6 @@ async function loadProducts() {
         }
 
         displayProducts(products);
-
         updateProductsCount();
 
     } catch (error) {
@@ -143,9 +95,8 @@ async function loadProducts() {
                     <div class="text-red-500 font-semibold">
                         Failed to load products
                     </div>
-
                     <p class="text-sm text-gray-500 mt-2">
-                        Make sure your server is running on localhost:3000.
+                        Check the server and your admin authentication.
                     </p>
                 </td>
             </tr>
@@ -236,32 +187,35 @@ function displayProducts(list) {
         // STOCK STATUS
         // ==========================================
 
-        const stock = Number(product.stock) || 0;
+       
+const stock = Number(product.stock) || 0;
+let statusHTML = "";
 
-        let statusHTML = "";
-
-        if (stock > 0) {
-
-            statusHTML = `
-                <span class="inline-flex items-center px-3 py-1
-                       rounded-full text-xs font-semibold
-                       bg-green-100 text-green-700">
-                    Active
-                </span>
-            `;
-
-        } else {
-
-            statusHTML = `
-                <span class="inline-flex items-center px-3 py-1
-                       rounded-full text-xs font-semibold
-                       bg-red-100 text-red-700">
-                    Out of stock
-                </span>
-            `;
-
-        }
-
+if (Number(product.is_active) === 0) {
+    statusHTML = `
+        <span class="inline-flex items-center px-3 py-1
+                     rounded-full text-xs font-semibold
+                     bg-gray-100 text-gray-700">
+            Deactivated
+        </span>
+    `;
+} else if (stock > 0) {
+    statusHTML = `
+        <span class="inline-flex items-center px-3 py-1
+                     rounded-full text-xs font-semibold
+                     bg-green-100 text-green-700">
+            Active
+        </span>
+    `;
+} else {
+    statusHTML = `
+        <span class="inline-flex items-center px-3 py-1
+                     rounded-full text-xs font-semibold
+                     bg-red-100 text-red-700">
+            Out of stock
+        </span>
+    `;
+}
 
         // ==========================================
         // ROW
@@ -1114,95 +1068,81 @@ function editProduct(id) {
 // DELETE PRODUCT
 // ==========================================
 
-function deleteProduct(id) {
-
-    const product =
-        products.find(
-            item =>
-                String(item.id || item._id) === String(id)
-        );
-
+async function deleteProduct(id) {
+    const product = products.find(
+        item => String(item.id || item._id) === String(id)
+    );
 
     if (!product) {
-
         showPopup(
             "Error",
             "Product not found.",
             "error"
         );
-
         return;
     }
 
-
-    const confirmed =
-        confirm(
-            `Are you sure you want to delete "${product.name}"?`
-        );
-
+    const confirmed = await showConfirmPopup(
+        "Delete Product",
+        `Are you sure you want to delete "${product.name}"?`
+    );
 
     if (!confirmed) return;
 
-
-    performDeleteProduct(id);
+    await performDeleteProduct(id);
 }
+
+
+ // ==========================================
+// PERFORM DELETE PRODUCT
+// ==========================================
 
 
 async function performDeleteProduct(id) {
-
     try {
+        const response = await fetch(
+            `${API_URL}/products/${encodeURIComponent(id)}`,
+            {
+                method: "DELETE",
+                headers: getAuthHeaders()
+            }
+        );
 
-        const response =
-            await fetch(
-                `${API_URL}/products/${id}`,
-                {
-                    method: "DELETE",
-                    headers: getAuthHeaders()
-                }
-            );
-
+        const data = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-
-            const errorText =
-                await response.text();
-
-            throw new Error(
-                errorText || "Delete failed"
-            );
-
+            throw new Error(data.message || "Failed to delete product.");
         }
 
-
         await loadProducts();
-
         await loadDashboard();
 
-
-        showPopup(
-            "Success",
-            "Product deleted successfully."
-        );
-
+        if (data.action === "deactivated") {
+            showPopup(
+                "Product Deactivated",
+                "This product has order history, so it was hidden from customers instead of being permanently deleted.",
+                "warning"
+            );
+        } else {
+            showPopup(
+                "Success",
+                "Product deleted successfully."
+            );
+        }
 
     } catch (error) {
-
-        console.error(
-            "Delete product error:",
-            error
-        );
-
+        console.error("Delete product error:", error);
 
         showPopup(
             "Error",
-            error.message ||
-                "Failed to delete product.",
+            error.message || "Failed to delete product.",
             "error"
         );
-
     }
-
 }
+
+
+
 
 
 // ==========================================
@@ -1229,7 +1169,7 @@ function setupLogout() {
 
 
         window.location.href =
-            "../html/login.html";
+            "./admin-login.html";
     };
 
 
