@@ -1,103 +1,112 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Cart | MyShop</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    * { box-sizing: border-box; }
-    html, body { max-width: 100%; overflow-x: clip; }
-    button, a { -webkit-tap-highlight-color: transparent; }
-  </style>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Cart | MyShop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        max-width: 100%;
+        overflow-x: clip;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+    </style>
+  </head>
 
-<body class="bg-gray-50 text-gray-800 min-h-screen">
+  <body class="bg-gray-50 text-gray-800 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100">
+      <nav class="max-w-3xl mx-auto px-4">
+        <div class="h-16 flex items-center justify-between">
+          <a href="index.html" class="flex items-center gap-2">
+            <img
+              src="../images/logo.png"
+              alt="MyShop"
+              class="w-9 h-9 object-contain"
+            />
+            <span class="text-2xl font-bold text-blue-600">MyShop</span>
+          </a>
+          <a href="products.html" class="text-sm font-medium text-blue-600">
+            Keep shopping
+          </a>
+        </div>
+      </nav>
+    </header>
 
-  <!-- Header -->
-  <header class="bg-white border-b border-gray-100">
-    <nav class="max-w-3xl mx-auto px-4">
-      <div class="h-16 flex items-center justify-between">
-        <a href="index.html" class="flex items-center gap-2">
-          <img src="../images/logo.png" alt="MyShop"
-               class="w-9 h-9 object-contain">
-          <span class="text-2xl font-bold text-blue-600">MyShop</span>
-        </a>
-        <a href="products.html"
-           class="text-sm font-medium text-blue-600">
-          Keep shopping
-        </a>
-      </div>
-    </nav>
-  </header>
-
-  <main class="max-w-3xl mx-auto px-4 pt-7 pb-8">
-
-    <!-- Title -->
-    <div class="mb-6">
-      <p class="text-sm text-blue-600 font-semibold mb-2">MYSHOP STORE</p>
-      <h1 class="text-3xl font-bold text-gray-900">My Cart</h1>
-      <p id="cartItemCount" class="text-sm text-gray-500 mt-2">0 items</p>
-    </div>
-
-    <!-- Cart products -->
-    <section>
-      <div id="cartItems" class="space-y-4"></div>
-    </section>
-
-    <!-- Summary -->
-    <section class="bg-white rounded-2xl border border-gray-100
-                    p-5 mt-7 shadow-sm">
-
-      <h2 class="text-lg font-bold mb-5">Order Summary</h2>
-
-      <div class="flex justify-between items-center mb-3 text-sm">
-        <span class="text-gray-500">Subtotal</span>
-        <span id="subtotalPrice" class="font-semibold">0 DH</span>
+    <main class="max-w-3xl mx-auto px-4 pt-7 pb-8">
+      <!-- Title -->
+      <div class="mb-6">
+        <p class="text-sm text-blue-600 font-semibold mb-2">MYSHOP STORE</p>
+        <h1 class="text-3xl font-bold text-gray-900">My Cart</h1>
+        <p id="cartItemCount" class="text-sm text-gray-500 mt-2">0 items</p>
       </div>
 
-      <div class="flex justify-between items-start gap-3 mb-5 text-sm">
-        <span class="text-gray-500">Delivery</span>
-        <span class="text-gray-500 text-right">
-          Confirmed during checkout
-        </span>
-      </div>
+      <!-- Cart products -->
+      <section>
+        <div id="cartItems" class="space-y-4"></div>
+      </section>
 
-      <div class="border-t border-gray-100 pt-4 flex justify-between
-                  items-center gap-3">
-        <span class="font-bold text-gray-900">Total</span>
-        <span id="totalPrice" class="text-xl font-bold text-blue-600">
-          0 DH
-        </span>
-      </div>
+      <!-- Summary -->
+      <section
+        class="bg-white rounded-2xl border border-gray-100 p-5 mt-7 shadow-sm"
+      >
+        <h2 class="text-lg font-bold mb-5">Order Summary</h2>
 
-      <button id="checkoutButton" onclick="checkout()"
-        class="w-full mt-6 rounded-xl bg-blue-600 hover:bg-blue-700
-               text-white font-semibold py-4 px-5
-               shadow-md shadow-blue-100 transition
-               disabled:bg-gray-300 disabled:shadow-none
-               disabled:cursor-not-allowed">
-        Next
-      </button>
+        <div class="flex justify-between items-center mb-3 text-sm">
+          <span class="text-gray-500">Subtotal</span>
+          <span id="subtotalPrice" class="font-semibold">0 DH</span>
+        </div>
 
-      <p class="text-center text-xs text-gray-400 mt-4">
-        🔒 Safe and secure checkout
-      </p>
-    </section>
+        <div class="flex justify-between items-start gap-3 mb-5 text-sm">
+          <span class="text-gray-500">Delivery</span>
+          <span class="text-gray-500 text-right">
+            Confirmed during checkout
+          </span>
+        </div>
 
-    <a href="products.html"
-       class="flex justify-center mt-6 text-sm text-gray-500
-              hover:text-blue-600">
-      ← Continue Shopping
-    </a>
+        <div
+          class="border-t border-gray-100 pt-4 flex justify-between items-center gap-3"
+        >
+          <span class="font-bold text-gray-900">Total</span>
+          <span id="totalPrice" class="text-xl font-bold text-blue-600">
+            0 DH
+          </span>
+        </div>
 
-  </main>
+        <button
+          id="checkoutButton"
+          onclick="checkout()"
+          class="w-full mt-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-5 shadow-md shadow-blue-100 transition disabled:bg-gray-300 disabled:shadow-none disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
 
-  <footer class="text-center text-xs text-gray-400 py-6">
-    © 2026 MyShop. All Rights Reserved.
-  </footer>
+        <p class="text-center text-xs text-gray-400 mt-4">
+          🔒 Safe and secure checkout
+        </p>
+      </section>
 
-  <script src="../js/notifications.js"></script>
-  <script src="../js/cart.js"></script>
-</body>
+      <a
+        href="products.html"
+        class="flex justify-center mt-6 text-sm text-gray-500 hover:text-blue-600"
+      >
+        ← Continue Shopping
+      </a>
+    </main>
+
+    <footer class="text-center text-xs text-gray-400 py-6">
+      © 2026 MyShop. All Rights Reserved.
+    </footer>
+
+    <script src="../js/notifications.js"></script>
+    <script src="../js/cart.js"></script>
+  </body>
 </html>

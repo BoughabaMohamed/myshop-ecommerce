@@ -1,12 +1,11 @@
-
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 function CTA() {
   return (
     <section className="px-4 sm:px-6 lg:px-8 pb-16">
       <div
         className="max-w-7xl mx-auto
-        bg-gradient-to-r
+        bg-linear-to-r
         from-blue-600 to-cyan-500
         rounded-3xl
         px-6 sm:px-10 lg:px-16
@@ -19,8 +18,7 @@ function CTA() {
         </h2>
 
         <p className="text-blue-50 max-w-2xl mx-auto mb-7">
-          Find the products you need
-          and enjoy a simple shopping experience.
+          Find the products you need and enjoy a simple shopping experience.
         </p>
 
         <Link
@@ -37,7 +35,7 @@ function CTA() {
         </Link>
       </div>
     </section>
-  )
+  );
 }
 
-export default CTA
+export default CTA;

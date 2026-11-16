@@ -1,20 +1,17 @@
-
 let products = [];
 
 fetch("http://localhost:3000/products")
-  .then(response => response.json())
-  .then(data => {
-
+  .then((response) => response.json())
+  .then((data) => {
     products = data;
 
     console.log(products);
 
     displayProducts(products);
   })
-  .catch(error => {
+  .catch((error) => {
     console.error(error);
   });
-
 
 const productsContainer = document.getElementById("productsContainer");
 const searchInput = document.getElementById("search");
@@ -25,15 +22,12 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 updateCartCount();
 
-
 function displayProducts(list) {
-
   if (!productsContainer) return;
 
   productsContainer.innerHTML = "";
 
   if (list.length === 0) {
-
     productsContainer.innerHTML = `
       <div class="w-full min-w-full text-center py-16">
         <h2 class="text-2xl font-semibold text-gray-700">
@@ -49,20 +43,18 @@ function displayProducts(list) {
   }
 
   // Detect homepage carousel
-  const isCarousel =
-    productsContainer.dataset.carousel === "true";
+  const isCarousel = productsContainer.dataset.carousel === "true";
 
-  list.forEach(product => {
-
+  list.forEach((product) => {
     productsContainer.innerHTML += `
 
       <div
         class="group bg-white rounded-2xl border border-gray-100
         shadow-sm hover:shadow-xl transition duration-300
         overflow-hidden
-        ${isCarousel
-          ? "flex-none w-[250px] sm:w-[280px] snap-start"
-          : "w-full"}"
+        ${
+          isCarousel ? "flex-none w-62.5 sm:w-70 snap-start" : "w-full"
+        }"
       >
 
         <!-- Product Image -->
@@ -127,21 +119,19 @@ function displayProducts(list) {
   });
 }
 
-
-
 function addToCart(id) {
-  const product = products.find(p => p.id === id);
+  const product = products.find((p) => p.id === id);
 
   if (!product) return;
 
-  const existingProduct = cart.find(item => item.id === id);
+  const existingProduct = cart.find((item) => item.id === id);
 
   if (existingProduct) {
     existingProduct.quantity += 1;
   } else {
     cart.push({
       ...product,
-      quantity: 1
+      quantity: 1,
     });
   }
 
@@ -154,8 +144,6 @@ function addToCart(id) {
   showToast(product.name + " added to cart!", "success");
 }
 
-
-
 const cartDrawer = document.getElementById("cartDrawer");
 const cartOverlay = document.getElementById("cartOverlay");
 const drawerCartItems = document.getElementById("drawerCartItems");
@@ -164,7 +152,6 @@ const drawerCartTotal = document.getElementById("drawerCartTotal");
 
 const closeCartDrawerBtn = document.getElementById("closeCartDrawer");
 const continueShoppingBtn = document.getElementById("continueShopping");
-
 
 function renderCartDrawer() {
   if (!drawerCartItems) return;
@@ -175,12 +162,11 @@ function renderCartDrawer() {
 
   const itemCount = cart.reduce(
     (sum, item) => sum + Number(item.quantity || 1),
-    0
+    0,
   );
 
   if (drawerCartCount) {
-    drawerCartCount.textContent =
-      `${itemCount} ${itemCount === 1 ? "item" : "items"}`;
+    drawerCartCount.textContent = `${itemCount} ${itemCount === 1 ? "item" : "items"}`;
   }
 
   if (cart.length === 0) {
@@ -292,7 +278,7 @@ function changeDrawerQuantity(index, change) {
 
   cart[index].quantity = Math.max(
     1,
-    Number(cart[index].quantity || 1) + change
+    Number(cart[index].quantity || 1) + change,
   );
 
   saveAndRefreshDrawer();
@@ -325,75 +311,42 @@ if (cartOverlay) {
   cartOverlay.addEventListener("click", closeCartDrawer);
 }
 
-document.addEventListener("keydown", event => {
+document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeCartDrawer();
   }
 });
 
 function updateCartCount() {
-
   if (!cartCount) return;
 
   const totalItems = cart.reduce((sum, item) => {
-
     return sum + (item.quantity || 1);
-
   }, 0);
-
 
   cartCount.textContent = "Cart: " + totalItems;
 }
 
-
 if (searchInput) {
-
-  searchInput.addEventListener(
-    "input",
-    filterProducts
-  );
-
+  searchInput.addEventListener("input", filterProducts);
 }
-
 
 if (categorySelect) {
-
-  categorySelect.addEventListener(
-    "change",
-    filterProducts
-  );
-
+  categorySelect.addEventListener("change", filterProducts);
 }
 
-
 function filterProducts() {
+  const search = searchInput ? searchInput.value.toLowerCase() : "";
 
-  const search = searchInput
-    ? searchInput.value.toLowerCase()
-    : "";
+  const category = categorySelect ? categorySelect.value : "all";
 
-  const category = categorySelect
-    ? categorySelect.value
-    : "all";
+  const filtered = products.filter((product) => {
+    const matchName = product.name.toLowerCase().includes(search);
 
-
-  const filtered = products.filter(product => {
-
-    const matchName =
-      product.name
-        .toLowerCase()
-        .includes(search);
-
-
-    const matchCategory =
-      category === "all" ||
-      product.category === category;
-
+    const matchCategory = category === "all" || product.category === category;
 
     return matchName && matchCategory;
-
   });
-
 
   displayProducts(filtered);
 }

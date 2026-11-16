@@ -1,11 +1,10 @@
-
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useCart } from '../CartContext'
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useCart } from "../useCart";
 
 function Cart() {
-  const navigate = useNavigate()
-  const [isCheckingOut, setIsCheckingOut] = useState(false)
+  const navigate = useNavigate();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const {
     cart,
@@ -15,28 +14,28 @@ function Cart() {
     updateQuantity,
     clearCart,
     showToast,
-  } = useCart()
+  } = useCart();
 
   // CHECKOUT
   async function checkout() {
     if (cart.length === 0) {
-      showToast('Your cart is empty!', 'warning')
-      return
+      showToast("Your cart is empty!", "warning");
+      return;
     }
 
-    const address = prompt('Please enter your delivery address:')
+    const address = prompt("Please enter your delivery address:");
 
-    if (address === null) return
+    if (address === null) return;
 
     if (!address.trim()) {
-      showToast('Delivery address is required.', 'warning')
-      return
+      showToast("Delivery address is required.", "warning");
+      return;
     }
 
     const orderCart = cart.map((item) => ({
       id: Number(item.id),
       quantity: Number(item.quantity),
-    }))
+    }));
 
     if (
       orderCart.some(
@@ -44,58 +43,51 @@ function Cart() {
           !Number.isInteger(item.id) ||
           item.id <= 0 ||
           !Number.isInteger(item.quantity) ||
-          item.quantity <= 0
+          item.quantity <= 0,
       )
     ) {
-      showToast(
-        'Your cart contains invalid product information.',
-        'error'
-      )
-      return
+      showToast("Your cart contains invalid product information.", "error");
+      return;
     }
 
     try {
-      setIsCheckingOut(true)
+      setIsCheckingOut(true);
 
-      const response = await fetch('http://localhost:3000/orders', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/orders", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           address: address.trim(),
           cart: orderCart,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Error while placing order.')
+        throw new Error(data.message || "Error while placing order.");
       }
 
       showToast(
         `Order placed successfully! Order ID: ${data.orderId}`,
-        'success'
-      )
+        "success",
+      );
 
-      clearCart()
-      navigate('/products')
+      clearCart();
+      navigate("/products");
     } catch (error) {
-      console.error('Checkout error:', error)
-      showToast(
-        error.message || 'Error while placing order.',
-        'error'
-      )
+      console.error("Checkout error:", error);
+      showToast(error.message || "Error while placing order.", "error");
     } finally {
-      setIsCheckingOut(false)
+      setIsCheckingOut(false);
     }
   }
 
   return (
     <section className="min-h-screen bg-gray-50 py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-
         <h1 className="mb-8 text-3xl font-bold text-slate-900">
           Shopping Cart
         </h1>
@@ -121,7 +113,6 @@ function Cart() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-
             {/* CART PRODUCTS */}
             <div className="space-y-4 lg:col-span-2">
               {cart.map((item) => (
@@ -150,22 +141,16 @@ function Cart() {
                   {/* QUANTITY */}
                   <div className="flex items-center gap-3 rounded-lg border border-gray-200 px-3 py-2">
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.quantity - 1)
-                      }
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       className="font-bold text-gray-600"
                     >
                       −
                     </button>
 
-                    <span className="font-semibold">
-                      {item.quantity}
-                    </span>
+                    <span className="font-semibold">{item.quantity}</span>
 
                     <button
-                      onClick={() =>
-                        updateQuantity(item.id, item.quantity + 1)
-                      }
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="font-bold text-gray-600"
                     >
                       +
@@ -174,7 +159,8 @@ function Cart() {
 
                   <div className="flex items-center justify-between gap-4 sm:block sm:text-right">
                     <p className="font-bold text-slate-900">
-                      {(Number(item.price) * Number(item.quantity)).toFixed(2)} DH
+                      {(Number(item.price) * Number(item.quantity)).toFixed(2)}{" "}
+                      DH
                     </p>
 
                     <button
@@ -201,9 +187,7 @@ function Cart() {
 
               <div className="mb-6 flex justify-between border-t border-gray-100 pt-4 text-lg font-bold">
                 <span>Total</span>
-                <span className="text-blue-600">
-                  {cartTotal.toFixed(2)} DH
-                </span>
+                <span className="text-blue-600">{cartTotal.toFixed(2)} DH</span>
               </div>
 
               <button
@@ -211,7 +195,7 @@ function Cart() {
                 disabled={isCheckingOut || cart.length === 0}
                 className="w-full rounded-xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
               >
-                {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
+                {isCheckingOut ? "Processing..." : "Proceed to Checkout"}
               </button>
 
               <Link
@@ -225,7 +209,7 @@ function Cart() {
         )}
       </div>
     </section>
-  )
+  );
 }
 
-export default Cart
+export default Cart;

@@ -1,22 +1,21 @@
+import { useEffect, useState } from "react";
+import Popup from "../components/Popup";
 
-import { useEffect, useState } from 'react'
-import Popup from '../components/Popup'
-
-const API_URL = 'http://localhost:3000'
+const API_URL = "http://localhost:3000";
 
 function AdminCategories() {
-  const [categories, setCategories] = useState([])
-  const [categoryName, setCategoryName] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [categories, setCategories] = useState([]);
+  const [categoryName, setCategoryName] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   const [popup, setPopup] = useState({
     isOpen: false,
-    type: 'success',
-    title: '',
-    message: '',
+    type: "success",
+    title: "",
+    message: "",
     onConfirm: null,
-  })
+  });
 
   const openPopup = (type, title, message, onConfirm = null) => {
     setPopup({
@@ -25,147 +24,131 @@ function AdminCategories() {
       title,
       message,
       onConfirm,
-    })
-  }
+    });
+  };
 
   const closePopup = () => {
     setPopup((prev) => ({
       ...prev,
       isOpen: false,
       onConfirm: null,
-    }))
-  }
+    }));
+  };
 
   const handlePopupConfirm = () => {
-    const action = popup.onConfirm
-    closePopup()
+    const action = popup.onConfirm;
+    closePopup();
 
-    if (action) action()
-  }
+    if (action) action();
+  };
 
   const getToken = () =>
-    localStorage.getItem('token') ||
-    localStorage.getItem('authToken') ||
-    localStorage.getItem('accessToken') ||
-    ''
+    localStorage.getItem("token") ||
+    localStorage.getItem("authToken") ||
+    localStorage.getItem("accessToken") ||
+    "";
 
   const getHeaders = () => ({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     Authorization: `Bearer ${getToken()}`,
-  })
+  });
 
   const loadCategories = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const response = await fetch(`${API_URL}/categories`, {
         headers: getHeaders(),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to load categories.')
+        throw new Error("Failed to load categories.");
       }
 
-      const data = await response.json()
-      const list = Array.isArray(data) ? data : data.categories || []
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : data.categories || [];
 
-      setCategories(list)
+      setCategories(list);
     } catch (error) {
-      openPopup('error', 'Error', error.message)
+      openPopup("error", "Error", error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadCategories()
-  }, [])
+    loadCategories();
+  }, []);
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const name = categoryName.trim()
+    const name = categoryName.trim();
 
     if (!name) {
-      openPopup(
-        'error',
-        'Error',
-        'Please enter a category name.'
-      )
-      return
+      openPopup("error", "Error", "Please enter a category name.");
+      return;
     }
 
     try {
-      setSaving(true)
+      setSaving(true);
 
       const response = await fetch(`${API_URL}/categories`, {
-        method: 'POST',
+        method: "POST",
         headers: getHeaders(),
         body: JSON.stringify({ name }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Could not add category.')
+        throw new Error(data.message || "Could not add category.");
       }
 
-      setCategoryName('')
+      setCategoryName("");
 
-      await loadCategories()
+      await loadCategories();
 
-      openPopup(
-        'success',
-        'Success',
-        'Category added successfully!'
-      )
+      openPopup("success", "Success", "Category added successfully!");
     } catch (error) {
-      openPopup('error', 'Error', error.message)
+      openPopup("error", "Error", error.message);
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const handleDeleteCategory = async (category) => {
     try {
-      const response = await fetch(
-        `${API_URL}/categories/${category.id}`,
-        {
-          method: 'DELETE',
-          headers: getHeaders(),
-        }
-      )
+      const response = await fetch(`${API_URL}/categories/${category.id}`, {
+        method: "DELETE",
+        headers: getHeaders(),
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Could not delete category.')
+        throw new Error(data.message || "Could not delete category.");
       }
 
-      await loadCategories()
+      await loadCategories();
 
-      openPopup(
-        'success',
-        'Success',
-        'Category deleted successfully!'
-      )
+      openPopup("success", "Success", "Category deleted successfully!");
     } catch (error) {
-      openPopup('error', 'Error', error.message)
+      openPopup("error", "Error", error.message);
     }
-  }
+  };
 
   const deleteCategory = (category) => {
     openPopup(
-      'confirm',
-      'Delete Category',
+      "confirm",
+      "Delete Category",
       `Are you sure you want to delete "${category.name}"?`,
-      () => handleDeleteCategory(category)
-    )
-  }
+      () => handleDeleteCategory(category),
+    );
+  };
 
   return (
     <div className="space-y-8">
-
       {/* Page Heading */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
@@ -179,11 +162,8 @@ function AdminCategories() {
 
       {/* Add Category */}
       <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-6">
-
         <div className="mb-5">
-          <h2 className="text-xl font-bold text-gray-800">
-            Add Category
-          </h2>
+          <h2 className="text-xl font-bold text-gray-800">Add Category</h2>
 
           <p className="text-sm text-gray-500 mt-1">
             Create a new category for your products.
@@ -208,20 +188,16 @@ function AdminCategories() {
             disabled={saving}
             className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-medium px-6 py-3 rounded-lg transition"
           >
-            {saving ? 'Adding...' : '+ Add Category'}
+            {saving ? "Adding..." : "+ Add Category"}
           </button>
         </form>
       </section>
 
-      
       {/* Categories List */}
       <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-6">
-
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
           <div>
-            <h2 className="text-xl font-bold text-gray-800">
-              Categories List
-            </h2>
+            <h2 className="text-xl font-bold text-gray-800">Categories List</h2>
 
             <p className="text-sm text-gray-500 mt-1">
               View and manage all your categories.
@@ -288,9 +264,7 @@ function AdminCategories() {
                       key={category.id}
                       className="border-b last:border-b-0 hover:bg-gray-50 transition"
                     >
-                      <td className="p-4 text-gray-500">
-                        #{category.id}
-                      </td>
+                      <td className="p-4 text-gray-500">#{category.id}</td>
 
                       <td className="p-4 font-medium text-gray-800">
                         {category.name}
@@ -314,7 +288,6 @@ function AdminCategories() {
         )}
       </section>
 
-
       {/* Shared Popup */}
       <Popup
         isOpen={popup.isOpen}
@@ -324,9 +297,8 @@ function AdminCategories() {
         onConfirm={handlePopupConfirm}
         onCancel={closePopup}
       />
-
     </div>
-  )
+  );
 }
 
-export default AdminCategories
+export default AdminCategories;

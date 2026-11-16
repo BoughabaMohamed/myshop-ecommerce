@@ -1,32 +1,24 @@
 console.log("Admin Users JS loaded");
 
-
 // =====================================================
 // API
 // =====================================================
 
 const USERS_API = "http://localhost:3000/users";
 
-
 // =====================================================
 // HTML ELEMENTS
 // =====================================================
 
-const usersContainer =
-    document.getElementById("usersContainer");
+const usersContainer = document.getElementById("usersContainer");
 
-const userSearch =
-    document.getElementById("userSearch");
+const userSearch = document.getElementById("userSearch");
 
-const usersCount =
-    document.getElementById("usersCount");
+const usersCount = document.getElementById("usersCount");
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-const logoutBtnMobile =
-    document.getElementById("logoutBtnMobile");
-
+const logoutBtnMobile = document.getElementById("logoutBtnMobile");
 
 // =====================================================
 // VARIABLES
@@ -34,50 +26,36 @@ const logoutBtnMobile =
 
 let users = [];
 
-
 // =====================================================
 // GET TOKEN
 // =====================================================
 
 function getToken() {
-
-    return (
-        localStorage.getItem("token") ||
-        localStorage.getItem("authToken") ||
-        localStorage.getItem("accessToken") ||
-        ""
-    );
-
+  return (
+    localStorage.getItem("token") ||
+    localStorage.getItem("authToken") ||
+    localStorage.getItem("accessToken") ||
+    ""
+  );
 }
-
-
-
-
-
 
 // =====================================================
 // LOAD USERS
 // =====================================================
 
 async function loadUsers() {
+  try {
+    const token = getToken();
 
-    try {
+    // ---------------------------------------------
+    // CHECK TOKEN
+    // ---------------------------------------------
 
-        const token = getToken();
+    if (!token) {
+      console.error("No token found.");
 
-
-        // ---------------------------------------------
-        // CHECK TOKEN
-        // ---------------------------------------------
-
-        if (!token) {
-
-            console.error("No token found.");
-
-
-            if (usersContainer) {
-
-                usersContainer.innerHTML = `
+      if (usersContainer) {
+        usersContainer.innerHTML = `
                     <div class="p-8 text-center">
 
                         <div class="text-red-500 font-semibold">
@@ -86,125 +64,75 @@ async function loadUsers() {
 
                     </div>
                 `;
+      }
 
-            }
+      return;
+    }
 
-            return;
-        }
+    // ---------------------------------------------
+    // REQUEST
+    // ---------------------------------------------
 
+    const response = await fetch(USERS_API, {
+      method: "GET",
 
-        // ---------------------------------------------
-        // REQUEST
-        // ---------------------------------------------
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
 
-        const response =
-            await fetch(
-                USERS_API,
-                {
-                    method: "GET",
+    console.log("Users status:", response.status);
 
-                    headers: {
-                        "Authorization": "Bearer " + token
-                    }
+    // ---------------------------------------------
+    // ERROR
+    // ---------------------------------------------
 
-                }
-            );
+    if (!response.ok) {
+      const errorText = await response.text();
 
+      console.error("Users API error:", errorText);
 
-        console.log(
-            "Users status:",
-            response.status
-        );
+      throw new Error("Failed to load users: " + response.status);
+    }
 
+    // ---------------------------------------------
+    // DATA
+    // ---------------------------------------------
 
-        // ---------------------------------------------
-        // ERROR
-        // ---------------------------------------------
+    const data = await response.json();
 
-        if (!response.ok) {
+    console.log("Users response:", data);
 
-            const errorText =
-                await response.text();
+    // ---------------------------------------------
+    // SUPPORT ARRAY OR OBJECT
+    // ---------------------------------------------
 
-            console.error(
-                "Users API error:",
-                errorText
-            );
+    if (Array.isArray(data)) {
+      users = data;
+    } else if (Array.isArray(data.users)) {
+      users = data.users;
+    } else {
+      users = [];
+    }
 
+    // ---------------------------------------------
+    // COUNT
+    // ---------------------------------------------
 
-            throw new Error(
-                "Failed to load users: " +
-                response.status
-            );
+    if (usersCount) {
+      usersCount.textContent = users.length;
+    }
 
-        }
+    // ---------------------------------------------
+    // DISPLAY
+    // ---------------------------------------------
 
+    displayUsers(users);
+  } catch (error) {
+    console.error("Users error:", error);
 
-        // ---------------------------------------------
-        // DATA
-        // ---------------------------------------------
-
-        const data =
-            await response.json();
-
-
-        console.log(
-            "Users response:",
-            data
-        );
-
-
-        // ---------------------------------------------
-        // SUPPORT ARRAY OR OBJECT
-        // ---------------------------------------------
-
-        if (Array.isArray(data)) {
-
-            users = data;
-
-        } else if (
-            Array.isArray(data.users)
-        ) {
-
-            users = data.users;
-
-        } else {
-
-            users = [];
-
-        }
-
-
-        // ---------------------------------------------
-        // COUNT
-        // ---------------------------------------------
-
-        if (usersCount) {
-
-            usersCount.textContent =
-                users.length;
-
-        }
-
-
-        // ---------------------------------------------
-        // DISPLAY
-        // ---------------------------------------------
-
-        displayUsers(users);
-
-
-    } catch (error) {
-
-        console.error(
-            "Users error:",
-            error
-        );
-
-
-        if (usersContainer) {
-
-            usersContainer.innerHTML = `
+    if (usersContainer) {
+      usersContainer.innerHTML = `
                 <div class="p-8 text-center">
 
                     <div class="text-red-500 font-semibold">
@@ -217,47 +145,29 @@ async function loadUsers() {
 
                 </div>
             `;
-
-        }
-
-
-        showPopup(
-            "Error",
-            "Unable to load users.",
-            "error"
-        );
-
     }
 
+    showPopup("Error", "Unable to load users.", "error");
+  }
 }
-
 
 // =====================================================
 // DISPLAY USERS
 // =====================================================
 
 function displayUsers(list) {
+  if (!usersContainer) {
+    console.error("#usersContainer not found.");
 
-    if (!usersContainer) {
+    return;
+  }
 
-        console.error(
-            "#usersContainer not found."
-        );
+  // ---------------------------------------------
+  // EMPTY
+  // ---------------------------------------------
 
-        return;
-    }
-
-
-    // ---------------------------------------------
-    // EMPTY
-    // ---------------------------------------------
-
-    if (
-        !list ||
-        list.length === 0
-    ) {
-
-        usersContainer.innerHTML = `
+  if (!list || list.length === 0) {
+    usersContainer.innerHTML = `
             <div class="p-10 text-center">
 
                 <div class="text-gray-400 text-4xl mb-3">
@@ -271,17 +181,16 @@ function displayUsers(list) {
             </div>
         `;
 
-        return;
-    }
+    return;
+  }
 
+  // ---------------------------------------------
+  // TABLE
+  // ---------------------------------------------
 
-    // ---------------------------------------------
-    // TABLE
-    // ---------------------------------------------
+  usersContainer.innerHTML = `
 
-    usersContainer.innerHTML = `
-
-        <table class="w-full min-w-[700px]">
+        <table class="w-full min-w-175">
 
             <thead class="bg-gray-50 border-b border-gray-200">
 
@@ -325,75 +234,50 @@ function displayUsers(list) {
 
     `;
 
+  const tableBody = document.getElementById("usersTableBody");
 
-    const tableBody =
-        document.getElementById("usersTableBody");
+  if (!tableBody) return;
 
+  // ---------------------------------------------
+  // CREATE ROWS
+  // ---------------------------------------------
 
-    if (!tableBody) return;
+  list.forEach((user) => {
+    const row = document.createElement("tr");
 
+    row.className = "hover:bg-gray-50 transition";
 
-    // ---------------------------------------------
-    // CREATE ROWS
-    // ---------------------------------------------
+    // -----------------------------------------
+    // USER ID
+    // -----------------------------------------
 
-    list.forEach(user => {
+    const userId = user.id || user._id || "";
 
-        const row =
-            document.createElement("tr");
+    // -----------------------------------------
+    // NAME
+    // -----------------------------------------
 
+    const name = user.name || user.username || "No name";
 
-        row.className =
-            "hover:bg-gray-50 transition";
+    // -----------------------------------------
+    // EMAIL
+    // -----------------------------------------
 
+    const email = user.email || "No email";
 
-        // -----------------------------------------
-        // USER ID
-        // -----------------------------------------
+    // -----------------------------------------
+    // ROLE
+    // -----------------------------------------
 
-        const userId =
-            user.id ||
-            user._id ||
-            "";
+    const role = user.role || "user";
 
+    const isAdmin = String(role).toLowerCase() === "admin";
 
-        // -----------------------------------------
-        // NAME
-        // -----------------------------------------
+    // -----------------------------------------
+    // ROW
+    // -----------------------------------------
 
-        const name =
-            user.name ||
-            user.username ||
-            "No name";
-
-
-        // -----------------------------------------
-        // EMAIL
-        // -----------------------------------------
-
-        const email =
-            user.email ||
-            "No email";
-
-
-        // -----------------------------------------
-        // ROLE
-        // -----------------------------------------
-
-        const role =
-            user.role ||
-            "user";
-
-
-        const isAdmin =
-            String(role).toLowerCase() === "admin";
-
-
-        // -----------------------------------------
-        // ROW
-        // -----------------------------------------
-
-        row.innerHTML = `
+    row.innerHTML = `
 
             <!-- ID -->
 
@@ -433,8 +317,8 @@ function displayUsers(list) {
             <td class="px-5 py-4">
 
                 ${
-                    isAdmin
-                        ? `
+                  isAdmin
+                    ? `
                             <span class="inline-flex items-center
                                    px-3 py-1 rounded-full
                                    text-xs font-semibold
@@ -442,7 +326,7 @@ function displayUsers(list) {
                                 Admin
                             </span>
                           `
-                        : `
+                    : `
                             <span class="inline-flex items-center
                                    px-3 py-1 rounded-full
                                    text-xs font-semibold
@@ -473,355 +357,207 @@ function displayUsers(list) {
 
         `;
 
-
-        tableBody.appendChild(row);
-
-    });
-
+    tableBody.appendChild(row);
+  });
 }
-
 
 // =====================================================
 // SEARCH USERS
 // =====================================================
 
 if (userSearch) {
+  userSearch.addEventListener("input", function () {
+    const value = userSearch.value.toLowerCase().trim();
 
-    userSearch.addEventListener(
-        "input",
-        function () {
+    // -----------------------------------------
+    // SHOW ALL
+    // -----------------------------------------
 
-            const value =
-                userSearch.value
-                    .toLowerCase()
-                    .trim();
+    if (!value) {
+      displayUsers(users);
 
+      return;
+    }
 
-            // -----------------------------------------
-            // SHOW ALL
-            // -----------------------------------------
+    // -----------------------------------------
+    // FILTER
+    // -----------------------------------------
 
-            if (!value) {
+    const filtered = users.filter((user) => {
+      const name = String(user.name || user.username || "").toLowerCase();
 
-                displayUsers(users);
+      const email = String(user.email || "").toLowerCase();
 
-                return;
+      const role = String(user.role || "").toLowerCase();
 
-            }
+      return (
+        name.includes(value) || email.includes(value) || role.includes(value)
+      );
+    });
 
-
-            // -----------------------------------------
-            // FILTER
-            // -----------------------------------------
-
-            const filtered =
-                users.filter(user => {
-
-                    const name =
-                        String(
-                            user.name ||
-                            user.username ||
-                            ""
-                        ).toLowerCase();
-
-
-                    const email =
-                        String(
-                            user.email ||
-                            ""
-                        ).toLowerCase();
-
-
-                    const role =
-                        String(
-                            user.role ||
-                            ""
-                        ).toLowerCase();
-
-
-                    return (
-                        name.includes(value) ||
-                        email.includes(value) ||
-                        role.includes(value)
-                    );
-
-                });
-
-
-            displayUsers(filtered);
-
-        }
-    );
-
+    displayUsers(filtered);
+  });
 }
-
 
 // =====================================================
 // DELETE USER
 // =====================================================
 
 async function deleteUser(id) {
+  const user = users.find((user) => String(user.id || user._id) === String(id));
 
-    const user =
-        users.find(
-            user =>
-                String(
-                    user.id ||
-                    user._id
-                ) === String(id)
-        );
+  const userName = user?.name || user?.username || "this user";
 
+  // ---------------------------------------------
+  // CONFIRMATION
+  // ---------------------------------------------
 
-    const userName =
-        user?.name ||
-        user?.username ||
-        "this user";
-
-
-    // ---------------------------------------------
-    // CONFIRMATION
-    // ---------------------------------------------
-
-    const confirmed = await window.showConfirmPopup(
+  const confirmed = await window.showConfirmPopup(
     "Delete User",
-    `Are you sure you want to delete "${userName}"?`
-    );
+    `Are you sure you want to delete "${userName}"?`,
+  );
 
-    if (!confirmed) return;
+  if (!confirmed) return;
 
+  try {
+    const token = getToken();
 
-    try {
+    if (!token) {
+      showPopup("Error", "You are not logged in.", "error");
 
-        const token =
-            getToken();
-
-
-        if (!token) {
-
-            showPopup(
-                "Error",
-                "You are not logged in.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        // -----------------------------------------
-        // DELETE REQUEST
-        // -----------------------------------------
-
-        const response =
-            await fetch(
-                USERS_API + "/" + id,
-                {
-                    method: "DELETE",
-
-                    headers: {
-                        "Authorization":
-                            "Bearer " + token
-                    }
-
-                }
-            );
-
-
-        console.log(
-            "Delete user status:",
-            response.status
-        );
-
-
-        // -----------------------------------------
-        // RESPONSE
-        // -----------------------------------------
-
-        let data = {};
-
-
-        try {
-
-            data =
-                await response.json();
-
-        } catch {
-
-            data = {};
-
-        }
-
-
-        // -----------------------------------------
-        // ERROR
-        // -----------------------------------------
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "Failed to delete user."
-            );
-
-        }
-
-
-        // -----------------------------------------
-        // REMOVE FROM ARRAY
-        // -----------------------------------------
-
-        users =
-            users.filter(
-                user =>
-                    String(
-                        user.id ||
-                        user._id
-                    ) !== String(id)
-            );
-
-
-        // -----------------------------------------
-        // UPDATE COUNT
-        // -----------------------------------------
-
-        if (usersCount) {
-
-            usersCount.textContent =
-                users.length;
-
-        }
-
-
-        // -----------------------------------------
-        // DISPLAY
-        // -----------------------------------------
-
-        displayUsers(users);
-
-
-        // -----------------------------------------
-        // SUCCESS
-        // -----------------------------------------
-
-        showPopup(
-            "Success",
-            data.message ||
-            "User deleted successfully.",
-            "success"
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "Delete user error:",
-            error
-        );
-
-
-        showPopup(
-            "Error",
-            error.message ||
-            "User could not be deleted.",
-            "error"
-        );
-
+      return;
     }
 
-}
+    // -----------------------------------------
+    // DELETE REQUEST
+    // -----------------------------------------
 
+    const response = await fetch(USERS_API + "/" + id, {
+      method: "DELETE",
+
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    console.log("Delete user status:", response.status);
+
+    // -----------------------------------------
+    // RESPONSE
+    // -----------------------------------------
+
+    let data = {};
+
+    try {
+      data = await response.json();
+    } catch {
+      data = {};
+    }
+
+    // -----------------------------------------
+    // ERROR
+    // -----------------------------------------
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to delete user.");
+    }
+
+    // -----------------------------------------
+    // REMOVE FROM ARRAY
+    // -----------------------------------------
+
+    users = users.filter((user) => String(user.id || user._id) !== String(id));
+
+    // -----------------------------------------
+    // UPDATE COUNT
+    // -----------------------------------------
+
+    if (usersCount) {
+      usersCount.textContent = users.length;
+    }
+
+    // -----------------------------------------
+    // DISPLAY
+    // -----------------------------------------
+
+    displayUsers(users);
+
+    // -----------------------------------------
+    // SUCCESS
+    // -----------------------------------------
+
+    showPopup(
+      "Success",
+      data.message || "User deleted successfully.",
+      "success",
+    );
+  } catch (error) {
+    console.error("Delete user error:", error);
+
+    showPopup("Error", error.message || "User could not be deleted.", "error");
+  }
+}
 
 // =====================================================
 // LOGOUT
 // =====================================================
 
 function logout(event) {
+  if (event) {
+    event.preventDefault();
+  }
 
-    if (event) {
-        event.preventDefault();
-    }
+  localStorage.removeItem("token");
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("user");
 
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("authToken");
+  sessionStorage.removeItem("accessToken");
+  sessionStorage.removeItem("user");
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
-
-
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("authToken");
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("user");
-
-
-    window.location.href =
-        "./admin-login.html";
-
+  window.location.href = "./admin-login.html";
 }
-
 
 // Desktop logout
 
 if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        logout
-    );
-
+  logoutBtn.addEventListener("click", logout);
 }
-
 
 // Mobile logout
 
 if (logoutBtnMobile) {
-
-    logoutBtnMobile.addEventListener(
-        "click",
-        logout
-    );
-
+  logoutBtnMobile.addEventListener("click", logout);
 }
-
 
 // =====================================================
 // ESCAPE HTML
 // =====================================================
 
 function escapeHTML(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
+  return String(value)
+    .replace(/&/g, "&amp;")
 
-        return "";
+    .replace(/</g, "&lt;")
 
-    }
+    .replace(/>/g, "&gt;")
 
+    .replace(/"/g, "&quot;")
 
-    return String(value)
-
-        .replace(/&/g, "&amp;")
-
-        .replace(/</g, "&lt;")
-
-        .replace(/>/g, "&gt;")
-
-        .replace(/"/g, "&quot;")
-
-        .replace(/'/g, "&#039;");
-
+    .replace(/'/g, "&#039;");
 }
-
 
 // =====================================================
 // GLOBAL FUNCTION
 // =====================================================
 
-window.deleteUser =
-    deleteUser;
-
+window.deleteUser = deleteUser;
 
 // =====================================================
 // START

@@ -1,43 +1,64 @@
 
-import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
-import { useCart } from '../CartContext'
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useCart } from "../useCart";
 
 function ProductDetails() {
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+  const { id } = useParams();
 
-  const { addToCart } = useCart()
+  const [request, setRequest] = useState({
+    id: null,
+    status: "loading",
+    product: null,
+  });
+
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    setLoading(true)
-    setError(false)
+    const controller = new AbortController();
 
-    fetch('http://localhost:3000/products')
+    fetch("http://localhost:3000/products", {
+      signal: controller.signal,
+    })
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to load products')
+          throw new Error("Failed to load products");
         }
 
-        return response.json()
+        return response.json();
       })
       .then((data) => {
         const foundProduct = data.find(
-          (item) => String(item.id) === String(id)
-        )
+          (item) => String(item.id) === String(id),
+        );
 
-        setProduct(foundProduct || null)
+        setRequest({
+          id,
+          status: "success",
+          product: foundProduct || null,
+        });
       })
       .catch((error) => {
-        console.error(error)
-        setError(true)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [id])
+        if (error.name === "AbortError") return;
+
+        console.error(error);
+
+        setRequest({
+          id,
+          status: "error",
+          product: null,
+        });
+      });
+
+    return () => controller.abort();
+  }, [id]);
+
+  const loading = request.id !== id || request.status === "loading";
+  const error = request.id === id && request.status === "error";
+  const product =
+    request.id === id && request.status === "success"
+      ? request.product
+      : null;
 
   if (loading) {
     return (
@@ -46,7 +67,7 @@ function ProductDetails() {
           Loading product...
         </p>
       </main>
-    )
+    );
   }
 
   if (error) {
@@ -60,12 +81,15 @@ function ProductDetails() {
           <p className="text-gray-500 mb-6">
             Could not load the product.
           </p>
-          <Link to="/products" className="text-blue-600 font-semibold hover:text-blue-700">
+          <Link
+            to="/products"
+            className="text-blue-600 font-semibold hover:text-blue-700"
+          >
             ← Back to Products
           </Link>
         </div>
       </main>
-    )
+    );
   }
 
   if (!product) {
@@ -87,15 +111,15 @@ function ProductDetails() {
           </Link>
         </div>
       </main>
-    )
+    );
   }
 
-  const inStock = Number(product.stock) > 0
+  const inStock = Number(product.stock) > 0;
 
   return (
     <>
       {/* Hero */}
-      <section className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
+      <section className="bg-linear-to-r from-blue-600 to-cyan-500 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 text-center">
           <p className="text-sm font-semibold tracking-wider text-blue-100 mb-3">
             MYSHOP STORE
@@ -110,7 +134,6 @@ function ProductDetails() {
       {/* Product Details */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sm:p-8 lg:p-10">
-
           <Link
             to="/products"
             className="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-700 mb-8 transition"
@@ -119,13 +142,12 @@ function ProductDetails() {
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-
             {/* Product Image */}
-            <div className="bg-gray-50 rounded-2xl p-6 sm:p-10 min-h-[300px] flex items-center justify-center overflow-hidden">
+            <div className="bg-gray-50 rounded-2xl p-6 sm:p-10 min-h-75 flex items-center justify-center overflow-hidden">
               <img
                 src={`http://localhost:3000/uploads/${product.image}`}
                 alt={product.name}
-                className="max-w-full w-full max-w-md h-72 sm:h-96 object-contain transition duration-300 hover:scale-105"
+                className="max-w-ful w-full max-w-md h-72 sm:h-96 object-contain transition duration-300 hover:scale-105"
               />
             </div>
 
@@ -140,7 +162,7 @@ function ProductDetails() {
               </h2>
 
               <p className="text-gray-500 leading-relaxed mb-6">
-                {product.description || 'No description available.'}
+                {product.description || "No description available."}
               </p>
 
               <p className="text-3xl font-bold text-blue-600 mb-5">
@@ -152,8 +174,12 @@ function ProductDetails() {
                   Availability:
                 </span>
 
-                <span className={`text-sm font-semibold ${inStock ? 'text-green-600' : 'text-red-600'}`}>
-                  {inStock ? `In Stock (${product.stock})` : 'Out of stock'}
+                <span
+                  className={`text-sm font-semibold ${inStock ? "text-green-600" : "text-red-600"}`}
+                >
+                  {inStock
+                    ? `In Stock (${product.stock})`
+                    : "Out of stock"}
                 </span>
               </div>
 
@@ -163,7 +189,7 @@ function ProductDetails() {
                 disabled={!inStock}
                 className="w-full sm:w-auto rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 px-8 transition duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {inStock ? 'Add to Cart' : 'Out of Stock'}
+                {inStock ? "Add to Cart" : "Out of Stock"}
               </button>
 
               <div className="mt-6">
@@ -175,12 +201,11 @@ function ProductDetails() {
                 </Link>
               </div>
             </div>
-
           </div>
         </div>
       </main>
     </>
-  )
+  );
 }
 
-export default ProductDetails
+export default ProductDetails;

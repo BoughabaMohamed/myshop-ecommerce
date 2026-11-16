@@ -1,49 +1,47 @@
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
-function Toast({ message, type = 'success', onClose }) {
+function Toast({ message, type = "success", onClose }) {
   useEffect(() => {
-    if (!message) return
+    if (!message) return;
 
     const timer = setTimeout(() => {
-      onClose()
-    }, 3500)
+      onClose();
+    }, 3500);
 
-    return () => clearTimeout(timer)
-  }, [message, onClose])
+    return () => clearTimeout(timer);
+  }, [message, onClose]);
 
-  if (!message) return null
+  if (!message) return null;
 
   const styles = {
     success: {
-      icon: '✓',
-      color: 'border-green-500 text-green-600',
+      icon: "✓",
+      color: "border-green-500 text-green-600",
     },
     error: {
-      icon: '✕',
-      color: 'border-red-500 text-red-600',
+      icon: "✕",
+      color: "border-red-500 text-red-600",
     },
     warning: {
-      icon: '!',
-      color: 'border-orange-500 text-orange-600',
+      icon: "!",
+      color: "border-orange-500 text-orange-600",
     },
     info: {
-      icon: 'i',
-      color: 'border-blue-500 text-blue-600',
+      icon: "i",
+      color: "border-blue-500 text-blue-600",
     },
-  }
+  };
 
-  const currentStyle = styles[type] || styles.success
+  const currentStyle = styles[type] || styles.success;
 
   return (
-    <div className="fixed right-4 top-24 z-[100] w-[calc(100%-2rem)] max-w-sm animate-[slideIn_0.3s_ease-out] rounded-xl border-l-4 bg-white p-4 shadow-xl">
+    <div className="fixed right-4 top-24 z-100 w-[calc(100%-2rem)] max-w-sm animate-[slideIn_0.3s_ease-out] rounded-xl border-l-4 bg-white p-4 shadow-xl">
       <div className="flex items-center gap-3">
         <span className={`text-xl font-bold ${currentStyle.color}`}>
           {currentStyle.icon}
         </span>
 
-        <p className="flex-1 text-sm font-medium text-gray-700">
-          {message}
-        </p>
+        <p className="flex-1 text-sm font-medium text-gray-700">{message}</p>
 
         <button
           onClick={onClose}
@@ -54,7 +52,7 @@ function Toast({ message, type = 'success', onClose }) {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default Toast
+export default Toast;

@@ -1,31 +1,30 @@
+import { Routes, Route } from "react-router-dom";
 
-import { Routes, Route } from 'react-router-dom'
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import Features from "./components/Features";
+import FeaturedProducts from "./components/FeaturedProducts";
+import CartDrawer from "./components/CartDrawer";
+import Toast from "./components/Toast";
+import Cart from "./components/Cart";
+import Products from "./components/Products";
+import CTA from "./components/CTA";
+import Footer from "./components/Footer";
+import ProductDetails from "./components/ProductDetails";
+import Contact from "./components/Contact";
 
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Features from './components/Features'
-import FeaturedProducts from './components/FeaturedProducts'
-import CartDrawer from './components/CartDrawer'
-import Toast from './components/Toast'
-import Cart from './components/Cart'
-import Products from './components/Products'
-import CTA from './components/CTA'
-import Footer from './components/Footer'
-import ProductDetails from './components/ProductDetails'
-import Contact from './components/Contact'
-
-import { useCart } from './CartContext'
+import { useCart } from "./useCart";
 
 // Admin components
-import AdminLayout from './admin/components/AdminLayout'
-import AdminProtectedRoute from './admin/components/AdminProtectedRoute'
+import AdminLayout from "./admin/components/AdminLayout";
+import AdminProtectedRoute from "./admin/components/AdminProtectedRoute";
 
 // Admin pages
-import AdminLogin from './admin/pages/AdminLogin'
-import AdminProducts from './admin/pages/AdminProducts'
-import AdminCategories from './admin/pages/AdminCategories'
-import AdminUsers from './admin/pages/AdminUsers'
-import AdminOrders from './admin/pages/AdminOrders'
+import AdminLogin from "./admin/pages/AdminLogin";
+import AdminProducts from "./admin/pages/AdminProducts";
+import AdminCategories from "./admin/pages/AdminCategories";
+import AdminUsers from "./admin/pages/AdminUsers";
+import AdminOrders from "./admin/pages/AdminOrders";
 
 function Home() {
   return (
@@ -35,11 +34,11 @@ function Home() {
       <FeaturedProducts />
       <CTA />
     </>
-  )
+  );
 }
 
 function Storefront() {
-  const { toast, setToast } = useCart()
+  const { toast, setToast } = useCart();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,12 +58,10 @@ function Storefront() {
       <Toast
         message={toast.message}
         type={toast.type}
-        onClose={() =>
-          setToast({ message: '', type: 'success' })
-        }
+        onClose={() => setToast({ message: "", type: "success" })}
       />
     </div>
-  )
+  );
 }
 
 function App() {
@@ -86,7 +83,7 @@ function App() {
       {/* Storefront */}
       <Route path="/*" element={<Storefront />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;

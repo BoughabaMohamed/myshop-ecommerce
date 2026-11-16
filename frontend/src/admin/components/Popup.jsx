@@ -1,61 +1,60 @@
-
-import { useEffect } from 'react'
+import { useEffect } from "react";
 
 function Popup({
   isOpen,
-  type = 'success',
+  type = "success",
   title,
   message,
   onConfirm,
   onCancel,
 }) {
   useEffect(() => {
-    if (!isOpen) return
+    if (!isOpen) return;
 
     const handleEscape = (event) => {
-      if (event.key === 'Escape') {
-        onCancel?.()
+      if (event.key === "Escape") {
+        onCancel?.();
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleEscape)
+    window.addEventListener("keydown", handleEscape);
 
     return () => {
-      window.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen, onCancel])
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [isOpen, onCancel]);
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   const styles = {
     success: {
-      icon: '✓',
-      iconClass: 'bg-green-100 text-green-600',
-      buttonClass: 'bg-green-600 hover:bg-green-700',
-      defaultTitle: 'Success',
+      icon: "✓",
+      iconClass: "bg-green-100 text-green-600",
+      buttonClass: "bg-green-600 hover:bg-green-700",
+      defaultTitle: "Success",
     },
     error: {
-      icon: '✕',
-      iconClass: 'bg-red-100 text-red-600',
-      buttonClass: 'bg-red-600 hover:bg-red-700',
-      defaultTitle: 'Error',
+      icon: "✕",
+      iconClass: "bg-red-100 text-red-600",
+      buttonClass: "bg-red-600 hover:bg-red-700",
+      defaultTitle: "Error",
     },
     warning: {
-      icon: '!',
-      iconClass: 'bg-yellow-100 text-yellow-600',
-      buttonClass: 'bg-yellow-600 hover:bg-yellow-700',
-      defaultTitle: 'Warning',
+      icon: "!",
+      iconClass: "bg-yellow-100 text-yellow-600",
+      buttonClass: "bg-yellow-600 hover:bg-yellow-700",
+      defaultTitle: "Warning",
     },
     confirm: {
-      icon: '?',
-      iconClass: 'bg-blue-100 text-blue-600',
-      buttonClass: 'bg-blue-600 hover:bg-blue-700',
-      defaultTitle: 'Confirm Action',
+      icon: "?",
+      iconClass: "bg-blue-100 text-blue-600",
+      buttonClass: "bg-blue-600 hover:bg-blue-700",
+      defaultTitle: "Confirm Action",
     },
-  }
+  };
 
-  const currentStyle = styles[type] || styles.success
-  const isConfirm = type === 'confirm'
+  const currentStyle = styles[type] || styles.success;
+  const isConfirm = type === "confirm";
 
   return (
     <div
@@ -99,13 +98,13 @@ function Popup({
               onClick={onConfirm}
               className={`rounded-lg px-5 py-2.5 font-semibold text-white transition ${currentStyle.buttonClass}`}
             >
-              {isConfirm ? 'Confirm' : 'OK'}
+              {isConfirm ? "Confirm" : "OK"}
             </button>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default Popup
+export default Popup;

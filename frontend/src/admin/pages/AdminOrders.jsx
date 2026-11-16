@@ -1,27 +1,26 @@
+import { useEffect, useMemo, useState } from "react";
+import Popup from "../components/Popup";
 
-import { useEffect, useMemo, useState } from 'react'
-import Popup from '../components/Popup'
-
-const API_URL = 'http://localhost:3000'
+const API_URL = "http://localhost:3000";
 
 function AdminOrders() {
-  const [orders, setOrders] = useState([])
-  const [search, setSearch] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [updatingId, setUpdatingId] = useState(null)
+  const [orders, setOrders] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null);
 
   const [popup, setPopup] = useState({
     isOpen: false,
-    type: 'success',
-    title: '',
-    message: '',
-  })
+    type: "success",
+    title: "",
+    message: "",
+  });
 
   const token =
-    localStorage.getItem('token') ||
-    localStorage.getItem('authToken') ||
-    localStorage.getItem('accessToken') ||
-    ''
+    localStorage.getItem("token") ||
+    localStorage.getItem("authToken") ||
+    localStorage.getItem("accessToken") ||
+    "";
 
   const openPopup = (type, title, message) => {
     setPopup({
@@ -29,143 +28,120 @@ function AdminOrders() {
       type,
       title,
       message,
-    })
-  }
+    });
+  };
 
   const closePopup = () => {
     setPopup((previousPopup) => ({
       ...previousPopup,
       isOpen: false,
-    }))
-  }
+    }));
+  };
 
   useEffect(() => {
-    loadOrders()
-  }, [])
+    loadOrders();
+  }, []);
 
   async function loadOrders() {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const response = await fetch(`${API_URL}/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to load orders.')
+        throw new Error("Failed to load orders.");
       }
 
-      const data = await response.json()
-      setOrders(Array.isArray(data) ? data : data.orders || [])
+      const data = await response.json();
+      setOrders(Array.isArray(data) ? data : data.orders || []);
     } catch (error) {
-      openPopup(
-        'error',
-        'Error',
-        error.message || 'Something went wrong.'
-      )
+      openPopup("error", "Error", error.message || "Something went wrong.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   async function updateOrderStatus(id, status) {
     try {
-      setUpdatingId(id)
+      setUpdatingId(id);
 
       const response = await fetch(`${API_URL}/orders/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ status }),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || 'Failed to update order.')
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to update order.");
       }
 
       setOrders((previousOrders) =>
         previousOrders.map((order) =>
-          order.id === id ? { ...order, status } : order
-        )
-      )
+          order.id === id ? { ...order, status } : order,
+        ),
+      );
 
-      openPopup(
-        'success',
-        'Success',
-        'Order status updated successfully.'
-      )
+      openPopup("success", "Success", "Order status updated successfully.");
     } catch (error) {
-      openPopup(
-        'error',
-        'Error',
-        error.message || 'Something went wrong.'
-      )
+      openPopup("error", "Error", error.message || "Something went wrong.");
     } finally {
-      setUpdatingId(null)
+      setUpdatingId(null);
     }
   }
 
   const filteredOrders = useMemo(() => {
-    const value = search.toLowerCase().trim()
+    const value = search.toLowerCase().trim();
 
-    if (!value) return orders
+    if (!value) return orders;
 
     return orders.filter((order) =>
-      [
-        order.id,
-        order.user_name,
-        order.address,
-        order.status,
-      ]
-        .join(' ')
+      [order.id, order.user_name, order.address, order.status]
+        .join(" ")
         .toLowerCase()
-        .includes(value)
-    )
-  }, [orders, search])
+        .includes(value),
+    );
+  }, [orders, search]);
 
   function getStatusStyle(status) {
     const styles = {
-      Pending: 'bg-yellow-100 text-yellow-800',
-      Processing: 'bg-blue-100 text-blue-800',
-      Delivered: 'bg-green-100 text-green-800',
-      Cancelled: 'bg-red-100 text-red-800',
-    }
+      Pending: "bg-yellow-100 text-yellow-800",
+      Processing: "bg-blue-100 text-blue-800",
+      Delivered: "bg-green-100 text-green-800",
+      Cancelled: "bg-red-100 text-red-800",
+    };
 
-    return styles[status] || 'bg-gray-100 text-gray-700'
+    return styles[status] || "bg-gray-100 text-gray-700";
   }
 
   return (
     <div className="space-y-8">
-
       {/* Page Heading */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
           Manage Orders
         </h1>
 
-        <p className="text-gray-500 mt-2">
-          View and manage customer orders.
-        </p>
+        <p className="text-gray-500 mt-2">View and manage customer orders.</p>
       </div>
 
       {/* Orders Summary and Search */}
       <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-
           <div className="flex items-center gap-4">
             <div className="bg-orange-100 text-orange-600 rounded-xl p-4">
               <span className="text-2xl">📦</span>
             </div>
 
             <div>
-              <p className="text-sm text-gray-500 font-medium">
-                Total Orders
-              </p>
+              <p className="text-sm text-gray-500 font-medium">Total Orders</p>
 
               <p className="text-3xl font-bold text-gray-800 mt-1">
                 {orders.length}
@@ -183,14 +159,10 @@ function AdminOrders() {
         </div>
       </section>
 
-      
       {/* Orders Table */}
       <section className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-6">
-
         <div className="mb-5">
-          <h2 className="text-xl font-bold text-gray-800">
-            Orders List
-          </h2>
+          <h2 className="text-xl font-bold text-gray-800">Orders List</h2>
 
           <p className="text-sm text-gray-500 mt-1">
             View customer orders and update their status.
@@ -198,13 +170,9 @@ function AdminOrders() {
         </div>
 
         {loading ? (
-          <p className="text-center py-10 text-gray-500">
-            Loading orders...
-          </p>
+          <p className="text-center py-10 text-gray-500">Loading orders...</p>
         ) : filteredOrders.length === 0 ? (
-          <p className="text-center py-10 text-gray-500">
-            No orders found.
-          </p>
+          <p className="text-center py-10 text-gray-500">No orders found.</p>
         ) : (
           <>
             {/* Mobile Cards */}
@@ -221,7 +189,7 @@ function AdminOrders() {
 
                     <span
                       className={`rounded-full px-3 py-1.5 text-xs font-semibold ${getStatusStyle(
-                        order.status
+                        order.status,
                       )}`}
                     >
                       {order.status}
@@ -232,7 +200,7 @@ function AdminOrders() {
                     <div>
                       <p className="text-gray-500">Customer</p>
                       <p className="font-medium text-gray-800 break-words">
-                        {order.user_name || 'Unknown'}
+                        {order.user_name || "Unknown"}
                       </p>
                     </div>
 
@@ -246,7 +214,7 @@ function AdminOrders() {
                     <div>
                       <p className="text-gray-500">Address</p>
                       <p className="text-gray-700 break-words">
-                        {order.address || '—'}
+                        {order.address || "—"}
                       </p>
                     </div>
 
@@ -255,7 +223,7 @@ function AdminOrders() {
                       <p className="text-gray-700">
                         {order.order_date
                           ? new Date(order.order_date).toLocaleDateString()
-                          : '—'}
+                          : "—"}
                       </p>
                     </div>
                   </div>
@@ -266,7 +234,7 @@ function AdminOrders() {
                     </label>
 
                     <select
-                      value={order.status || 'Pending'}
+                      value={order.status || "Pending"}
                       disabled={updatingId === order.id}
                       onChange={(event) =>
                         updateOrderStatus(order.id, event.target.value)
@@ -314,7 +282,7 @@ function AdminOrders() {
                       </td>
 
                       <td className="p-4 text-gray-700">
-                        {order.user_name || 'Unknown'}
+                        {order.user_name || "Unknown"}
                       </td>
 
                       <td className="p-4 font-medium text-gray-800">
@@ -322,27 +290,27 @@ function AdminOrders() {
                       </td>
 
                       <td className="p-4 text-gray-600 max-w-xs break-words">
-                        {order.address || '—'}
+                        {order.address || "—"}
                       </td>
 
                       <td className="p-4 text-gray-600">
                         {order.order_date
                           ? new Date(order.order_date).toLocaleDateString()
-                          : '—'}
+                          : "—"}
                       </td>
 
                       <td className="p-4">
                         <div className="flex flex-col items-start gap-2">
                           <span
                             className={`rounded-full px-3 py-1.5 text-xs font-semibold ${getStatusStyle(
-                              order.status
+                              order.status,
                             )}`}
                           >
                             {order.status}
                           </span>
 
                           <select
-                            value={order.status || 'Pending'}
+                            value={order.status || "Pending"}
                             disabled={updatingId === order.id}
                             onChange={(event) =>
                               updateOrderStatus(order.id, event.target.value)
@@ -371,7 +339,6 @@ function AdminOrders() {
         )}
       </section>
 
-
       {/* Shared Popup */}
       <Popup
         isOpen={popup.isOpen}
@@ -381,9 +348,8 @@ function AdminOrders() {
         onConfirm={closePopup}
         onCancel={closePopup}
       />
-
     </div>
-  )
+  );
 }
 
-export default AdminOrders
+export default AdminOrders;

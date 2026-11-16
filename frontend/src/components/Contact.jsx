@@ -1,87 +1,76 @@
-
-import { useState } from 'react'
-import { useCart } from '../CartContext'
+import { useState } from "react";
+import { useCart } from "../useCart";
 
 function Contact() {
-  const { showToast } = useCart()
+  const { showToast } = useCart();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  })
+    name: "",
+    email: "",
+    message: "",
+  });
 
   function handleChange(event) {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
     setFormData((current) => ({
       ...current,
       [name]: value,
-    }))
+    }));
   }
 
   function handleSubmit(event) {
-  event.preventDefault()
+    event.preventDefault();
 
-  showToast('Message sent successfully!', 'success')
+    showToast("Message sent successfully!", "success");
 
-  setFormData({
-    name: '',
-    email: '',
-    message: '',
-  })
-}
+    setFormData({
+      name: "",
+      email: "",
+      message: "",
+    });
+  }
 
   return (
     <>
       {/* HERO */}
-      <section className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
+      <section className="bg-linear-to-r from-blue-600 to-cyan-500 text-white">
         <div className="mx-auto max-w-7xl px-4 py-12 text-center sm:px-6 sm:py-16 lg:px-8">
           <p className="mb-3 text-sm font-semibold tracking-wider text-blue-100">
             MYSHOP STORE
           </p>
 
-          <h1 className="text-3xl font-bold sm:text-4xl">
-            Contact Us
-          </h1>
+          <h1 className="text-3xl font-bold sm:text-4xl">Contact Us</h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-blue-50">
-            Have a question or need help? We'd love to hear from you.
-            Get in touch with our team.
+            Have a question or need help? We'd love to hear from you. Get in
+            touch with our team.
           </p>
         </div>
       </section>
 
       {/* CONTACT CONTENT */}
       <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-
           {/* CONTACT INFORMATION */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-
             <h2 className="mb-3 text-2xl font-bold text-slate-900">
               Get in Touch
             </h2>
 
             <p className="mb-8 leading-relaxed text-gray-500">
-              We're here to help you. Feel free to contact us
-              whenever you need assistance.
+              We're here to help you. Feel free to contact us whenever you need
+              assistance.
             </p>
 
             <div className="space-y-6">
-
               <div className="flex items-start gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
                   📧
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-slate-900">
-                    Email
-                  </h3>
-                  <p className="mt-1 text-gray-500">
-                    support@myshop.com
-                  </p>
+                  <h3 className="font-semibold text-slate-900">Email</h3>
+                  <p className="mt-1 text-gray-500">support@myshop.com</p>
                 </div>
               </div>
 
@@ -91,12 +80,8 @@ function Contact() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-slate-900">
-                    Phone
-                  </h3>
-                  <p className="mt-1 text-gray-500">
-                    +212 600 000 000
-                  </p>
+                  <h3 className="font-semibold text-slate-900">Phone</h3>
+                  <p className="mt-1 text-gray-500">+212 600 000 000</p>
                 </div>
               </div>
 
@@ -106,27 +91,20 @@ function Contact() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-slate-900">
-                    Address
-                  </h3>
-                  <p className="mt-1 text-gray-500">
-                    Casablanca, Morocco
-                  </p>
+                  <h3 className="font-semibold text-slate-900">Address</h3>
+                  <p className="mt-1 text-gray-500">Casablanca, Morocco</p>
                 </div>
               </div>
-
             </div>
           </div>
 
           {/* CONTACT FORM */}
           <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8">
-
             <h2 className="mb-6 text-2xl font-bold text-slate-900">
               Send Us a Message
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-5">
-
               <div>
                 <label
                   htmlFor="name"
@@ -193,14 +171,12 @@ function Contact() {
               >
                 Send Message
               </button>
-
             </form>
           </div>
-
         </div>
       </main>
     </>
-  )
+  );
 }
 
-export default Contact
+export default Contact;

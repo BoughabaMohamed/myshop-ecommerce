@@ -1,4 +1,3 @@
-
 const popup = document.getElementById("popup");
 const popupTitle = document.getElementById("popupTitle");
 const popupMessage = document.getElementById("popupMessage");
@@ -13,41 +12,35 @@ let confirmResolve = null;
 // ==========================================
 
 function showPopup(title, message, type = "success") {
-    if (
-        !popup ||
-        !popupTitle ||
-        !popupMessage ||
-        !popupIcon ||
-        !popupOk
-    ) {
-        return;
-    }
+  if (!popup || !popupTitle || !popupMessage || !popupIcon || !popupOk) {
+    return;
+  }
 
-    // If a confirmation is already open, cancel it first.
-    if (confirmResolve) {
-        finishConfirmation(false);
-    }
+  // If a confirmation is already open, cancel it first.
+  if (confirmResolve) {
+    finishConfirmation(false);
+  }
 
-    popupTitle.textContent = title;
-    popupMessage.textContent = message;
+  popupTitle.textContent = title;
+  popupMessage.textContent = message;
 
-    if (type === "error") {
-        popupIcon.textContent = "✕";
-        popupIcon.className =
-            "mx-auto mb-4 w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl font-bold";
-    } else if (type === "warning") {
-        popupIcon.textContent = "!";
-        popupIcon.className =
-            "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
-    } else {
-        popupIcon.textContent = "✓";
-        popupIcon.className =
-            "mx-auto mb-4 w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold";
-    }
+  if (type === "error") {
+    popupIcon.textContent = "✕";
+    popupIcon.className =
+      "mx-auto mb-4 w-14 h-14 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-2xl font-bold";
+  } else if (type === "warning") {
+    popupIcon.textContent = "!";
+    popupIcon.className =
+      "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
+  } else {
+    popupIcon.textContent = "✓";
+    popupIcon.className =
+      "mx-auto mb-4 w-14 h-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-2xl font-bold";
+  }
 
-    popupOk.textContent = "OK";
-    popup.classList.remove("hidden");
-    popup.classList.add("flex");
+  popupOk.textContent = "OK";
+  popup.classList.remove("hidden");
+  popup.classList.add("flex");
 }
 
 // ==========================================
@@ -55,25 +48,25 @@ function showPopup(title, message, type = "success") {
 // ==========================================
 
 function closePopup() {
-    if (!popup) return;
+  if (!popup) return;
 
-    if (confirmResolve) {
-        finishConfirmation(false);
-        return;
-    }
+  if (confirmResolve) {
+    finishConfirmation(false);
+    return;
+  }
 
-    hidePopup();
+  hidePopup();
 }
 
 function hidePopup() {
-    if (!popup) return;
+  if (!popup) return;
 
-    popup.classList.add("hidden");
-    popup.classList.remove("flex");
+  popup.classList.add("hidden");
+  popup.classList.remove("flex");
 
-    if (popupOk) {
-        popupOk.textContent = "OK";
-    }
+  if (popupOk) {
+    popupOk.textContent = "OK";
+  }
 }
 
 // ==========================================
@@ -81,36 +74,30 @@ function hidePopup() {
 // ==========================================
 
 function showConfirmPopup(title, message) {
-    if (
-        !popup ||
-        !popupTitle ||
-        !popupMessage ||
-        !popupIcon ||
-        !popupOk
-    ) {
-        return Promise.resolve(false);
-    }
+  if (!popup || !popupTitle || !popupMessage || !popupIcon || !popupOk) {
+    return Promise.resolve(false);
+  }
 
-    // Prevent overlapping confirmation dialogs.
-    if (confirmResolve) {
-        finishConfirmation(false);
-    }
+  // Prevent overlapping confirmation dialogs.
+  if (confirmResolve) {
+    finishConfirmation(false);
+  }
 
-    popupTitle.textContent = title;
-    popupMessage.textContent = message;
+  popupTitle.textContent = title;
+  popupMessage.textContent = message;
 
-    popupIcon.textContent = "?";
-    popupIcon.className =
-        "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
+  popupIcon.textContent = "?";
+  popupIcon.className =
+    "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
 
-    popupOk.textContent = "Yes";
+  popupOk.textContent = "Yes";
 
-    popup.classList.remove("hidden");
-    popup.classList.add("flex");
+  popup.classList.remove("hidden");
+  popup.classList.add("flex");
 
-    return new Promise(resolve => {
-        confirmResolve = resolve;
-    });
+  return new Promise((resolve) => {
+    confirmResolve = resolve;
+  });
 }
 
 // ==========================================
@@ -118,13 +105,13 @@ function showConfirmPopup(title, message) {
 // ==========================================
 
 function finishConfirmation(result) {
-    if (!confirmResolve) return;
+  if (!confirmResolve) return;
 
-    const resolve = confirmResolve;
-    confirmResolve = null;
+  const resolve = confirmResolve;
+  confirmResolve = null;
 
-    hidePopup();
-    resolve(result);
+  hidePopup();
+  resolve(result);
 }
 
 // ==========================================
@@ -132,25 +119,25 @@ function finishConfirmation(result) {
 // ==========================================
 
 if (popupClose) {
-    popupClose.addEventListener("click", closePopup);
+  popupClose.addEventListener("click", closePopup);
 }
 
 if (popupOk) {
-    popupOk.addEventListener("click", () => {
-        if (confirmResolve) {
-            finishConfirmation(true);
-        } else {
-            closePopup();
-        }
-    });
+  popupOk.addEventListener("click", () => {
+    if (confirmResolve) {
+      finishConfirmation(true);
+    } else {
+      closePopup();
+    }
+  });
 }
 
 if (popup) {
-    popup.addEventListener("click", event => {
-        if (event.target === popup) {
-            closePopup();
-        }
-    });
+  popup.addEventListener("click", (event) => {
+    if (event.target === popup) {
+      closePopup();
+    }
+  });
 }
 
 // ==========================================

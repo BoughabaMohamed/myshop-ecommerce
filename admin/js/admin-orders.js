@@ -3,30 +3,26 @@ console.log("Admin orders JS loaded");
 const API = "http://localhost:3000";
 
 const ordersToken =
-    localStorage.getItem("token") ||
-    localStorage.getItem("authToken") ||
-    localStorage.getItem("accessToken") ||
-    "";
+  localStorage.getItem("token") ||
+  localStorage.getItem("authToken") ||
+  localStorage.getItem("accessToken") ||
+  "";
 
-const ordersTable =
-    document.getElementById("ordersTable");
-
+const ordersTable = document.getElementById("ordersTable");
 
 // =====================================================
 // LOAD ORDERS
 // =====================================================
 
 async function loadOrders() {
+  if (!ordersTable) {
+    console.error("ordersTable not found.");
+    return;
+  }
 
-    if (!ordersTable) {
-        console.error("ordersTable not found.");
-        return;
-    }
-
-    try {
-
-        // Loading
-        ordersTable.innerHTML = `
+  try {
+    // Loading
+    ordersTable.innerHTML = `
             <tr>
                 <td
                     colspan="7"
@@ -43,62 +39,43 @@ async function loadOrders() {
             </tr>
         `;
 
-
-        const response = await fetch(
-            API + "/orders",
-            {
-                headers: token
-                    ? {
-                        "Authorization": "Bearer " + ordersToken
-                    }
-                    : {}
-            }
-        );
-
-
-        if (!response.ok) {
-    const errorText = await response.text();
-
-    console.error("Orders API error:", {
-        status: response.status,
-        response: errorText
+    const response = await fetch(API + "/orders", {
+      headers: token
+        ? {
+            Authorization: "Bearer " + ordersToken,
+          }
+        : {},
     });
 
-    throw new Error(
-        `Failed to load orders: HTTP ${response.status}`
-    );
-}
+    if (!response.ok) {
+      const errorText = await response.text();
 
+      console.error("Orders API error:", {
+        status: response.status,
+        response: errorText,
+      });
 
-        const data =
-            await response.json();
+      throw new Error(`Failed to load orders: HTTP ${response.status}`);
+    }
 
+    const data = await response.json();
 
-        let orders = [];
+    let orders = [];
 
+    if (Array.isArray(data)) {
+      orders = data;
+    } else if (Array.isArray(data.orders)) {
+      orders = data.orders;
+    }
 
-        if (Array.isArray(data)) {
+    ordersTable.innerHTML = "";
 
-            orders = data;
+    // =================================================
+    // NO ORDERS
+    // =================================================
 
-        } else if (
-            Array.isArray(data.orders)
-        ) {
-
-            orders = data.orders;
-        }
-
-
-        ordersTable.innerHTML = "";
-
-
-        // =================================================
-        // NO ORDERS
-        // =================================================
-
-        if (orders.length === 0) {
-
-            ordersTable.innerHTML = `
+    if (orders.length === 0) {
+      ordersTable.innerHTML = `
                 <tr>
                     <td
                         colspan="7"
@@ -121,55 +98,27 @@ async function loadOrders() {
                 </tr>
             `;
 
-            return;
-        }
+      return;
+    }
 
+    // =================================================
+    // DISPLAY ORDERS
+    // =================================================
 
-        // =================================================
-        // DISPLAY ORDERS
-        // =================================================
+    orders.forEach((order) => {
+      let statusClass = "bg-slate-100 text-slate-700";
 
-        orders.forEach(order => {
+      if (order.status === "Pending") {
+        statusClass = "bg-yellow-100 text-yellow-700";
+      } else if (order.status === "Processing") {
+        statusClass = "bg-blue-100 text-blue-700";
+      } else if (order.status === "Delivered") {
+        statusClass = "bg-green-100 text-green-700";
+      } else if (order.status === "Cancelled") {
+        statusClass = "bg-red-100 text-red-700";
+      }
 
-            let statusClass =
-                "bg-slate-100 text-slate-700";
-
-
-            if (order.status === "Pending") {
-
-                statusClass =
-                    "bg-yellow-100 text-yellow-700";
-
-            }
-
-            else if (
-                order.status === "Processing"
-            ) {
-
-                statusClass =
-                    "bg-blue-100 text-blue-700";
-
-            }
-
-            else if (
-                order.status === "Delivered"
-            ) {
-
-                statusClass =
-                    "bg-green-100 text-green-700";
-
-            }
-
-            else if (
-                order.status === "Cancelled"
-            ) {
-
-                statusClass =
-                    "bg-red-100 text-red-700";
-            }
-
-
-            ordersTable.innerHTML += `
+      ordersTable.innerHTML += `
 
                 <tr
                     class="border-b border-slate-100 hover:bg-slate-50 transition"
@@ -280,18 +229,11 @@ async function loadOrders() {
                 </tr>
 
             `;
-        });
+    });
+  } catch (error) {
+    console.error("Error loading orders:", error);
 
-
-    } catch (error) {
-
-        console.error(
-            "Error loading orders:",
-            error
-        );
-
-
-        ordersTable.innerHTML = `
+    ordersTable.innerHTML = `
             <tr>
                 <td
                     colspan="7"
@@ -313,151 +255,92 @@ async function loadOrders() {
                 </td>
             </tr>
         `;
-    }
+  }
 }
-
 
 // =====================================================
 // UPDATE ORDER STATUS
 // =====================================================
 
 async function updateStatus(id, status) {
+  try {
+    const response = await fetch(API + "/orders/" + id, {
+      method: "PUT",
 
-    try {
+      headers: {
+        "Content-Type": "application/json",
 
-        const response = await fetch(
-            API + "/orders/" + id,
-            {
-                method: "PUT",
-
-                headers: {
-                    "Content-Type":
-                        "application/json",
-
-                    ...(token
-                        ? {
-                            "Authorization":
-                                "Bearer " + ordersToken
-                        }
-                        : {})
-                },
-
-                body: JSON.stringify({
-                    status: status
-                })
+        ...(token
+          ? {
+              Authorization: "Bearer " + ordersToken,
             }
-        );
+          : {}),
+      },
 
+      body: JSON.stringify({
+        status: status,
+      }),
+    });
 
-        const data =
-            await response.json();
+    const data = await response.json();
 
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to update order status.");
+    }
 
-        if (!response.ok) {
+    console.log("Order updated:", data);
 
-            throw new Error(
-                data.message ||
-                "Failed to update order status."
-            );
-        }
-
-
-        console.log(
-            "Order updated:",
-            data
-        );
-
-
-        // إذا كان admin-popup.js موجود
+    // إذا كان admin-popup.js موجود
     if (typeof window.showPopup === "function") {
-    window.showPopup(
+      window.showPopup(
         "Success",
         "Order status updated successfully!",
-        "success"
-    );
-}
-
-
-        await loadOrders();
-
-
-    } catch (error) {
-
-        console.error(
-            "Error updating order:",
-            error
-        );
-
-
-        if (typeof showPopup === "function") {
-
-            showPopup(
-                error.message ||
-                "Failed to update order status.",
-                "error",
-                "Error"
-            );
-
-        } else {
-
-            alert(
-                    error.message ||
-                    "Failed to update order status."
-                );
-        }
+        "success",
+      );
     }
-}
 
+    await loadOrders();
+  } catch (error) {
+    console.error("Error updating order:", error);
+
+    if (typeof showPopup === "function") {
+      showPopup(
+        error.message || "Failed to update order status.",
+        "error",
+        "Error",
+      );
+    } else {
+      alert(error.message || "Failed to update order status.");
+    }
+  }
+}
 
 // =====================================================
 // ESCAPE HTML
 // =====================================================
 
 function escapeHTML(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
-        return "";
-    }
+  return String(value)
+    .replace(/&/g, "&amp;")
 
+    .replace(/</g, "&lt;")
 
-    return String(value)
+    .replace(/>/g, "&gt;")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+    .replace(/"/g, "&quot;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    .replace(/'/g, "&#039;");
 }
-
 
 // =====================================================
 // MAKE FUNCTION AVAILABLE TO HTML
 // =====================================================
 
 window.updateStatus = updateStatus;
-
 
 // =====================================================
 // START

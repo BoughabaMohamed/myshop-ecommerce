@@ -1,58 +1,57 @@
-
-import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import ProductCard from './ProductCard'
-import { useCart } from '../CartContext'
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import ProductCard from "./ProductCard";
+import { useCart } from "../useCart";
 
 function FeaturedProducts() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const { addToCart } = useCart()
-  const carouselRef = useRef(null)
+  const { addToCart } = useCart();
+  const carouselRef = useRef(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/products')
+    fetch("http://localhost:3000/products")
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to load products')
+          throw new Error("Failed to load products");
         }
-        return response.json()
+        return response.json();
       })
       .then((data) => setProducts(data))
       .catch((error) => {
-        console.error(error)
-        setError('Unable to load products.')
+        console.error(error);
+        setError("Unable to load products.");
       })
-      .finally(() => setLoading(false))
-  }, [])
+      .finally(() => setLoading(false));
+  }, []);
 
   function scrollCarousel(direction) {
-    const carousel = carouselRef.current
-    if (!carousel) return
+    const carousel = carouselRef.current;
+    if (!carousel) return;
 
-    const firstCard = carousel.querySelector('.carousel-card')
-    if (!firstCard) return
+    const firstCard = carousel.querySelector(".carousel-card");
+    if (!firstCard) return;
 
-    const cardWidth = firstCard.getBoundingClientRect().width
-    const gap = 24
-    const step = cardWidth + gap
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const gap = 24;
+    const step = cardWidth + gap;
 
-    const maxScroll = carousel.scrollWidth - carousel.clientWidth
-    const currentScroll = carousel.scrollLeft
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+    const currentScroll = carousel.scrollLeft;
 
     if (direction === 1) {
       if (currentScroll >= maxScroll - 5) {
-        carousel.scrollTo({ left: 0, behavior: 'smooth' })
+        carousel.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        carousel.scrollBy({ left: step, behavior: 'smooth' })
+        carousel.scrollBy({ left: step, behavior: "smooth" });
       }
     } else {
       if (currentScroll <= 5) {
-        carousel.scrollTo({ left: maxScroll, behavior: 'smooth' })
+        carousel.scrollTo({ left: maxScroll, behavior: "smooth" });
       } else {
-        carousel.scrollBy({ left: -step, behavior: 'smooth' })
+        carousel.scrollBy({ left: -step, behavior: "smooth" });
       }
     }
   }
@@ -86,17 +85,11 @@ function FeaturedProducts() {
       {/* PRODUCTS CAROUSEL */}
       <div className="relative">
         {loading ? (
-          <p className="text-center py-12 text-gray-500">
-            Loading products...
-          </p>
+          <p className="text-center py-12 text-gray-500">Loading products...</p>
         ) : error ? (
-          <p className="text-center py-12 text-red-500">
-            {error}
-          </p>
+          <p className="text-center py-12 text-red-500">{error}</p>
         ) : products.length === 0 ? (
-          <p className="text-center py-12 text-gray-500">
-            No products found.
-          </p>
+          <p className="text-center py-12 text-gray-500">No products found.</p>
         ) : (
           <>
             <button
@@ -110,12 +103,12 @@ function FeaturedProducts() {
 
             <div
               ref={carouselRef}
-              className="flex gap-5 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-5 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex gap-5 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-5 px-1 scrollbar-none [&::-webkit-scrollbar]:hidden"
             >
               {products.slice(0, 8).map((product) => (
                 <div
                   key={product.id}
-                  className="carousel-card flex-none w-[250px] sm:w-[280px] snap-start"
+                  className="carousel-card flex-none w-62.5 sm:w-70 snap-start"
                 >
                   <ProductCard
                     product={product}
@@ -137,7 +130,7 @@ function FeaturedProducts() {
         )}
       </div>
     </section>
-  )
+  );
 }
 
-export default FeaturedProducts
+export default FeaturedProducts;

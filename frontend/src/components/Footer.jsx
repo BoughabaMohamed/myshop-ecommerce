@@ -1,5 +1,4 @@
-
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 function Footer() {
   return (
@@ -22,31 +21,41 @@ function Footer() {
             </h2>
 
             <p className="text-gray-400 leading-relaxed">
-              Your trusted online shopping website for quality
-              products at great prices.
+              Your trusted online shopping website for quality products at great
+              prices.
             </p>
           </div>
 
           {/* QUICK LINKS */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">
-              Quick Links
-            </h3>
+            <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
 
             <div className="space-y-3">
-              <Link to="/" className="block text-gray-400 hover:text-white transition">
+              <Link
+                to="/"
+                className="block text-gray-400 hover:text-white transition"
+              >
                 Home
               </Link>
 
-              <Link to="/products" className="block text-gray-400 hover:text-white transition">
+              <Link
+                to="/products"
+                className="block text-gray-400 hover:text-white transition"
+              >
                 Products
               </Link>
 
-              <Link to="/cart" className="block text-gray-400 hover:text-white transition">
+              <Link
+                to="/cart"
+                className="block text-gray-400 hover:text-white transition"
+              >
                 Cart
               </Link>
 
-              <Link to="/contact" className="block text-gray-400 hover:text-white transition">
+              <Link
+                to="/contact"
+                className="block text-gray-400 hover:text-white transition"
+              >
                 Contact
               </Link>
             </div>
@@ -54,9 +63,7 @@ function Footer() {
 
           {/* CONTACT */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">
-              Contact Us
-            </h3>
+            <h3 className="font-semibold text-lg mb-4">Contact Us</h3>
 
             <div className="space-y-3 text-gray-400">
               <p>📧 support@myshop.com</p>
@@ -67,9 +74,7 @@ function Footer() {
 
           {/* SOCIAL */}
           <div>
-            <h3 className="font-semibold text-lg mb-4">
-              Follow Us
-            </h3>
+            <h3 className="font-semibold text-lg mb-4">Follow Us</h3>
 
             <div className="flex gap-3">
               <a
@@ -116,7 +121,7 @@ function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
 
-export default Footer
+export default Footer;

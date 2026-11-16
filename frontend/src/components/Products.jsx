@@ -1,82 +1,78 @@
-
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import ProductCard from './ProductCard'
-import { useCart } from '../CartContext'
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import ProductCard from "./ProductCard";
+import { useCart } from "../useCart";
 
 function Products() {
-  const [products, setProducts] = useState([])
-  const [search, setSearch] = useState('')
-  const [category, setCategory] = useState('all')
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const carouselRef = useRef(null)
-  const { addToCart } = useCart()
+  const carouselRef = useRef(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
-    fetch('http://localhost:3000/products')
+    fetch("http://localhost:3000/products")
       .then((response) => {
         if (!response.ok) {
-          throw new Error('Failed to load products')
+          throw new Error("Failed to load products");
         }
 
-        return response.json()
+        return response.json();
       })
       .then((data) => {
-        setProducts(data)
+        setProducts(data);
       })
       .catch((error) => {
-        console.error(error)
-        setError('Unable to load products.')
+        console.error(error);
+        setError("Unable to load products.");
       })
       .finally(() => {
-        setLoading(false)
-      })
-  }, [])
+        setLoading(false);
+      });
+  }, []);
 
   const categories = useMemo(() => {
-    return [...new Set(
-      products.map((product) => product.category).filter(Boolean)
-    )]
-  }, [products])
+    return [
+      ...new Set(products.map((product) => product.category).filter(Boolean)),
+    ];
+  }, [products]);
 
   const filteredProducts = products.filter((product) => {
-    const matchName = product.name
-      .toLowerCase()
-      .includes(search.toLowerCase())
+    const matchName = product.name.toLowerCase().includes(search.toLowerCase());
 
-    const matchCategory =
-      category === 'all' || product.category === category
+    const matchCategory = category === "all" || product.category === category;
 
-    return matchName && matchCategory
-  })
+    return matchName && matchCategory;
+  });
 
   function scrollCarousel(direction) {
-    const carousel = carouselRef.current
-    if (!carousel) return
+    const carousel = carouselRef.current;
+    if (!carousel) return;
 
-    const firstCard = carousel.querySelector('.carousel-card')
-    if (!firstCard) return
+    const firstCard = carousel.querySelector(".carousel-card");
+    if (!firstCard) return;
 
-    const cardWidth = firstCard.getBoundingClientRect().width
-    const gap = 24
-    const step = cardWidth + gap
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const gap = 24;
+    const step = cardWidth + gap;
 
-    const maxScroll = carousel.scrollWidth - carousel.clientWidth
-    const currentScroll = carousel.scrollLeft
+    const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+    const currentScroll = carousel.scrollLeft;
 
     if (direction === 1) {
       if (currentScroll >= maxScroll - 5) {
-        carousel.scrollTo({ left: 0, behavior: 'smooth' })
+        carousel.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        carousel.scrollBy({ left: step, behavior: 'smooth' })
+        carousel.scrollBy({ left: step, behavior: "smooth" });
       }
     } else {
       if (currentScroll <= 5) {
-        carousel.scrollTo({ left: maxScroll, behavior: 'smooth' })
+        carousel.scrollTo({ left: maxScroll, behavior: "smooth" });
       } else {
-        carousel.scrollBy({ left: -step, behavior: 'smooth' })
+        carousel.scrollBy({ left: -step, behavior: "smooth" });
       }
     }
   }
@@ -84,7 +80,7 @@ function Products() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white">
+      <section className="bg-linear-to-r from-blue-600 to-cyan-500 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
           <p className="text-sm font-semibold tracking-wider text-blue-100 mb-3">
             MYSHOP STORE
@@ -157,13 +153,9 @@ function Products() {
         </div>
 
         {loading ? (
-          <p className="text-center py-12 text-gray-500">
-            Loading products...
-          </p>
+          <p className="text-center py-12 text-gray-500">Loading products...</p>
         ) : error ? (
-          <p className="text-center py-12 text-red-500">
-            {error}
-          </p>
+          <p className="text-center py-12 text-red-500">{error}</p>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-16">
             <h2 className="text-2xl font-semibold text-gray-700">
@@ -194,12 +186,12 @@ function Products() {
             {/* Carousel */}
             <div
               ref={carouselRef}
-              className="flex gap-5 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-5 px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex gap-5 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-5 px-1 scrollbar-none [&::-webkit-scrollbar]:hidden"
             >
               {filteredProducts.map((product) => (
                 <div
                   key={product.id}
-                  className="carousel-card flex-none w-[250px] sm:w-[280px] snap-start"
+                  className="carousel-card flex-none w-62.5 sm:w-70 snap-start"
                 >
                   <ProductCard
                     product={product}
@@ -227,7 +219,7 @@ function Products() {
         )}
       </main>
     </>
-  )
+  );
 }
 
-export default Products
+export default Products;

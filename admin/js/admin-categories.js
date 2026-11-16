@@ -1,110 +1,81 @@
 console.log("Admin categories JS loaded");
 
-
 // =====================================================
 // API
 // =====================================================
 
 const API = "http://localhost:3000";
 
-
 // =====================================================
 // DOM
 // =====================================================
 
-const categoryForm =
-    document.getElementById("categoryForm");
+const categoryForm = document.getElementById("categoryForm");
 
-const categoryName =
-    document.getElementById("categoryName");
+const categoryName = document.getElementById("categoryName");
 
-const categoriesContainer =
-    document.getElementById("categoriesContainer");
+const categoriesContainer = document.getElementById("categoriesContainer");
 
-const message =
-    document.getElementById("message");
-
+const message = document.getElementById("message");
 
 // =====================================================
 // TOKEN
 // =====================================================
 
 function getToken() {
-
-    return (
-        localStorage.getItem("token") ||
-        localStorage.getItem("authToken") ||
-        localStorage.getItem("accessToken") ||
-        ""
-    );
+  return (
+    localStorage.getItem("token") ||
+    localStorage.getItem("authToken") ||
+    localStorage.getItem("accessToken") ||
+    ""
+  );
 }
-
 
 // =====================================================
 // LOGOUT
 // =====================================================
 
 function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("user");
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("authToken");
+  sessionStorage.removeItem("accessToken");
+  sessionStorage.removeItem("user");
 
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("authToken");
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("user");
-
-    window.location.href =
-        "./admin-login.html";
+  window.location.href = "./admin-login.html";
 }
 
+const logoutBtn = document.getElementById("logoutBtn");
 
-const logoutBtn =
-    document.getElementById("logoutBtn");
-
-const logoutBtnMobile =
-    document.getElementById("logoutBtnMobile");
-
+const logoutBtnMobile = document.getElementById("logoutBtnMobile");
 
 if (logoutBtn) {
+  logoutBtn.addEventListener("click", function (event) {
+    event.preventDefault();
 
-    logoutBtn.addEventListener(
-        "click",
-        function (event) {
-
-            event.preventDefault();
-
-            logout();
-        }
-    );
+    logout();
+  });
 }
-
 
 if (logoutBtnMobile) {
+  logoutBtnMobile.addEventListener("click", function (event) {
+    event.preventDefault();
 
-    logoutBtnMobile.addEventListener(
-        "click",
-        function (event) {
-
-            event.preventDefault();
-
-            logout();
-        }
-    );
+    logout();
+  });
 }
-
 
 // =====================================================
 // LOAD CATEGORIES
 // =====================================================
 
 async function loadCategories() {
-
-    try {
-
-        categoriesContainer.innerHTML = `
+  try {
+    categoriesContainer.innerHTML = `
             <div class="flex items-center justify-center py-10 text-slate-500">
                 <div class="text-center">
                     <div class="text-3xl mb-2">⏳</div>
@@ -113,87 +84,45 @@ async function loadCategories() {
             </div>
         `;
 
+    const response = await fetch(API + "/categories");
 
-        const response =
-            await fetch(
-                API + "/categories"
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Failed to load categories."
-            );
-        }
-
-
-        const data =
-            await response.json();
-
-
-        let categories = [];
-
-
-        if (Array.isArray(data)) {
-
-            categories = data;
-
-        }
-
-        else if (
-            Array.isArray(data.categories)
-        ) {
-
-            categories = data.categories;
-        }
-
-
-        console.log(
-            "Categories:",
-            categories
-        );
-
-
-        displayCategories(
-            categories
-        );
-
-
+    if (!response.ok) {
+      throw new Error("Failed to load categories.");
     }
 
-    catch (error) {
+    const data = await response.json();
 
-        console.error(
-            "Categories error:",
-            error
-        );
+    let categories = [];
 
+    if (Array.isArray(data)) {
+      categories = data;
+    } else if (Array.isArray(data.categories)) {
+      categories = data.categories;
+    }
 
-        categoriesContainer.innerHTML = `
+    console.log("Categories:", categories);
+
+    displayCategories(categories);
+  } catch (error) {
+    console.error("Categories error:", error);
+
+    categoriesContainer.innerHTML = `
             <div class="bg-red-50 border border-red-200 text-red-600 rounded-xl p-5 text-center">
                 Unable to load categories.
             </div>
         `;
-    }
+  }
 }
-
 
 // =====================================================
 // DISPLAY CATEGORIES
 // =====================================================
 
 function displayCategories(categories) {
+  categoriesContainer.innerHTML = "";
 
-    categoriesContainer.innerHTML = "";
-
-
-    if (
-        !categories ||
-        categories.length === 0
-    ) {
-
-        categoriesContainer.innerHTML = `
+  if (!categories || categories.length === 0) {
+    categoriesContainer.innerHTML = `
             <div class="bg-slate-50 border border-slate-200 rounded-xl p-8 text-center">
 
                 <div class="text-4xl mb-3">
@@ -211,33 +140,26 @@ function displayCategories(categories) {
             </div>
         `;
 
-        return;
-    }
+    return;
+  }
 
+  // =================================================
+  // TABLE WRAPPER
+  // =================================================
 
-    // =================================================
-    // TABLE WRAPPER
-    // =================================================
+  const tableWrapper = document.createElement("div");
 
-    const tableWrapper =
-        document.createElement("div");
+  tableWrapper.className = "overflow-x-auto rounded-xl border border-slate-200";
 
-    tableWrapper.className =
-        "overflow-x-auto rounded-xl border border-slate-200";
+  // =================================================
+  // TABLE
+  // =================================================
 
+  const table = document.createElement("table");
 
-    // =================================================
-    // TABLE
-    // =================================================
+  table.className = "min-w-full divide-y divide-slate-200";
 
-    const table =
-        document.createElement("table");
-
-    table.className =
-        "min-w-full divide-y divide-slate-200";
-
-
-    table.innerHTML = `
+  table.innerHTML = `
 
         <thead class="bg-slate-50">
 
@@ -274,39 +196,22 @@ function displayCategories(categories) {
 
     `;
 
+  const tbody = table.querySelector("tbody");
 
-    const tbody =
-        table.querySelector("tbody");
+  // =================================================
+  // CATEGORIES
+  // =================================================
 
+  categories.forEach((category) => {
+    const id = category.id || category._id || "";
 
-    // =================================================
-    // CATEGORIES
-    // =================================================
+    const name = category.name || category.title || "No name";
 
-    categories.forEach(
-        category => {
+    const row = document.createElement("tr");
 
-            const id =
-                category.id ||
-                category._id ||
-                "";
+    row.className = "hover:bg-slate-50 transition";
 
-
-            const name =
-                category.name ||
-                category.title ||
-                "No name";
-
-
-            const row =
-                document.createElement("tr");
-
-
-            row.className =
-                "hover:bg-slate-50 transition";
-
-
-            row.innerHTML = `
+    row.innerHTML = `
 
                 <!-- ID -->
 
@@ -364,364 +269,228 @@ function displayCategories(categories) {
 
             `;
 
+    const deleteButton = row.querySelector(".delete-btn");
 
-            const deleteButton =
-                row.querySelector(
-                    ".delete-btn"
-                );
+    deleteButton.addEventListener("click", function () {
+      deleteCategory(id);
+    });
 
+    tbody.appendChild(row);
+  });
 
-            deleteButton.addEventListener(
-                "click",
-                function () {
+  tableWrapper.appendChild(table);
 
-                    deleteCategory(id);
-
-                }
-            );
-
-
-            tbody.appendChild(row);
-
-        }
-    );
-
-
-    tableWrapper.appendChild(table);
-
-    categoriesContainer.appendChild(
-        tableWrapper
-    );
+  categoriesContainer.appendChild(tableWrapper);
 }
-
 
 // =====================================================
 // ESCAPE HTML
 // =====================================================
 
 function escapeHTML(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
+  return String(value)
+    .replace(/&/g, "&amp;")
 
-        return "";
-    }
+    .replace(/</g, "&lt;")
 
+    .replace(/>/g, "&gt;")
 
-    return String(value)
+    .replace(/"/g, "&quot;")
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    .replace(/'/g, "&#039;");
 }
-
 
 // =====================================================
 // ADD CATEGORY
 // =====================================================
 
 if (categoryForm) {
+  categoryForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-    categoryForm.addEventListener(
-        "submit",
-        async function (event) {
+    const name = categoryName.value.trim();
 
-            event.preventDefault();
+    if (!name) {
+      showPopup("Please enter a category name.", "warning", "Warning");
 
+      return;
+    }
 
-            const name =
-                categoryName.value.trim();
+    const token = getToken();
 
+    try {
+      const response = await fetch(API + "/categories", {
+        method: "POST",
 
-            if (!name) {
+        headers: {
+          "Content-Type": "application/json",
 
-                showPopup(
-                    "Please enter a category name.",
-                    "warning",
-                    "Warning"
-                 );
+          ...(token
+            ? {
+                Authorization: "Bearer " + token,
+              }
+            : {}),
+        },
 
-                    return;
-                  }
+        body: JSON.stringify({
+          name: name,
+        }),
+      });
 
+      const data = await response.json();
 
-            const token =
-                getToken();
+      if (!response.ok) {
+        throw new Error(data.message || "Category could not be added.");
+      }
 
+      console.log("Category added:", data);
 
-            try {
+      categoryForm.reset();
 
-                const response =
-                    await fetch(
-                        API + "/categories",
-                        {
+      showPopup(
+        data.message || "Category added successfully.",
+        "success",
+        "Success",
+      );
 
-                            method: "POST",
+      await loadCategories();
+    } catch (error) {
+      console.error("Add category error:", error);
 
-                            headers: {
-
-                                "Content-Type":
-                                    "application/json",
-
-                                ...(token
-                                    ? {
-                                        "Authorization":
-                                            "Bearer " + token
-                                    }
-                                    : {})
-                            },
-
-                            body:
-                                JSON.stringify({
-                                    name: name
-                                })
-                        }
-                    );
-
-
-                const data =
-                    await response.json();
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data.message ||
-                        "Category could not be added."
-                    );
-                }
-
-
-                console.log(
-                    "Category added:",
-                    data
-                );
-
-
-                categoryForm.reset();
-
-
-                showPopup(
-                    data.message ||
-                    "Category added successfully.",
-                    "success",
-                    "Success"
-                );
-
-
-                await loadCategories();
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Add category error:",
-                    error
-                );
-
-
-                showPopup(
-                    error.message ||
-                    "Category could not be added.",
-                    "error",
-                    "Error"
-                );
-            }
-
-        }
-    );
+      showPopup(
+        error.message || "Category could not be added.",
+        "error",
+        "Error",
+      );
+    }
+  });
 }
-
 
 // =====================================================
 // DELETE CATEGORY
 // =====================================================
 
 async function deleteCategory(id) {
+  const confirmed = await showConfirmPopup(
+    "Delete Category",
+    "Are you sure you want to delete this category?",
+  );
 
-    const confirmed =
-        await showConfirmPopup(
-            "Delete Category",
-            "Are you sure you want to delete this category?"
-        );
+  if (!confirmed) {
+    return;
+  }
 
+  const token = getToken();
 
-    if (!confirmed) {
-        return;
+  try {
+    const response = await fetch(API + "/categories/" + id, {
+      method: "DELETE",
+
+      headers: {
+        ...(token
+          ? {
+              Authorization: "Bearer " + token,
+            }
+          : {}),
+      },
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Category could not be deleted.");
     }
 
+    console.log("Category deleted:", data);
 
-    const token =
-        getToken();
+    showPopup(
+      data.message || "Category deleted successfully.",
+      "success",
+      "Success",
+    );
 
+    await loadCategories();
+  } catch (error) {
+    console.error("Delete category error:", error);
 
-    try {
-
-        const response =
-            await fetch(
-                API + "/categories/" + id,
-                {
-
-                    method: "DELETE",
-
-                    headers: {
-
-                        ...(token
-                            ? {
-                                "Authorization":
-                                    "Bearer " + token
-                            }
-                            : {})
-                    }
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.message ||
-                "Category could not be deleted."
-            );
-        }
-
-
-        console.log(
-            "Category deleted:",
-            data
-        );
-
-
-        showPopup(
-            data.message ||
-            "Category deleted successfully.",
-            "success",
-            "Success"
-        );
-
-
-        await loadCategories();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Delete category error:",
-            error
-        );
-
-
-        showPopup(
-            error.message ||
-            "Category could not be deleted.",
-            "error",
-            "Error"
-        );
-    }
+    showPopup(
+      error.message || "Category could not be deleted.",
+      "error",
+      "Error",
+    );
+  }
 }
-
 
 // =====================================================
 // CONFIRM POPUP
 // =====================================================
 
-
 function showConfirmPopup(title, text) {
+  return new Promise((resolve) => {
+    const popup = document.getElementById("popup");
+    const popupTitle = document.getElementById("popupTitle");
+    const popupMessage = document.getElementById("popupMessage");
+    const popupIcon = document.getElementById("popupIcon");
+    const popupOk = document.getElementById("popupOk");
+    const popupClose = document.getElementById("popupClose");
 
-    return new Promise(resolve => {
+    if (!popup) {
+      resolve(false);
+      return;
+    }
 
-        const popup = document.getElementById("popup");
-        const popupTitle = document.getElementById("popupTitle");
-        const popupMessage = document.getElementById("popupMessage");
-        const popupIcon = document.getElementById("popupIcon");
-        const popupOk = document.getElementById("popupOk");
-        const popupClose = document.getElementById("popupClose");
+    popupTitle.textContent = title;
+    popupMessage.textContent = text;
 
-        if (!popup) {
-            resolve(false);
-            return;
-        }
+    popupIcon.textContent = "?";
+    popupIcon.className =
+      "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
 
-        popupTitle.textContent = title;
-        popupMessage.textContent = text;
+    popupOk.textContent = "Yes";
 
-        popupIcon.textContent = "?";
-        popupIcon.className =
-            "mx-auto mb-4 w-14 h-14 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center text-2xl font-bold";
+    popup.classList.remove("hidden");
+    popup.classList.add("flex");
 
-        popupOk.textContent = "Yes";
+    let finished = false;
 
-        popup.classList.remove("hidden");
-        popup.classList.add("flex");
+    function cleanup(confirmed) {
+      if (finished) return;
+      finished = true;
 
-        let finished = false;
+      popup.classList.add("hidden");
+      popup.classList.remove("flex");
+      popupOk.textContent = "OK";
 
-        function cleanup(confirmed) {
+      popupOk.removeEventListener("click", yes);
+      popupClose?.removeEventListener("click", no);
+      popup.removeEventListener("click", outsideClick);
 
-            if (finished) return;
-            finished = true;
+      resolve(confirmed);
+    }
 
-            popup.classList.add("hidden");
-            popup.classList.remove("flex");
-            popupOk.textContent = "OK";
+    function yes() {
+      cleanup(true);
+    }
 
-            popupOk.removeEventListener("click", yes);
-            popupClose?.removeEventListener("click", no);
-            popup.removeEventListener("click", outsideClick);
+    function no() {
+      cleanup(false);
+    }
 
-            resolve(confirmed);
-        }
+    function outsideClick(event) {
+      if (event.target === popup) {
+        no();
+      }
+    }
 
-        function yes() {
-            cleanup(true);
-        }
-
-        function no() {
-            cleanup(false);
-        }
-
-        function outsideClick(event) {
-            if (event.target === popup) {
-                no();
-            }
-        }
-
-        popupOk.addEventListener("click", yes);
-        popupClose?.addEventListener("click", no);
-        popup.addEventListener("click", outsideClick);
-
-    });
+    popupOk.addEventListener("click", yes);
+    popupClose?.addEventListener("click", no);
+    popup.addEventListener("click", outsideClick);
+  });
 }
-
 
 // =====================================================
 // START

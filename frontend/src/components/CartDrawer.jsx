@@ -1,4 +1,4 @@
-import { useCart } from '../CartContext'
+import { useCart } from "../useCart";
 
 function CartDrawer() {
   const {
@@ -9,31 +9,26 @@ function CartDrawer() {
     setIsCartOpen,
     removeFromCart,
     updateQuantity,
-  } = useCart()
+  } = useCart();
 
-  if (!isCartOpen) return null
+  if (!isCartOpen) return null;
 
   return (
     <>
       {/* OVERLAY */}
       <div
         onClick={() => setIsCartOpen(false)}
-        className="fixed inset-0 z-[60] bg-black/50"
+        className="fixed inset-0 z-60 bg-black/50"
       />
 
       {/* DRAWER */}
-      <aside className="fixed right-0 top-0 z-[70] flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
-
+      <aside className="fixed right-0 top-0 z-70 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
         {/* HEADER */}
         <div className="flex items-center justify-between border-b border-gray-100 p-5">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
-              Your Cart
-            </h2>
+            <h2 className="text-xl font-bold text-slate-900">Your Cart</h2>
 
-            <p className="text-sm text-gray-500">
-              {cartCount} items
-            </p>
+            <p className="text-sm text-gray-500">{cartCount} items</p>
           </div>
 
           <button
@@ -47,7 +42,6 @@ function CartDrawer() {
 
         {/* CART ITEMS */}
         <div className="flex-1 overflow-y-auto p-5">
-
           {cart.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <span className="mb-4 text-5xl">🛒</span>
@@ -67,7 +61,6 @@ function CartDrawer() {
                   key={item.id}
                   className="flex gap-4 border-b border-gray-100 pb-5"
                 >
-
                   {/* IMAGE */}
                   <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl bg-gray-50 p-2">
                     <img
@@ -132,11 +125,8 @@ function CartDrawer() {
         {/* FOOTER */}
         {cart.length > 0 && (
           <div className="border-t border-gray-100 p-5">
-
             <div className="mb-4 flex items-center justify-between">
-              <span className="font-semibold text-gray-600">
-                Subtotal
-              </span>
+              <span className="font-semibold text-gray-600">Subtotal</span>
 
               <span className="text-xl font-bold text-slate-900">
                 {cartTotal.toFixed(2)} DH
@@ -161,7 +151,7 @@ function CartDrawer() {
         )}
       </aside>
     </>
-  )
+  );
 }
 
-export default CartDrawer
+export default CartDrawer;

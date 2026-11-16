@@ -252,8 +252,8 @@
                     class="bg-blue-50
                     rounded-3xl
                     p-6 sm:p-10
-                    min-h-[300px]
-                    sm:min-h-[400px]
+                    min-h-75
+                    sm:min-h-100
                     flex items-center justify-center"
                 >
 
@@ -261,7 +261,7 @@
                         src="../images/banner.jpg"
                         alt="MyShop products"
                         class="w-full h-full
-                        max-h-[400px]
+                        max-h-100
                         object-cover
                         rounded-2xl"
                     >
@@ -469,7 +469,7 @@
         class="flex gap-5 sm:gap-6
         overflow-x-auto scroll-smooth snap-x snap-mandatory
         pb-5 px-1
-        [scrollbar-width:none]
+        scrollbar-none
         [&::-webkit-scrollbar]:hidden"
     >
     </section>
@@ -498,7 +498,7 @@
 
     <div
         class="max-w-7xl mx-auto
-        bg-gradient-to-r
+        bg-linear-to-r
         from-blue-600 to-cyan-500
         rounded-3xl
         px-6 sm:px-10 lg:px-16
@@ -732,7 +732,7 @@
 <!-- Background Overlay -->
 <div
     id="cartOverlay"
-    class="fixed inset-0 bg-black/40 z-[60]
+    class="fixed inset-0 bg-black/40 z-60
     opacity-0 invisible transition-opacity duration-300"
 ></div>
 
@@ -740,7 +740,7 @@
 <aside
     id="cartDrawer"
     class="fixed top-0 right-0 h-full
-    w-full max-w-md bg-white z-[70]
+    w-full max-w-md bg-white z-70
     shadow-2xl translate-x-full
     transition-transform duration-300
     flex flex-col"

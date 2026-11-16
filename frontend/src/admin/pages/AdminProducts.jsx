@@ -1,41 +1,40 @@
+import { useEffect, useState } from "react";
+import Popup from "../components/Popup";
 
-import { useEffect, useState } from 'react'
-import Popup from '../components/Popup'
-
-const API_URL = 'http://localhost:3000'
+const API_URL = "http://localhost:3000";
 
 function AdminProducts() {
-  const [products, setProducts] = useState([])
-  const [categories, setCategories] = useState([])
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   const [counts, setCounts] = useState({
     products: 0,
     categories: 0,
     users: 0,
     orders: 0,
-  })
+  });
 
-  const [search, setSearch] = useState('')
-  const [editingId, setEditingId] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [search, setSearch] = useState("");
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   const [popup, setPopup] = useState({
     isOpen: false,
-    type: 'success',
-    title: '',
-    message: '',
+    type: "success",
+    title: "",
+    message: "",
     onConfirm: null,
-  })
+  });
 
   const [form, setForm] = useState({
-    name: '',
-    description: '',
-    price: '',
-    stock: '',
-    category: '',
+    name: "",
+    description: "",
+    price: "",
+    stock: "",
+    category: "",
     image: null,
-  })
+  });
 
   const openPopup = (type, title, message, onConfirm = null) => {
     setPopup({
@@ -44,182 +43,182 @@ function AdminProducts() {
       title,
       message,
       onConfirm,
-    })
-  }
+    });
+  };
 
   const closePopup = () => {
     setPopup((prev) => ({
       ...prev,
       isOpen: false,
       onConfirm: null,
-    }))
-  }
+    }));
+  };
 
   const handlePopupConfirm = () => {
-    const action = popup.onConfirm
-    closePopup()
+    const action = popup.onConfirm;
+    closePopup();
 
-    if (action) action()
-  }
+    if (action) action();
+  };
 
   const getToken = () =>
-    localStorage.getItem('token') ||
-    localStorage.getItem('authToken') ||
-    localStorage.getItem('accessToken') ||
-    ''
+    localStorage.getItem("token") ||
+    localStorage.getItem("authToken") ||
+    localStorage.getItem("accessToken") ||
+    "";
 
   const getHeaders = () => ({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     Authorization: `Bearer ${getToken()}`,
-  })
+  });
 
   const loadProducts = async () => {
     try {
       const response = await fetch(`${API_URL}/products/admin/all`, {
         headers: getHeaders(),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to load products.')
+        throw new Error("Failed to load products.");
       }
 
-      const data = await response.json()
-      const list = Array.isArray(data) ? data : data.products || []
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : data.products || [];
 
-      setProducts(list)
+      setProducts(list);
       setCounts((prev) => ({
         ...prev,
         products: list.length,
-      }))
+      }));
     } catch (error) {
-      openPopup('error', 'Error', error.message)
+      openPopup("error", "Error", error.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const loadCategories = async () => {
     try {
       const response = await fetch(`${API_URL}/categories`, {
         headers: getHeaders(),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error('Failed to load categories.')
+        throw new Error("Failed to load categories.");
       }
 
-      const data = await response.json()
-      const list = Array.isArray(data) ? data : data.categories || []
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : data.categories || [];
 
-      setCategories(list)
+      setCategories(list);
       setCounts((prev) => ({
         ...prev,
         categories: list.length,
-      }))
+      }));
     } catch (error) {
-      openPopup('error', 'Error', error.message)
+      openPopup("error", "Error", error.message);
     }
-  }
+  };
 
   const loadDashboard = async () => {
     try {
       const [usersResponse, ordersResponse] = await Promise.all([
         fetch(`${API_URL}/users`, { headers: getHeaders() }),
         fetch(`${API_URL}/orders`, { headers: getHeaders() }),
-      ])
+      ]);
 
       if (!usersResponse.ok || !ordersResponse.ok) {
-        throw new Error('Could not load dashboard statistics.')
+        throw new Error("Could not load dashboard statistics.");
       }
 
-      const usersData = await usersResponse.json()
-      const ordersData = await ordersResponse.json()
+      const usersData = await usersResponse.json();
+      const ordersData = await ordersResponse.json();
 
       const users = Array.isArray(usersData)
         ? usersData
-        : usersData.users || []
+        : usersData.users || [];
 
       const orders = Array.isArray(ordersData)
         ? ordersData
-        : ordersData.orders || []
+        : ordersData.orders || [];
 
       setCounts((prev) => ({
         ...prev,
         users: users.length,
         orders: orders.length,
-      }))
+      }));
     } catch (error) {
-      console.error(error.message)
+      console.error(error.message);
     }
-  }
+  };
 
   useEffect(() => {
-    loadProducts()
-    loadCategories()
-    loadDashboard()
-  }, [])
+    loadProducts();
+    loadCategories();
+    loadDashboard();
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target
+    const { name, value, files } = e.target;
 
     setForm((prev) => ({
       ...prev,
-      [name]: name === 'image' ? files[0] || null : value,
-    }))
-  }
+      [name]: name === "image" ? files[0] || null : value,
+    }));
+  };
 
   const resetForm = () => {
     setForm({
-      name: '',
-      description: '',
-      price: '',
-      stock: '',
-      category: '',
+      name: "",
+      description: "",
+      price: "",
+      stock: "",
+      category: "",
       image: null,
-    })
+    });
 
-    setEditingId(null)
+    setEditingId(null);
 
-    const fileInput = document.getElementById('productImage')
-    if (fileInput) fileInput.value = ''
-  }
+    const fileInput = document.getElementById("productImage");
+    if (fileInput) fileInput.value = "";
+  };
 
   const uploadImage = async () => {
-    if (!form.image) return null
+    if (!form.image) return null;
 
-    const formData = new FormData()
-    formData.append('image', form.image)
+    const formData = new FormData();
+    formData.append("image", form.image);
 
     const response = await fetch(`${API_URL}/upload`, {
-      method: 'POST',
+      method: "POST",
       headers: {
         Authorization: `Bearer ${getToken()}`,
       },
       body: formData,
-    })
+    });
 
-    const data = await response.json()
+    const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || 'Image upload failed.')
+      throw new Error(data.message || "Image upload failed.");
     }
 
-    return data.filename || data.image || data.fileName
-  }
+    return data.filename || data.image || data.fileName;
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     try {
-      setSaving(true)
+      setSaving(true);
 
-      let imageName = null
+      let imageName = null;
 
       if (form.image) {
-        imageName = await uploadImage()
+        imageName = await uploadImage();
 
         if (!imageName) {
-          throw new Error('Image upload did not return a filename.')
+          throw new Error("Image upload did not return a filename.");
         }
       }
 
@@ -229,165 +228,160 @@ function AdminProducts() {
         price: Number(form.price),
         stock: Number(form.stock),
         category: form.category,
-      }
+      };
 
       if (imageName) {
-        productData.image = imageName
+        productData.image = imageName;
       }
 
-      const isEditing = editingId !== null
+      const isEditing = editingId !== null;
 
       const response = await fetch(
-        isEditing
-          ? `${API_URL}/products/${editingId}`
-          : `${API_URL}/products`,
+        isEditing ? `${API_URL}/products/${editingId}` : `${API_URL}/products`,
         {
-          method: isEditing ? 'PUT' : 'POST',
+          method: isEditing ? "PUT" : "POST",
           headers: getHeaders(),
           body: JSON.stringify(productData),
-        }
-      )
+        },
+      );
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Could not save product.')
+        throw new Error(data.message || "Could not save product.");
       }
 
       openPopup(
-        'success',
-        'Success',
+        "success",
+        "Success",
         isEditing
-          ? 'Product updated successfully!'
-          : 'Product added successfully!'
-      )
+          ? "Product updated successfully!"
+          : "Product added successfully!",
+      );
 
-      resetForm()
-      await loadProducts()
-      await loadDashboard()
+      resetForm();
+      await loadProducts();
+      await loadDashboard();
     } catch (error) {
-      openPopup('error', 'Error', error.message)
+      openPopup("error", "Error", error.message);
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   const editProduct = (product) => {
-    setEditingId(product.id)
+    setEditingId(product.id);
 
     setForm({
-      name: product.name || '',
-      description: product.description || '',
-      price: product.price ?? '',
-      stock: product.stock ?? '',
+      name: product.name || "",
+      description: product.description || "",
+      price: product.price ?? "",
+      stock: product.stock ?? "",
       category:
-        typeof product.category === 'object'
+        typeof product.category === "object"
           ? product.category.id
-          : product.category || '',
+          : product.category || "",
       image: null,
-    })
+    });
 
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleDeleteProduct = async (product) => {
     try {
       const response = await fetch(`${API_URL}/products/${product.id}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: getHeaders(),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Could not delete product.')
+        throw new Error(data.message || "Could not delete product.");
       }
 
-      await loadProducts()
-      await loadDashboard()
+      await loadProducts();
+      await loadDashboard();
 
       openPopup(
-        'success',
-        'Success',
-        data.action === 'deactivated'
-          ? 'Product hidden because it has order history.'
-          : 'Product deleted successfully!'
-      )
+        "success",
+        "Success",
+        data.action === "deactivated"
+          ? "Product hidden because it has order history."
+          : "Product deleted successfully!",
+      );
     } catch (error) {
-      openPopup('error', 'Error', error.message)
+      openPopup("error", "Error", error.message);
     }
-  }
+  };
 
   const deleteProduct = (product) => {
     openPopup(
-      'confirm',
-      'Delete Product',
+      "confirm",
+      "Delete Product",
       `Are you sure you want to delete "${product.name}"?`,
-      () => handleDeleteProduct(product)
-    )
-  }
+      () => handleDeleteProduct(product),
+    );
+  };
 
   const filteredProducts = products.filter((product) => {
     const category =
-      typeof product.category === 'object'
+      typeof product.category === "object"
         ? product.category?.name
-        : product.category
+        : product.category;
 
-    const text = `${product.name} ${product.description} ${category || ''}`
+    const text = `${product.name} ${product.description} ${category || ""}`;
 
-    return text.toLowerCase().includes(search.toLowerCase())
-  })
+    return text.toLowerCase().includes(search.toLowerCase());
+  });
 
   const getStatus = (product) => {
-    if (Number(product.is_active) === 0) return 'Deactivated'
-    if (Number(product.stock) > 0) return 'Active'
-    return 'Out of stock'
-  }
+    if (Number(product.is_active) === 0) return "Deactivated";
+    if (Number(product.stock) > 0) return "Active";
+    return "Out of stock";
+  };
 
   const statusClass = (status) => {
-    if (status === 'Active') return 'bg-green-100 text-green-700'
-    if (status === 'Out of stock') return 'bg-yellow-100 text-yellow-700'
-    return 'bg-red-100 text-red-700'
-  }
+    if (status === "Active") return "bg-green-100 text-green-700";
+    if (status === "Out of stock") return "bg-yellow-100 text-yellow-700";
+    return "bg-red-100 text-red-700";
+  };
 
   const dashboardCards = [
     {
-      label: 'Products',
+      label: "Products",
       value: counts.products,
-      icon: '📦',
-      color: 'bg-blue-100 text-blue-600',
+      icon: "📦",
+      color: "bg-blue-100 text-blue-600",
     },
     {
-      label: 'Categories',
+      label: "Categories",
       value: counts.categories,
-      icon: '🗂️',
-      color: 'bg-purple-100 text-purple-600',
+      icon: "🗂️",
+      color: "bg-purple-100 text-purple-600",
     },
     {
-      label: 'Users',
+      label: "Users",
       value: counts.users,
-      icon: '👥',
-      color: 'bg-green-100 text-green-600',
+      icon: "👥",
+      color: "bg-green-100 text-green-600",
     },
     {
-      label: 'Orders',
+      label: "Orders",
       value: counts.orders,
-      icon: '🛒',
-      color: 'bg-orange-100 text-orange-600',
+      icon: "🛒",
+      color: "bg-orange-100 text-orange-600",
     },
-  ]
+  ];
 
   const inputClass =
-    'w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
+    "w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
   return (
     <div className="min-h-screen space-y-8 bg-gray-50 text-gray-800">
-
       {/* Page Heading */}
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">
-          Admin Dashboard
-        </h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Admin Dashboard</h1>
         <p className="mt-2 text-sm text-gray-500">
           Manage your products, categories, users and orders.
         </p>
@@ -407,9 +401,7 @@ function AdminProducts() {
             </div>
 
             <div>
-              <p className="text-sm font-medium text-gray-500">
-                {item.label}
-              </p>
+              <p className="text-sm font-medium text-gray-500">{item.label}</p>
               <p className="mt-1 text-2xl font-bold text-gray-800">
                 {item.value}
               </p>
@@ -422,20 +414,22 @@ function AdminProducts() {
       <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-8">
         <div className="mb-6">
           <h2 className="text-xl font-bold text-gray-800">
-            {editingId ? 'Edit Product' : 'Product Management'}
+            {editingId ? "Edit Product" : "Product Management"}
           </h2>
           <p className="mt-1 text-sm text-gray-500">
             {editingId
-              ? 'Update the selected product information.'
-              : 'Add a new product to your store.'}
+              ? "Update the selected product information."
+              : "Add a new product to your store."}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
             <div>
-              <label htmlFor="productName" className="mb-2 block text-sm font-semibold text-gray-700">
+              <label
+                htmlFor="productName"
+                className="mb-2 block text-sm font-semibold text-gray-700"
+              >
                 Product Name
               </label>
               <input
@@ -450,7 +444,10 @@ function AdminProducts() {
             </div>
 
             <div>
-              <label htmlFor="productPrice" className="mb-2 block text-sm font-semibold text-gray-700">
+              <label
+                htmlFor="productPrice"
+                className="mb-2 block text-sm font-semibold text-gray-700"
+              >
                 Price (DH)
               </label>
               <input
@@ -468,7 +465,10 @@ function AdminProducts() {
             </div>
 
             <div>
-              <label htmlFor="productStock" className="mb-2 block text-sm font-semibold text-gray-700">
+              <label
+                htmlFor="productStock"
+                className="mb-2 block text-sm font-semibold text-gray-700"
+              >
                 Stock
               </label>
               <input
@@ -485,7 +485,10 @@ function AdminProducts() {
             </div>
 
             <div>
-              <label htmlFor="productCategory" className="mb-2 block text-sm font-semibold text-gray-700">
+              <label
+                htmlFor="productCategory"
+                className="mb-2 block text-sm font-semibold text-gray-700"
+              >
                 Category
               </label>
               <select
@@ -507,7 +510,10 @@ function AdminProducts() {
           </div>
 
           <div>
-            <label htmlFor="productDescription" className="mb-2 block text-sm font-semibold text-gray-700">
+            <label
+              htmlFor="productDescription"
+              className="mb-2 block text-sm font-semibold text-gray-700"
+            >
               Description
             </label>
             <textarea
@@ -523,7 +529,10 @@ function AdminProducts() {
           </div>
 
           <div>
-            <label htmlFor="productImage" className="mb-2 block text-sm font-semibold text-gray-700">
+            <label
+              htmlFor="productImage"
+              className="mb-2 block text-sm font-semibold text-gray-700"
+            >
               Product Image
             </label>
             <input
@@ -543,10 +552,10 @@ function AdminProducts() {
               className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {saving
-                ? 'Saving...'
+                ? "Saving..."
                 : editingId
-                  ? 'Update Product'
-                  : 'Add Product'}
+                  ? "Update Product"
+                  : "Add Product"}
             </button>
 
             {editingId && (
@@ -566,9 +575,7 @@ function AdminProducts() {
       <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-gray-800">
-              Products List
-            </h2>
+            <h2 className="text-xl font-bold text-gray-800">Products List</h2>
             <p className="mt-1 text-sm text-gray-500">
               Search and manage your store products.
             </p>
@@ -584,32 +591,27 @@ function AdminProducts() {
         </div>
       </section>
 
-        
       {/* Products Table */}
       <section className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
         {loading ? (
-          <p className="py-12 text-center text-gray-500">
-            Loading products...
-          </p>
+          <p className="py-12 text-center text-gray-500">Loading products...</p>
         ) : filteredProducts.length === 0 ? (
-          <p className="py-12 text-center text-gray-500">
-            No products found.
-          </p>
+          <p className="py-12 text-center text-gray-500">No products found.</p>
         ) : (
           <>
             {/* Mobile Product Cards */}
             <div className="space-y-4 p-4 md:hidden">
               {filteredProducts.map((product) => {
                 const category =
-                  typeof product.category === 'object'
+                  typeof product.category === "object"
                     ? product.category?.name
-                    : product.category
+                    : product.category;
 
-                const imageUrl = product.image?.startsWith('http')
+                const imageUrl = product.image?.startsWith("http")
                   ? product.image
-                  : `${API_URL}/uploads/${product.image}`
+                  : `${API_URL}/uploads/${product.image}`;
 
-                const status = getStatus(product)
+                const status = getStatus(product);
 
                 return (
                   <div
@@ -646,17 +648,23 @@ function AdminProducts() {
 
                     <div className="mt-4 space-y-2 border-t border-gray-100 pt-3 text-sm">
                       <p className="break-words text-gray-600">
-                        <span className="font-semibold text-gray-800">Category:</span>{' '}
-                        {category || '-'}
+                        <span className="font-semibold text-gray-800">
+                          Category:
+                        </span>{" "}
+                        {category || "-"}
                       </p>
 
                       <p className="text-gray-600">
-                        <span className="font-semibold text-gray-800">Stock:</span>{' '}
+                        <span className="font-semibold text-gray-800">
+                          Stock:
+                        </span>{" "}
                         {product.stock}
                       </p>
 
                       <p className="break-words text-gray-600">
-                        <span className="font-semibold text-gray-800">Description:</span>{' '}
+                        <span className="font-semibold text-gray-800">
+                          Description:
+                        </span>{" "}
                         {product.description}
                       </p>
                     </div>
@@ -679,7 +687,7 @@ function AdminProducts() {
                       </button>
                     </div>
                   </div>
-                )
+                );
               })}
             </div>
 
@@ -702,15 +710,15 @@ function AdminProducts() {
                 <tbody className="divide-y divide-gray-100">
                   {filteredProducts.map((product) => {
                     const category =
-                      typeof product.category === 'object'
+                      typeof product.category === "object"
                         ? product.category?.name
-                        : product.category
+                        : product.category;
 
-                    const imageUrl = product.image?.startsWith('http')
+                    const imageUrl = product.image?.startsWith("http")
                       ? product.image
-                      : `${API_URL}/uploads/${product.image}`
+                      : `${API_URL}/uploads/${product.image}`;
 
-                    const status = getStatus(product)
+                    const status = getStatus(product);
 
                     return (
                       <tr
@@ -740,7 +748,7 @@ function AdminProducts() {
                         </td>
 
                         <td className="px-5 py-4 text-gray-600">
-                          {category || '-'}
+                          {category || "-"}
                         </td>
 
                         <td className="px-5 py-4 text-gray-600">
@@ -779,7 +787,7 @@ function AdminProducts() {
                           </div>
                         </td>
                       </tr>
-                    )
+                    );
                   })}
                 </tbody>
               </table>
@@ -787,7 +795,6 @@ function AdminProducts() {
           </>
         )}
       </section>
-
 
       {/* Shared Popup */}
       <Popup
@@ -799,7 +806,7 @@ function AdminProducts() {
         onCancel={closePopup}
       />
     </div>
-  )
+  );
 }
 
-export default AdminProducts
+export default AdminProducts;

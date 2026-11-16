@@ -7,33 +7,41 @@ const cartItemCount = document.getElementById("cartItemCount");
 const checkoutButton = document.getElementById("checkoutButton");
 
 function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
+  return String(value ?? "").replace(
+    /[&<>"']/g,
+    (char) =>
+      ({
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
         '"': "&quot;",
-        "'": "&#39;"
-    })[char]);
+        "'": "&#39;",
+      })[char],
+  );
 }
 
 function displayCart() {
-    cartItems.innerHTML = "";
+  cartItems.innerHTML = "";
 
-    const total = cart.reduce((sum, item) =>
-        sum + (Number(item.price) || 0) * (Number(item.quantity) || 0), 0);
+  const total = cart.reduce(
+    (sum, item) =>
+      sum + (Number(item.price) || 0) * (Number(item.quantity) || 0),
+    0,
+  );
 
-    const count = cart.reduce((sum, item) =>
-        sum + (Number(item.quantity) || 0), 0);
+  const count = cart.reduce(
+    (sum, item) => sum + (Number(item.quantity) || 0),
+    0,
+  );
 
-    cartItemCount.textContent =
-        `${count} ${count === 1 ? "item" : "items"}`;
+  cartItemCount.textContent = `${count} ${count === 1 ? "item" : "items"}`;
 
-    subtotalPrice.textContent = `${total} DH`;
-    totalPrice.textContent = `${total} DH`;
-    checkoutButton.disabled = cart.length === 0;
+  subtotalPrice.textContent = `${total} DH`;
+  totalPrice.textContent = `${total} DH`;
+  checkoutButton.disabled = cart.length === 0;
 
-    if (cart.length === 0) {
-        cartItems.innerHTML = `
+  if (cart.length === 0) {
+    cartItems.innerHTML = `
           <div class="bg-white rounded-2xl border border-gray-100
                       p-8 text-center">
             <div class="w-16 h-16 mx-auto rounded-full bg-blue-50
@@ -52,30 +60,34 @@ function displayCart() {
             </a>
           </div>
         `;
-        localStorage.setItem("cart", JSON.stringify(cart));
-        return;
-    }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    return;
+  }
 
-    cart.forEach((product, index) => {
-        const price = Number(product.price) || 0;
-        const quantity = Number(product.quantity) || 1;
-        const subtotal = price * quantity;
-        const image = product.image
-            ? `http://localhost:3000/uploads/${encodeURIComponent(product.image)}`
-            : "";
+  cart.forEach((product, index) => {
+    const price = Number(product.price) || 0;
+    const quantity = Number(product.quantity) || 1;
+    const subtotal = price * quantity;
+    const image = product.image
+      ? `http://localhost:3000/uploads/${encodeURIComponent(product.image)}`
+      : "";
 
-        cartItems.insertAdjacentHTML("beforeend", `
+    cartItems.insertAdjacentHTML(
+      "beforeend",
+      `
           <article class="bg-white rounded-2xl border border-gray-100
                           p-3 sm:p-4 shadow-sm flex gap-3 sm:gap-4">
 
             <a href="product-details.html?id=${encodeURIComponent(product.id)}"
                class="w-24 h-24 sm:w-28 sm:h-28 shrink-0 rounded-xl
                       bg-blue-50 flex items-center justify-center p-2">
-              ${image
-                ? `<img src="${image}" alt="${escapeHTML(product.name)}"
+              ${
+                image
+                  ? `<img src="${image}" alt="${escapeHTML(product.name)}"
                         class="w-full h-full object-contain"
                         onerror="this.style.display='none'">`
-                : `<span class="text-3xl">📦</span>`}
+                  : `<span class="text-3xl">📦</span>`
+              }
             </a>
 
             <div class="flex-1 min-w-0 flex flex-col justify-between gap-3">
@@ -83,7 +95,7 @@ function displayCart() {
                 <div class="flex justify-between items-start gap-2">
                   <a href="product-details.html?id=${encodeURIComponent(product.id)}"
                      class="font-semibold text-sm sm:text-base
-                            hover:text-blue-600 break-words">
+                            hover:text-blue-600 wrap-break-word">
                     ${escapeHTML(product.name)}
                   </a>
 
@@ -128,96 +140,101 @@ function displayCart() {
               </div>
             </div>
           </article>
-        `);
-    });
+        `,
+    );
+  });
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 function increase(index) {
-    if (!cart[index]) return;
-    cart[index].quantity = Number(cart[index].quantity || 1) + 1;
-    displayCart();
+  if (!cart[index]) return;
+  cart[index].quantity = Number(cart[index].quantity || 1) + 1;
+  displayCart();
 }
 
 function decrease(index) {
-    if (!cart[index]) return;
+  if (!cart[index]) return;
 
-    if (Number(cart[index].quantity) > 1) {
-        cart[index].quantity = Number(cart[index].quantity) - 1;
-    }
-    displayCart();
+  if (Number(cart[index].quantity) > 1) {
+    cart[index].quantity = Number(cart[index].quantity) - 1;
+  }
+  displayCart();
 }
 
 function removeItem(index) {
-    if (index < 0 || index >= cart.length) return;
-    cart.splice(index, 1);
-    displayCart();
+  if (index < 0 || index >= cart.length) return;
+  cart.splice(index, 1);
+  displayCart();
 }
 
 async function checkout() {
-    if (cart.length === 0) {
-        showToast("Your cart is empty!", "warning");
-        return;
+  if (cart.length === 0) {
+    showToast("Your cart is empty!", "warning");
+    return;
+  }
+
+  const address = prompt("Please enter your delivery address:");
+  if (address === null) return;
+
+  if (!address.trim()) {
+    showToast("Delivery address is required.", "warning");
+    return;
+  }
+
+  const orderCart = cart.map((item) => ({
+    id: Number(item.id),
+    quantity: Number(item.quantity),
+  }));
+
+  if (
+    orderCart.some(
+      (item) =>
+        !Number.isInteger(item.id) ||
+        item.id <= 0 ||
+        !Number.isInteger(item.quantity) ||
+        item.quantity <= 0,
+    )
+  ) {
+    showToast("Your cart contains invalid product information.", "error");
+    return;
+  }
+
+  try {
+    checkoutButton.disabled = true;
+    checkoutButton.textContent = "Processing...";
+
+    const response = await fetch("http://localhost:3000/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        address: address.trim(),
+        cart: orderCart,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Error while placing order.");
     }
 
-    const address = prompt("Please enter your delivery address:");
-    if (address === null) return;
+    showToast(
+      `Order placed successfully! Order ID: ${data.orderId}`,
+      "success",
+    );
 
-    if (!address.trim()) {
-        showToast("Delivery address is required.", "warning");
-        return;
-    }
-
-    const orderCart = cart.map(item => ({
-        id: Number(item.id),
-        quantity: Number(item.quantity)
-    }));
-
-    if (orderCart.some(item =>
-        !Number.isInteger(item.id) || item.id <= 0 ||
-        !Number.isInteger(item.quantity) || item.quantity <= 0
-    )) {
-        showToast("Your cart contains invalid product information.", "error");
-        return;
-    }
-
-    try {
-        checkoutButton.disabled = true;
-        checkoutButton.textContent = "Processing...";
-
-        const response = await fetch("http://localhost:3000/orders", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                address: address.trim(),
-                cart: orderCart
-            })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || "Error while placing order.");
-        }
-
-        showToast(
-            `Order placed successfully! Order ID: ${data.orderId}`,
-            "success"
-        );
-
-        cart = [];
-        localStorage.removeItem("cart");
-        displayCart();
-        window.location.href = "products.html";
-
-    } catch (error) {
-        console.error("Checkout error:", error);
-        showToast(error.message || "Error while placing order.", "error");
-    } finally {
-        checkoutButton.disabled = cart.length === 0;
-        checkoutButton.textContent = "Next";
-    }
+    cart = [];
+    localStorage.removeItem("cart");
+    displayCart();
+    window.location.href = "products.html";
+  } catch (error) {
+    console.error("Checkout error:", error);
+    showToast(error.message || "Error while placing order.", "error");
+  } finally {
+    checkoutButton.disabled = cart.length === 0;
+    checkoutButton.textContent = "Next";
+  }
 }
 
 displayCart();

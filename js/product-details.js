@@ -4,10 +4,9 @@ const id = params.get("id");
 const productDetails = document.getElementById("productDetails");
 
 fetch("http://localhost:3000/products")
-  .then(res => res.json())
-  .then(products => {
-
-    const product = products.find(p => p.id == id);
+  .then((res) => res.json())
+  .then((products) => {
+    const product = products.find((p) => p.id == id);
 
     if (!product) {
       productDetails.innerHTML = `
@@ -38,7 +37,7 @@ fetch("http://localhost:3000/products")
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
         <!-- Product Image -->
-        <div class="bg-gray-50 rounded-2xl p-6 sm:p-10 flex items-center justify-center min-h-[300px]">
+        <div class="bg-gray-50 rounded-2xl p-6 sm:p-10 flex items-center justify-center min-h-75">
           <img
             src="http://localhost:3000/uploads/${product.image}"
             alt="${product.name}"
@@ -105,9 +104,8 @@ fetch("http://localhost:3000/products")
 
       </div>
     `;
-
   })
-  .catch(error => {
+  .catch((error) => {
     console.log(error);
 
     productDetails.innerHTML = `
@@ -125,44 +123,34 @@ fetch("http://localhost:3000/products")
     `;
   });
 
-
 function addToCart(id) {
-
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   fetch("http://localhost:3000/products")
+    .then((res) => res.json())
 
-    .then(res => res.json())
-
-    .then(products => {
-
-      const product = products.find(p => p.id == id);
+    .then((products) => {
+      const product = products.find((p) => p.id == id);
 
       if (!product) return;
 
-      const existingProduct = cart.find(item => item.id == id);
+      const existingProduct = cart.find((item) => item.id == id);
 
       if (existingProduct) {
-
         existingProduct.quantity++;
-
       } else {
-
         cart.push({
           ...product,
-          quantity: 1
+          quantity: 1,
         });
-
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));
 
       showToast(product.name + " added to cart!", "success");
-
     })
 
-    .catch(error => {
+    .catch((error) => {
       console.log(error);
     });
-
 }

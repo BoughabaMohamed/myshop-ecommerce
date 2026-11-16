@@ -1,724 +1,454 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Products - MyShop</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  </head>
 
-<body class="bg-gray-50 text-gray-800">
+  <body class="bg-gray-50 text-gray-800">
+    <!-- ================= NAVBAR ================= -->
 
-<!-- ================= NAVBAR ================= -->
-
-<header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+      <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="h-20 flex items-center justify-between">
+          <!-- LOGO -->
 
-            <!-- LOGO -->
+          <a href="index.html" class="flex items-center gap-3">
+            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden">
+              <img
+                src="../images/logo.png"
+                alt="MyShop Logo"
+                class="w-full h-full object-contain"
+              />
+            </div>
 
-            <a href="index.html" class="flex items-center gap-3">
+            <span class="text-2xl font-bold text-slate-900">
+              My<span class="text-blue-600">Shop</span>
+            </span>
+          </a>
 
-                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden">
-                    <img
-                        src="../images/logo.png"
-                        alt="MyShop Logo"
-                        class="w-full h-full object-contain"
-                    >
-                </div>
+          <!-- DESKTOP NAV -->
 
-                <span class="text-2xl font-bold text-slate-900">
-                    My<span class="text-blue-600">Shop</span>
-                </span>
-
+          <div class="hidden md:flex items-center gap-8">
+            <a
+              href="index.html"
+              class="text-gray-600 hover:text-blue-600 transition"
+            >
+              Home
             </a>
 
+            <a href="products.html" class="text-blue-600 font-semibold">
+              Products
+            </a>
 
-            <!-- DESKTOP NAV -->
-
-            <div class="hidden md:flex items-center gap-8">
-
-                <a
-                    href="index.html"
-                    class="text-gray-600 hover:text-blue-600 transition"
-                >
-                    Home
-                </a>
-
-                <a
-                    href="products.html"
-                    class="text-blue-600 font-semibold"
-                >
-                    Products
-                </a>
-
-                <a
-                    href="cart.html"
-                    class="text-gray-600 hover:text-blue-600 transition"
-                >
-                    Cart
-                </a>
-
-                <a
-                    href="contact.html"
-                    class="text-gray-600 hover:text-blue-600 transition"
-                >
-                    Contact
-                </a>
-
-                <a
-                    href="admin.html"
-                    id="adminLink"
-                    class="hidden text-gray-600 hover:text-blue-600 transition"
-                >
-                    Admin
-                </a>
-
-            </div>
-
-
-            <!-- RIGHT SIDE -->
-
-            <div class="flex items-center gap-3">
-
-                <!-- DESKTOP CART -->
-
-                <a
-                    href="cart.html"
-                    id="cartCount"
-                    class="hidden sm:flex items-center gap-2
-                    bg-blue-600 hover:bg-blue-700
-                    text-white px-4 py-2.5
-                    rounded-xl font-semibold
-                    transition"
-                >
-                    🛒 Cart: 0
-                </a>
-
-
-                <!-- MOBILE CART -->
-
-                <a
-                    href="cart.html"
-                    class="sm:hidden
-                    bg-blue-600 hover:bg-blue-700
-                    text-white px-3 py-2
-                    rounded-xl font-semibold
-                    text-sm transition"
-                >
-                    🛒
-                </a>
-
-
-                <!-- MOBILE MENU -->
-
-                <details class="relative md:hidden">
-
-                    <summary
-                        class="list-none cursor-pointer
-                        w-11 h-11
-                        flex items-center justify-center
-                        bg-gray-100
-                        rounded-xl text-xl
-                        select-none"
-                    >
-                        ☰
-                    </summary>
-
-
-                    <div
-                        class="absolute right-0 top-14
-                        w-56 bg-white
-                        rounded-2xl shadow-xl
-                        border border-gray-100
-                        p-3"
-                    >
-
-                        <a
-                            href="index.html"
-                            class="block px-4 py-3
-                            rounded-xl hover:bg-gray-50"
-                        >
-                            🏠 Home
-                        </a>
-
-                        <a
-                            href="products.html"
-                            class="block px-4 py-3
-                            rounded-xl
-                            bg-blue-50 text-blue-600
-                            font-semibold"
-                        >
-                            🛍 Products
-                        </a>
-
-                        <a
-                            href="cart.html"
-                            class="block px-4 py-3
-                            rounded-xl hover:bg-gray-50"
-                        >
-                            🛒 Cart
-                        </a>
-
-                        <a
-                            href="contact.html"
-                            class="block px-4 py-3
-                            rounded-xl hover:bg-gray-50"
-                        >
-                            📞 Contact
-                        </a>
-
-                        <a
-                            href="admin.html"
-                            class="block px-4 py-3
-                            rounded-xl hover:bg-gray-50"
-                        >
-                            ⚙️ Admin
-                        </a>
-
-                    </div>
-
-                </details>
-
-            </div>
-
-        </div>
-
-    </nav>
-
-</header>
-
-
-<!-- ================= PAGE HERO ================= -->
-
-<section
-    class="bg-gradient-to-r from-blue-600 to-cyan-500
-    text-white"
->
-
-    <div
-        class="max-w-7xl mx-auto
-        px-4 sm:px-6 lg:px-8
-        py-12 sm:py-16
-        text-center"
-    >
-
-        <p
-            class="text-blue-100
-            font-semibold
-            text-sm sm:text-base
-            mb-3"
-        >
-            MYSHOP STORE
-        </p>
-
-        <h1
-            class="text-4xl sm:text-5xl
-            font-bold mb-4"
-        >
-            Our Products
-        </h1>
-
-        <p
-            class="text-blue-50
-            max-w-2xl mx-auto
-            text-base sm:text-lg"
-        >
-            Discover our collection of quality products
-            at the best prices.
-        </p>
-
-    </div>
-
-</section>
-
-
-<!-- ================= SEARCH & FILTER ================= -->
-
-<section
-    class="max-w-7xl mx-auto
-    px-4 sm:px-6 lg:px-8
-    -mt-6 relative z-10"
->
-
-    <div
-        class="bg-white
-        rounded-2xl
-        shadow-lg
-        border border-gray-100
-        p-4 sm:p-5"
-    >
-
-        <div
-            class="grid grid-cols-1
-            md:grid-cols-[1fr_250px]
-            gap-4"
-        >
-
-            <!-- SEARCH -->
-
-            <div class="relative">
-
-                <span
-                    class="absolute left-4 top-1/2
-                    -translate-y-1/2
-                    text-gray-400"
-                >
-                    🔍
-                </span>
-
-                <input
-                    type="text"
-                    id="search"
-                    placeholder="Search product..."
-                    class="w-full
-                    pl-11 pr-4 py-3.5
-                    border border-gray-200
-                    rounded-xl
-                    outline-none
-                    focus:border-blue-500
-                    focus:ring-2
-                    focus:ring-blue-100
-                    transition
-                    bg-gray-50
-                    focus:bg-white"
-                >
-
-            </div>
-
-
-            <!-- CATEGORY -->
-
-            <select
-                id="category"
-                class="w-full
-                px-4 py-3.5
-                border border-gray-200
-                rounded-xl
-                outline-none
-                focus:border-blue-500
-                focus:ring-2
-                focus:ring-blue-100
-                transition
-                bg-gray-50
-                focus:bg-white"
+            <a
+              href="cart.html"
+              class="text-gray-600 hover:text-blue-600 transition"
             >
+              Cart
+            </a>
 
-                <option value="all">
-                    All Categories
-                </option>
+            <a
+              href="contact.html"
+              class="text-gray-600 hover:text-blue-600 transition"
+            >
+              Contact
+            </a>
 
-                <option value="electronics">
-                    Electronics
-                </option>
+            <a
+              href="admin.html"
+              id="adminLink"
+              class="hidden text-gray-600 hover:text-blue-600 transition"
+            >
+              Admin
+            </a>
+          </div>
 
-                <option value="phones">
-                    Phones
-                </option>
+          <!-- RIGHT SIDE -->
 
-                <option value="accessories">
-                    Accessories
-                </option>
+          <div class="flex items-center gap-3">
+            <!-- DESKTOP CART -->
 
-            </select>
+            <a
+              href="cart.html"
+              id="cartCount"
+              class="hidden sm:flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl font-semibold transition"
+            >
+              🛒 Cart: 0
+            </a>
 
+            <!-- MOBILE CART -->
+
+            <a
+              href="cart.html"
+              class="sm:hidden bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-xl font-semibold text-sm transition"
+            >
+              🛒
+            </a>
+
+            <!-- MOBILE MENU -->
+
+            <details class="relative md:hidden">
+              <summary
+                class="list-none cursor-pointer w-11 h-11 flex items-center justify-center bg-gray-100 rounded-xl text-xl select-none"
+              >
+                ☰
+              </summary>
+
+              <div
+                class="absolute right-0 top-14 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 p-3"
+              >
+                <a
+                  href="index.html"
+                  class="block px-4 py-3 rounded-xl hover:bg-gray-50"
+                >
+                  🏠 Home
+                </a>
+
+                <a
+                  href="products.html"
+                  class="block px-4 py-3 rounded-xl bg-blue-50 text-blue-600 font-semibold"
+                >
+                  🛍 Products
+                </a>
+
+                <a
+                  href="cart.html"
+                  class="block px-4 py-3 rounded-xl hover:bg-gray-50"
+                >
+                  🛒 Cart
+                </a>
+
+                <a
+                  href="contact.html"
+                  class="block px-4 py-3 rounded-xl hover:bg-gray-50"
+                >
+                  📞 Contact
+                </a>
+
+                <a
+                  href="admin.html"
+                  class="block px-4 py-3 rounded-xl hover:bg-gray-50"
+                >
+                  ⚙️ Admin
+                </a>
+              </div>
+            </details>
+          </div>
         </div>
+      </nav>
+    </header>
 
-    </div>
+    <!-- ================= PAGE HERO ================= -->
 
-</section>
+    <section class="bg-linear-to-r from-blue-600 to-cyan-500 text-white">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center"
+      >
+        <p class="text-blue-100 font-semibold text-sm sm:text-base mb-3">
+          MYSHOP STORE
+        </p>
 
+        <h1 class="text-4xl sm:text-5xl font-bold mb-4">Our Products</h1>
 
-<!-- ================= PRODUCTS ================= -->
+        <p class="text-blue-50 max-w-2xl mx-auto text-base sm:text-lg">
+          Discover our collection of quality products at the best prices.
+        </p>
+      </div>
+    </section>
 
-<main
-    class="max-w-7xl mx-auto
-    px-4 sm:px-6 lg:px-8
-    py-12"
->
+    <!-- ================= SEARCH & FILTER ================= -->
 
-    <!-- SECTION HEADER -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+      <div
+        class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-5"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-[1fr_250px] gap-4">
+          <!-- SEARCH -->
 
-    <div
-        class="flex flex-col
-        sm:flex-row
-        sm:items-end
-        sm:justify-between
-        gap-4 mb-8"
-    >
+          <div class="relative">
+            <span
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            >
+              🔍
+            </span>
 
+            <input
+              type="text"
+              id="search"
+              placeholder="Search product..."
+              class="w-full pl-11 pr-4 py-3.5 border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-gray-50 focus:bg-white"
+            />
+          </div>
+
+          <!-- CATEGORY -->
+
+          <select
+            id="category"
+            class="w-full px-4 py-3.5 border border-gray-200 rounded-xl outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition bg-gray-50 focus:bg-white"
+          >
+            <option value="all">All Categories</option>
+
+            <option value="electronics">Electronics</option>
+
+            <option value="phones">Phones</option>
+
+            <option value="accessories">Accessories</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRODUCTS ================= -->
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <!-- SECTION HEADER -->
+
+      <div
+        class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8"
+      >
         <div>
+          <p class="text-blue-600 font-semibold text-sm mb-2">
+            EXPLORE OUR STORE
+          </p>
 
-            <p
-                class="text-blue-600
-                font-semibold
-                text-sm mb-2"
-            >
-                EXPLORE OUR STORE
-            </p>
-
-            <h2
-                class="text-3xl sm:text-4xl
-                font-bold text-slate-900"
-            >
-                All Products
-            </h2>
-
+          <h2 class="text-3xl sm:text-4xl font-bold text-slate-900">
+            All Products
+          </h2>
         </div>
 
         <a
-            href="index.html"
-            class="text-blue-600
-            font-semibold
-            hover:text-blue-700
-            transition"
+          href="index.html"
+          class="text-blue-600 font-semibold hover:text-blue-700 transition"
         >
-            ← Back Home
+          ← Back Home
         </a>
+      </div>
 
-    </div>
+      <!-- PRODUCTS CAROUSEL -->
 
-
-  
-<!-- PRODUCTS CAROUSEL -->
-
-<div class="relative">
-
-    <!-- Previous Button -->
-    <button
-        type="button"
-        onclick="document.getElementById('productsContainer').scrollBy({ left: -320, behavior: 'smooth' })"
-        aria-label="Previous products"
-        class="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2
-        z-10 w-10 h-10 rounded-full
-        bg-white shadow-lg border border-gray-100
-        text-gray-700 hover:bg-blue-600 hover:text-white
-        transition duration-300"
-    >
-        &#10094;
-    </button>
-
-    <!-- Carousel Track -->
-    <section
-        id="productsContainer"
-        data-carousel="true"
-        class="flex gap-5 sm:gap-6
-        overflow-x-auto scroll-smooth snap-x snap-mandatory
-        pb-5 px-1
-        [scrollbar-width:none]
-        [&::-webkit-scrollbar]:hidden"
-    >
-        <!-- products.js inserts products here -->
-    </section>
-
-    <!-- Next Button -->
-    <button
-        type="button"
-        onclick="document.getElementById('productsContainer').scrollBy({ left: 320, behavior: 'smooth' })"
-        aria-label="Next products"
-        class="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2
-        z-10 w-10 h-10 rounded-full
-        bg-white shadow-lg border border-gray-100
-        text-gray-700 hover:bg-blue-600 hover:text-white
-        transition duration-300"
-    >
-        &#10095;
-    </button>
-
-</div>
-
-
-</main>
-
-
-<!-- ================= FOOTER ================= -->
-
-<footer class="bg-slate-950 text-white">
-
-    <div
-        class="max-w-7xl mx-auto
-        px-4 sm:px-6 lg:px-8
-        py-12"
-    >
-
-        <div
-            class="grid grid-cols-1
-            sm:grid-cols-2
-            lg:grid-cols-4
-            gap-10"
+      <div class="relative">
+        <!-- Previous Button -->
+        <button
+          type="button"
+          onclick="
+            document
+              .getElementById('productsContainer')
+              .scrollBy({ left: -320, behavior: 'smooth' })
+          "
+          aria-label="Previous products"
+          class="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 text-gray-700 hover:bg-blue-600 hover:text-white transition duration-300"
         >
+          &#10094;
+        </button>
 
-            <!-- BRAND -->
+        <!-- Carousel Track -->
+        <section
+          id="productsContainer"
+          data-carousel="true"
+          class="flex gap-5 sm:gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-5 px-1 scrollbar-none [&::-webkit-scrollbar]:hidden"
+        >
+          <!-- products.js inserts products here -->
+        </section>
 
-            <div>
+        <!-- Next Button -->
+        <button
+          type="button"
+          onclick="
+            document
+              .getElementById('productsContainer')
+              .scrollBy({ left: 320, behavior: 'smooth' })
+          "
+          aria-label="Next products"
+          class="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg border border-gray-100 text-gray-700 hover:bg-blue-600 hover:text-white transition duration-300"
+        >
+          &#10095;
+        </button>
+      </div>
+    </main>
 
-                <h2 class="text-2xl font-bold mb-4">
-                    My<span class="text-blue-500">Shop</span>
-                </h2>
+    <!-- ================= FOOTER ================= -->
 
-                <p
-                    class="text-gray-400
-                    leading-relaxed"
-                >
-                    Your trusted online shopping
-                    website for quality products
-                    at great prices.
-                </p>
+    <footer class="bg-slate-950 text-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          <!-- BRAND -->
 
+          <div>
+            <h2 class="text-2xl font-bold mb-4">
+              My<span class="text-blue-500">Shop</span>
+            </h2>
+
+            <p class="text-gray-400 leading-relaxed">
+              Your trusted online shopping website for quality products at great
+              prices.
+            </p>
+          </div>
+
+          <!-- LINKS -->
+
+          <div>
+            <h3 class="font-semibold text-lg mb-4">Quick Links</h3>
+
+            <div class="space-y-3">
+              <a
+                href="index.html"
+                class="block text-gray-400 hover:text-white transition"
+              >
+                Home
+              </a>
+
+              <a
+                href="products.html"
+                class="block text-gray-400 hover:text-white transition"
+              >
+                Products
+              </a>
+
+              <a
+                href="cart.html"
+                class="block text-gray-400 hover:text-white transition"
+              >
+                Cart
+              </a>
+
+              <a
+                href="contact.html"
+                class="block text-gray-400 hover:text-white transition"
+              >
+                Contact
+              </a>
             </div>
+          </div>
 
+          <!-- CONTACT -->
 
-            <!-- LINKS -->
+          <div>
+            <h3 class="font-semibold text-lg mb-4">Contact Us</h3>
 
-            <div>
+            <div class="space-y-3 text-gray-400">
+              <p>📧 support@myshop.com</p>
 
-                <h3 class="font-semibold text-lg mb-4">
-                    Quick Links
-                </h3>
+              <p>📞 +212 600 000 000</p>
 
-                <div class="space-y-3">
-
-                    <a
-                        href="index.html"
-                        class="block text-gray-400
-                        hover:text-white transition"
-                    >
-                        Home
-                    </a>
-
-                    <a
-                        href="products.html"
-                        class="block text-gray-400
-                        hover:text-white transition"
-                    >
-                        Products
-                    </a>
-
-                    <a
-                        href="cart.html"
-                        class="block text-gray-400
-                        hover:text-white transition"
-                    >
-                        Cart
-                    </a>
-
-                    <a
-                        href="contact.html"
-                        class="block text-gray-400
-                        hover:text-white transition"
-                    >
-                        Contact
-                    </a>
-
-                </div>
-
+              <p>📍 Casablanca, Morocco</p>
             </div>
+          </div>
 
+          <!-- FOLLOW -->
 
-            <!-- CONTACT -->
+          <div>
+            <h3 class="font-semibold text-lg mb-4">Follow Us</h3>
 
-            <div>
+            <div class="flex gap-3">
+              <a
+                href="#"
+                class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"
+              >
+                f
+              </a>
 
-                <h3 class="font-semibold text-lg mb-4">
-                    Contact Us
-                </h3>
+              <a
+                href="#"
+                class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"
+              >
+                📷
+              </a>
 
-                <div
-                    class="space-y-3
-                    text-gray-400"
-                >
-
-                    <p>
-                        📧 support@myshop.com
-                    </p>
-
-                    <p>
-                        📞 +212 600 000 000
-                    </p>
-
-                    <p>
-                        📍 Casablanca, Morocco
-                    </p>
-
-                </div>
-
+              <a
+                href="#"
+                class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-blue-600 transition"
+              >
+                X
+              </a>
             </div>
-
-
-            <!-- FOLLOW -->
-
-            <div>
-
-                <h3 class="font-semibold text-lg mb-4">
-                    Follow Us
-                </h3>
-
-                <div class="flex gap-3">
-
-                    <a
-                        href="#"
-                        class="w-10 h-10
-                        rounded-xl
-                        bg-slate-800
-                        flex items-center
-                        justify-center
-                        hover:bg-blue-600
-                        transition"
-                    >
-                        f
-                    </a>
-
-                    <a
-                        href="#"
-                        class="w-10 h-10
-                        rounded-xl
-                        bg-slate-800
-                        flex items-center
-                        justify-center
-                        hover:bg-blue-600
-                        transition"
-                    >
-                        📷
-                    </a>
-
-                    <a
-                        href="#"
-                        class="w-10 h-10
-                        rounded-xl
-                        bg-slate-800
-                        flex items-center
-                        justify-center
-                        hover:bg-blue-600
-                        transition"
-                    >
-                        X
-                    </a>
-
-                </div>
-
-            </div>
-
+          </div>
         </div>
-
 
         <!-- COPYRIGHT -->
 
-        <div
-            class="border-t border-slate-800
-            mt-10 pt-6
-            text-center"
-        >
-
-            <p class="text-gray-500 text-sm">
-                © 2026 MyShop. All Rights Reserved.
-            </p>
-
+        <div class="border-t border-slate-800 mt-10 pt-6 text-center">
+          <p class="text-gray-500 text-sm">
+            © 2026 MyShop. All Rights Reserved.
+          </p>
         </div>
+      </div>
+    </footer>
 
-    </div>
+    <!-- ================= CART DRAWER ================= -->
 
-</footer>
-
-<!-- ================= CART DRAWER ================= -->
-
-<!-- Background Overlay -->
-<div
-    id="cartOverlay"
-    class="fixed inset-0 bg-black/40 z-[60]
-    opacity-0 invisible transition-opacity duration-300"
-></div>
-
-<!-- Drawer -->
-<aside
-    id="cartDrawer"
-    class="fixed top-0 right-0 h-full
-    w-full max-w-md bg-white z-[70]
-    shadow-2xl translate-x-full
-    transition-transform duration-300
-    flex flex-col"
-    aria-label="Shopping cart"
-    aria-hidden="true"
->
-    <!-- Drawer Header -->
+    <!-- Background Overlay -->
     <div
-        class="flex items-center justify-between
-        p-5 border-b border-gray-100"
+      id="cartOverlay"
+      class="fixed inset-0 bg-black/40 z-60 opacity-0 invisible transition-opacity duration-300"
+    ></div>
+
+    <!-- Drawer -->
+    <aside
+      id="cartDrawer"
+      class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-70 shadow-2xl translate-x-full transition-transform duration-300 flex flex-col"
+      aria-label="Shopping cart"
+      aria-hidden="true"
     >
+      <!-- Drawer Header -->
+      <div
+        class="flex items-center justify-between p-5 border-b border-gray-100"
+      >
         <div>
-            <h2 class="text-xl font-bold text-gray-900">
-                Your Cart
-            </h2>
-            <p id="drawerCartCount" class="text-sm text-gray-500 mt-1">
-                0 items
-            </p>
+          <h2 class="text-xl font-bold text-gray-900">Your Cart</h2>
+          <p id="drawerCartCount" class="text-sm text-gray-500 mt-1">0 items</p>
         </div>
 
         <button
-            type="button"
-            id="closeCartDrawer"
-            aria-label="Close cart"
-            class="w-10 h-10 rounded-xl
-            bg-gray-100 hover:bg-gray-200
-            text-gray-700 text-xl transition"
+          type="button"
+          id="closeCartDrawer"
+          aria-label="Close cart"
+          class="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xl transition"
         >
-            &times;
+          &times;
         </button>
-    </div>
+      </div>
 
-    <!-- Drawer Products -->
-    <div
-        id="drawerCartItems"
-        class="flex-1 overflow-y-auto p-5"
-    >
+      <!-- Drawer Products -->
+      <div id="drawerCartItems" class="flex-1 overflow-y-auto p-5">
         <!-- JavaScript will insert cart products here -->
-    </div>
+      </div>
 
-    <!-- Drawer Footer -->
-    <div class="border-t border-gray-100 p-5">
+      <!-- Drawer Footer -->
+      <div class="border-t border-gray-100 p-5">
         <div class="flex items-center justify-between mb-4">
-            <span class="text-gray-600">Subtotal</span>
+          <span class="text-gray-600">Subtotal</span>
 
-            <span
-                id="drawerCartTotal"
-                class="text-xl font-bold text-gray-900"
-            >
-                0 DH
-            </span>
+          <span id="drawerCartTotal" class="text-xl font-bold text-gray-900">
+            0 DH
+          </span>
         </div>
 
         <a
-            href="cart.html"
-            class="block w-full text-center
-            bg-blue-600 hover:bg-blue-700
-            text-white font-semibold
-            py-3.5 rounded-xl transition"
+          href="cart.html"
+          class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition"
         >
-            View Cart & Checkout
+          View Cart & Checkout
         </a>
 
         <button
-            type="button"
-            id="continueShopping"
-            class="w-full mt-3 py-2
-            text-gray-600 hover:text-blue-600
-            font-medium transition"
+          type="button"
+          id="continueShopping"
+          class="w-full mt-3 py-2 text-gray-600 hover:text-blue-600 font-medium transition"
         >
-            Continue Shopping
+          Continue Shopping
         </button>
-    </div>
-</aside>
+      </div>
+    </aside>
 
+    <!-- ================= JAVASCRIPT ================= -->
 
-<!-- ================= JAVASCRIPT ================= -->
-
-<script src="../js/notifications.js"></script>
-<script src="../js/products.js"></script>
-
-</body>
+    <script src="../js/notifications.js"></script>
+    <script src="../js/products.js"></script>
+  </body>
 </html>

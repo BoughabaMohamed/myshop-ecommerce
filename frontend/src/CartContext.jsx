@@ -1,101 +1,94 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
+import { CartContext } from "./cartContext";
 
-const CartContext = createContext()
 
 export function CartProvider({ children }) {
   // CART STATE
   const [cart, setCart] = useState(() => {
-    // CLEAR CART
-function clearCart() {
-  setCart([])
-  setIsCartOpen(false)
-}
-    return JSON.parse(localStorage.getItem('cart') || '[]')
-  })
+    return JSON.parse(localStorage.getItem("cart") || "[]");
+  });
 
   // CART DRAWER STATE
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // TOAST STATE
   const [toast, setToast] = useState({
-    message: '',
-    type: 'success',
-  })
+    message: "",
+    type: "success",
+  });
 
   // SHOW TOAST
-  function showToast(message, type = 'success') {
-    setToast({ message, type })
+  function showToast(message, type = "success") {
+    setToast({ message, type });
   }
 
   // SAVE CART TO LOCAL STORAGE
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart))
-  }, [cart])
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   // TOTAL CART QUANTITY
   const cartCount = cart.reduce(
     (total, item) => total + Number(item.quantity || 1),
-    0
-  )
+    0,
+  );
 
   // TOTAL CART PRICE
   const cartTotal = cart.reduce(
     (total, item) =>
       total + Number(item.price) * Number(item.quantity || 1),
-    0
-  )
+    0,
+  );
 
   // ADD PRODUCT
   function addToCart(product) {
     setCart((currentCart) => {
       const existingProduct = currentCart.find(
-        (item) => Number(item.id) === Number(product.id)
-      )
+        (item) => Number(item.id) === Number(product.id),
+      );
 
       if (existingProduct) {
         return currentCart.map((item) =>
           Number(item.id) === Number(product.id)
             ? { ...item, quantity: Number(item.quantity || 1) + 1 }
-            : item
-        )
+            : item,
+        );
       }
 
-      return [...currentCart, { ...product, quantity: 1 }]
-    })
+      return [...currentCart, { ...product, quantity: 1 }];
+    });
 
-    setIsCartOpen(true)
-    showToast(`${product.name} added to cart!`, 'success')
+    setIsCartOpen(true);
+    showToast(`${product.name} added to cart!`, "success");
   }
 
   // REMOVE PRODUCT
   function removeFromCart(productId) {
     setCart((currentCart) =>
-      currentCart.filter(
-        (item) => Number(item.id) !== Number(productId)
-      )
-    )
+      currentCart.filter((item) => Number(item.id) !== Number(productId)),
+    );
 
-    showToast('Product removed from cart!', 'info')
+    showToast("Product removed from cart!", "info");
   }
 
   // UPDATE QUANTITY
   function updateQuantity(productId, quantity) {
-    const newQuantity = Math.max(1, Number(quantity) || 1)
+    const newQuantity = Math.max(1, Number(quantity) || 1);
 
     setCart((currentCart) =>
       currentCart.map((item) =>
         Number(item.id) === Number(productId)
           ? { ...item, quantity: newQuantity }
-          : item
-      )
-    )
+          : item,
+      ),
+    );
   }
 
   // CLEAR CART
-function clearCart() {
-  setCart([])
-  setIsCartOpen(false)
-}
+  function clearCart() {
+    setCart([]);
+    setIsCartOpen(false);
+  }
 
   return (
     <CartContext.Provider
@@ -116,9 +109,5 @@ function clearCart() {
     >
       {children}
     </CartContext.Provider>
-  )
-}
-
-export function useCart() {
-  return useContext(CartContext)
+  );
 }
