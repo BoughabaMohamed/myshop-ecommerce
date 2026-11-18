@@ -97,29 +97,6 @@ function AdminProducts() {
     }
   };
 
-  const loadCategories = async () => {
-    try {
-      const response = await fetch(`${API_URL}/categories`, {
-        headers: getHeaders(),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to load categories.");
-      }
-
-      const data = await response.json();
-      const list = Array.isArray(data) ? data : data.categories || [];
-
-      setCategories(list);
-      setCounts((prev) => ({
-        ...prev,
-        categories: list.length,
-      }));
-    } catch (error) {
-      openPopup("error", "Error", error.message);
-    }
-  };
-
   const loadDashboard = async () => {
     try {
       const [usersResponse, ordersResponse] = await Promise.all([
@@ -152,10 +129,129 @@ function AdminProducts() {
     }
   };
 
+  // Initial data loading
   useEffect(() => {
-    loadProducts();
-    loadCategories();
-    loadDashboard();
+    let cancelled = false;
+
+    const fetchInitialData = async () => {
+      try {
+        const [
+          productsResponse,
+          categoriesResponse,
+          usersResponse,
+          ordersResponse,
+        ] = await Promise.all([
+          fetch(`${API_URL}/products/admin/all`, {
+            headers: {
+              Authorization: `Bearer ${
+                localStorage.getItem("token") ||
+                localStorage.getItem("authToken") ||
+                localStorage.getItem("accessToken") ||
+                ""
+              }`,
+            },
+          }),
+          fetch(`${API_URL}/categories`, {
+            headers: {
+              Authorization: `Bearer ${
+                localStorage.getItem("token") ||
+                localStorage.getItem("authToken") ||
+                localStorage.getItem("accessToken") ||
+                ""
+              }`,
+            },
+          }),
+          fetch(`${API_URL}/users`, {
+            headers: {
+              Authorization: `Bearer ${
+                localStorage.getItem("token") ||
+                localStorage.getItem("authToken") ||
+                localStorage.getItem("accessToken") ||
+                ""
+              }`,
+            },
+          }),
+          fetch(`${API_URL}/orders`, {
+            headers: {
+              Authorization: `Bearer ${
+                localStorage.getItem("token") ||
+                localStorage.getItem("authToken") ||
+                localStorage.getItem("accessToken") ||
+                ""
+              }`,
+            },
+          }),
+        ]);
+
+        if (!productsResponse.ok) {
+          throw new Error("Failed to load products.");
+        }
+
+        if (!categoriesResponse.ok) {
+          throw new Error("Failed to load categories.");
+        }
+
+        if (!usersResponse.ok || !ordersResponse.ok) {
+          throw new Error("Could not load dashboard statistics.");
+        }
+
+        const [productsData, categoriesData, usersData, ordersData] =
+          await Promise.all([
+            productsResponse.json(),
+            categoriesResponse.json(),
+            usersResponse.json(),
+            ordersResponse.json(),
+          ]);
+
+        if (cancelled) return;
+
+        const productList = Array.isArray(productsData)
+          ? productsData
+          : productsData.products || [];
+
+        const categoryList = Array.isArray(categoriesData)
+          ? categoriesData
+          : categoriesData.categories || [];
+
+        const users = Array.isArray(usersData)
+          ? usersData
+          : usersData.users || [];
+
+        const orders = Array.isArray(ordersData)
+          ? ordersData
+          : ordersData.orders || [];
+
+        setProducts(productList);
+        setCategories(categoryList);
+
+        setCounts({
+          products: productList.length,
+          categories: categoryList.length,
+          users: users.length,
+          orders: orders.length,
+        });
+      } catch (error) {
+        if (!cancelled) {
+          setPopup({
+            isOpen: true,
+            type: "error",
+            title: "Error",
+            message: error.message || "Something went wrong.",
+            onConfirm: null,
+          });
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchInitialData();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleChange = (e) => {
@@ -632,7 +728,7 @@ function AdminProducts() {
                       )}
 
                       <div className="min-w-0 flex-1">
-                        <h3 className="break-words font-bold text-gray-800">
+                        <h3 className="wrap-break-word font-bold text-gray-800">
                           {product.name}
                         </h3>
                         <p className="mt-1 font-semibold text-blue-600">
@@ -647,7 +743,7 @@ function AdminProducts() {
                     </div>
 
                     <div className="mt-4 space-y-2 border-t border-gray-100 pt-3 text-sm">
-                      <p className="break-words text-gray-600">
+                      <p className="wrap-break-word text-gray-600">
                         <span className="font-semibold text-gray-800">
                           Category:
                         </span>{" "}
@@ -661,7 +757,7 @@ function AdminProducts() {
                         {product.stock}
                       </p>
 
-                      <p className="break-words text-gray-600">
+                      <p className="wrap-break-word text-gray-600">
                         <span className="font-semibold text-gray-800">
                           Description:
                         </span>{" "}
@@ -693,7 +789,7 @@ function AdminProducts() {
 
             {/* Desktop Table */}
             <div className="hidden overflow-x-auto md:block">
-              <table className="w-full min-w-[950px] text-left text-sm">
+              <table className="w-full min-w-273.5 text-left text-sm">
                 <thead className="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
                   <tr>
                     <th className="px-5 py-4">Image</th>

@@ -102,7 +102,7 @@ function AdminLogin() {
       </header>
 
       {/* Hero */}
-      <section className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-12 text-center">
+      <section className="bg-linear-to-r from-blue-600 to-cyan-500 text-white py-12 text-center">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-4xl mb-3">🔐</div>
           <h1 className="text-3xl sm:text-4xl font-bold mb-3">Admin Login</h1>

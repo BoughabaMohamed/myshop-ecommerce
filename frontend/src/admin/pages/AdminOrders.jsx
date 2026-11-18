@@ -3,6 +3,12 @@ import Popup from "../components/Popup";
 
 const API_URL = "http://localhost:3000";
 
+const getToken = () =>
+  localStorage.getItem("token") ||
+  localStorage.getItem("authToken") ||
+  localStorage.getItem("accessToken") ||
+  "";
+
 function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [search, setSearch] = useState("");
@@ -16,21 +22,6 @@ function AdminOrders() {
     message: "",
   });
 
-  const token =
-    localStorage.getItem("token") ||
-    localStorage.getItem("authToken") ||
-    localStorage.getItem("accessToken") ||
-    "";
-
-  const openPopup = (type, title, message) => {
-    setPopup({
-      isOpen: true,
-      type,
-      title,
-      message,
-    });
-  };
-
   const closePopup = () => {
     setPopup((previousPopup) => ({
       ...previousPopup,
@@ -39,31 +30,47 @@ function AdminOrders() {
   };
 
   useEffect(() => {
-    loadOrders();
-  }, []);
+    let cancelled = false;
 
-  async function loadOrders() {
-    try {
-      setLoading(true);
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(`${API_URL}/orders`, {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
 
-      const response = await fetch(`${API_URL}/orders`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+        if (!response.ok) {
+          throw new Error("Failed to load orders.");
+        }
 
-      if (!response.ok) {
-        throw new Error("Failed to load orders.");
+        const data = await response.json();
+
+        if (!cancelled) {
+          setOrders(Array.isArray(data) ? data : data.orders || []);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setPopup({
+            isOpen: true,
+            type: "error",
+            title: "Error",
+            message: error.message || "Something went wrong.",
+          });
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
+    };
 
-      const data = await response.json();
-      setOrders(Array.isArray(data) ? data : data.orders || []);
-    } catch (error) {
-      openPopup("error", "Error", error.message || "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  }
+    fetchOrders();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function updateOrderStatus(id, status) {
     try {
@@ -73,7 +80,7 @@ function AdminOrders() {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({ status }),
       });
@@ -89,9 +96,19 @@ function AdminOrders() {
         ),
       );
 
-      openPopup("success", "Success", "Order status updated successfully.");
+      setPopup({
+        isOpen: true,
+        type: "success",
+        title: "Success",
+        message: "Order status updated successfully.",
+      });
     } catch (error) {
-      openPopup("error", "Error", error.message || "Something went wrong.");
+      setPopup({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: error.message || "Something went wrong.",
+      });
     } finally {
       setUpdatingId(null);
     }
@@ -199,7 +216,7 @@ function AdminOrders() {
                   <div className="space-y-2 text-sm">
                     <div>
                       <p className="text-gray-500">Customer</p>
-                      <p className="font-medium text-gray-800 break-words">
+                      <p className="font-medium text-gray-800 wrap-break-word">
                         {order.user_name || "Unknown"}
                       </p>
                     </div>
@@ -213,7 +230,7 @@ function AdminOrders() {
 
                     <div>
                       <p className="text-gray-500">Address</p>
-                      <p className="text-gray-700 break-words">
+                      <p className="text-gray-700 wrap-break-word">
                         {order.address || "—"}
                       </p>
                     </div>
@@ -289,7 +306,7 @@ function AdminOrders() {
                         {Number(order.total_price || 0).toFixed(2)} DH
                       </td>
 
-                      <td className="p-4 text-gray-600 max-w-xs break-words">
+                      <td className="p-4 text-gray-600 max-w-xs wrap-break-word">
                         {order.address || "—"}
                       </td>
 

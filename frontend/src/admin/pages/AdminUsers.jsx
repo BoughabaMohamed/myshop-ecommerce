@@ -51,33 +51,53 @@ function AdminUsers() {
     Authorization: `Bearer ${getToken()}`,
   });
 
-  const loadUsers = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(`${API_URL}/users`, {
-        headers: getHeaders(),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to load users.");
-      }
-
-      const data = await response.json();
-      const list = Array.isArray(data) ? data : data.users || [];
-
-      setUsers(list);
-    } catch (error) {
-      openPopup("error", "Error", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // LOAD USERS
   useEffect(() => {
-    loadUsers();
+    let cancelled = false;
+
+    const fetchUsers = async () => {
+      try {
+        const token =
+          localStorage.getItem("token") ||
+          localStorage.getItem("authToken") ||
+          localStorage.getItem("accessToken") ||
+          "";
+
+        const response = await fetch(`${API_URL}/users`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load users.");
+        }
+
+        const data = await response.json();
+        const list = Array.isArray(data) ? data : data.users || [];
+
+        if (!cancelled) {
+          setUsers(list);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          openPopup("error", "Error", error.message);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchUsers();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  // DELETE USER
   const handleDeleteUser = async (user) => {
     try {
       const response = await fetch(`${API_URL}/users/${user.id}`, {
@@ -99,6 +119,7 @@ function AdminUsers() {
     }
   };
 
+  // DELETE CONFIRMATION
   const deleteUser = (user) => {
     openPopup(
       "confirm",
@@ -108,6 +129,7 @@ function AdminUsers() {
     );
   };
 
+  // SEARCH USERS
   const filteredUsers = users.filter((user) => {
     const text = `${user.name || ""} ${user.email || ""} ${user.role || ""}`;
 
@@ -177,7 +199,7 @@ function AdminUsers() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <h3 className="break-words font-semibold text-gray-800">
+                      <h3 className="wrap-break-word font-semibold text-gray-800">
                         {user.name || "-"}
                       </h3>
 

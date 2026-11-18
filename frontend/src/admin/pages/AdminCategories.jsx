@@ -1,7 +1,18 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Popup from "../components/Popup";
 
 const API_URL = "http://localhost:3000";
+
+const getToken = () =>
+  localStorage.getItem("token") ||
+  localStorage.getItem("authToken") ||
+  localStorage.getItem("accessToken") ||
+  "";
+
+const getHeaders = () => ({
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${getToken()}`,
+});
 
 function AdminCategories() {
   const [categories, setCategories] = useState([]);
@@ -17,7 +28,7 @@ function AdminCategories() {
     onConfirm: null,
   });
 
-  const openPopup = (type, title, message, onConfirm = null) => {
+  const openPopup = useCallback((type, title, message, onConfirm = null) => {
     setPopup({
       isOpen: true,
       type,
@@ -25,7 +36,7 @@ function AdminCategories() {
       message,
       onConfirm,
     });
-  };
+  }, []);
 
   const closePopup = () => {
     setPopup((prev) => ({
@@ -42,21 +53,9 @@ function AdminCategories() {
     if (action) action();
   };
 
-  const getToken = () =>
-    localStorage.getItem("token") ||
-    localStorage.getItem("authToken") ||
-    localStorage.getItem("accessToken") ||
-    "";
-
-  const getHeaders = () => ({
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${getToken()}`,
-  });
-
-  const loadCategories = async () => {
+  // Load categories after adding or deleting
+  const loadCategories = useCallback(async () => {
     try {
-      setLoading(true);
-
       const response = await fetch(`${API_URL}/categories`, {
         headers: getHeaders(),
       });
@@ -71,14 +70,46 @@ function AdminCategories() {
       setCategories(list);
     } catch (error) {
       openPopup("error", "Error", error.message);
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [openPopup]);
 
+  // Initial categories loading
   useEffect(() => {
-    loadCategories();
-  }, []);
+    let cancelled = false;
+
+    const fetchInitialCategories = async () => {
+      try {
+        const response = await fetch(`${API_URL}/categories`, {
+          headers: getHeaders(),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load categories.");
+        }
+
+        const data = await response.json();
+        const list = Array.isArray(data) ? data : data.categories || [];
+
+        if (!cancelled) {
+          setCategories(list);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          openPopup("error", "Error", error.message);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchInitialCategories();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [openPopup]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -231,7 +262,7 @@ function AdminCategories() {
                       Category #{category.id}
                     </p>
 
-                    <h3 className="font-semibold text-gray-800 break-words">
+                    <h3 className="font-semibold text-gray-800 wrap-break-word">
                       {category.name}
                     </h3>
                   </div>
