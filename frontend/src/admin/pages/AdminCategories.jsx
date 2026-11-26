@@ -206,11 +206,14 @@ function AdminCategories() {
           className="flex flex-col sm:flex-row gap-3"
         >
           <input
+            id="categoryName"
+            name="categoryName"
             type="text"
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
             placeholder="Enter category name"
             required
+            autoComplete="off"
             className="flex-1 min-w-0 border border-gray-300 rounded-lg px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
           />
 

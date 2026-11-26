@@ -115,6 +115,7 @@ function Contact() {
 
                 <input
                   type="text"
+                  autoComplete="name"
                   id="name"
                   name="name"
                   value={formData.name}
@@ -137,6 +138,7 @@ function Contact() {
                   type="email"
                   id="email"
                   name="email"
+                  autoComplete="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"

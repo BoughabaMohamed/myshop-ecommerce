@@ -176,7 +176,10 @@ function AdminUsers() {
           </div>
 
           <input
+            id="user-search"
+            name="user-search"
             type="search"
+            autoComplete="off"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search users..."

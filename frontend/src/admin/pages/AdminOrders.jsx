@@ -167,6 +167,9 @@ function AdminOrders() {
           </div>
 
           <input
+            id="order-search"
+            name="order-search"
+            autoComplete="off"
             type="search"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -246,11 +249,15 @@ function AdminOrders() {
                   </div>
 
                   <div className="border-t border-gray-100 pt-3">
-                    <label className="block text-sm font-medium text-gray-600 mb-2">
+                    <label 
+                    htmlFor={`order-status-${order.id}`}
+                    className="block text-sm font-medium text-gray-600 mb-2">
                       Update Status
                     </label>
 
-                    <select
+                    <select 
+                      id={`order-status-${order.id}`}
+                      name={`order-status-${order.id}`}
                       value={order.status || "Pending"}
                       disabled={updatingId === order.id}
                       onChange={(event) =>
@@ -327,6 +334,8 @@ function AdminOrders() {
                           </span>
 
                           <select
+                            id={`order-status-display-${order.id}`}
+                            name={`order-status-display-${order.id}`}
                             value={order.status || "Pending"}
                             disabled={updatingId === order.id}
                             onChange={(event) =>

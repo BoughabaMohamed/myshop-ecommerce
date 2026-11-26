@@ -106,6 +106,9 @@ function Products() {
               </span>
 
               <input
+                id="product-search"
+                name="product-search"
+                autoComplete="off"
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -115,6 +118,8 @@ function Products() {
             </div>
 
             <select
+              id="product-category-filter"
+              name="product-category-filter"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"

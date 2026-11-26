@@ -531,6 +531,7 @@ function AdminProducts() {
               <input
                 id="productName"
                 name="name"
+                autoComplete="off"
                 value={form.name}
                 onChange={handleChange}
                 required
@@ -678,11 +679,14 @@ function AdminProducts() {
           </div>
 
           <input
-            type="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search products..."
-            className={`${inputClass} sm:max-w-xs`}
+           id="product-search"
+           name="product-search"
+           type="search"
+           autoComplete="off"
+           value={search}
+           onChange={(e) => setSearch(e.target.value)}
+           placeholder="Search products..."
+           className={`${inputClass} sm:max-w-xs`}
           />
         </div>
       </section>
